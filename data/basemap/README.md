@@ -42,3 +42,5 @@ From [this tutorial](http://bost.ocks.org/mike/map/#converting-data):
 ```
 topojson -o basemap.json --id-property geonameid --properties name=name -- ne_10m_populated_places_simple_be_nl.geojson ne_50m_admin_0_countries_be_nl.geojson
 ```
+
+Result: [basemap.json](basemap.json)
