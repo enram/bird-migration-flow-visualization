@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>
-
-/* CSS goes here. */
-
+<style type="text/css">
+	.place {
+		fill: red;
+	}
 </style>
 <body>
 <script src="js/d3.v3.min.js"></script>
@@ -19,7 +19,8 @@ var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-  var subunits = topojson.feature(basemap, basemap.objects.ne_50m_admin_0_countries);
+  var countries = topojson.feature(basemap, basemap.objects.ne_50m_admin_0_countries);
+  var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
 
 /*
   var projection = d3.geo.mercator()
@@ -32,18 +33,18 @@ var projection = d3.geo.albers()
     .rotate([4.4, 0])
     .parallels([50, 60])
     .scale(8000)
-    .translate([-250,-100]);
+    .translate([-350,-100]);
     
   var path = d3.geo.path()
     .projection(projection);
 
   svg.append("path")
-    .datum(subunits)
+    .datum(countries)
     .attr("d", path);
-  /*svg.append("path")
-      .datum(topojson.feature(basemap, basemap.objects.ne_50m_admin_0_countries))
-      .attr("d", d3.geo.path().projection(d3.geo.mercator()));
-      */
-
+  
+  svg.append("path")
+    .datum(cities)
+    .attr("d", path)
+    .attr("class", "place");
 });
 </script>
