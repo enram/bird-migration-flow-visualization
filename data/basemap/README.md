@@ -26,3 +26,9 @@ WHERE
 	OR iso_a2 = 'NL')
 	AND scalerank < 8
 ```
+
+## TopoJSON combined countries & populated places
+
+````
+topojson -o benl.json --id-property SU_A3   --properties name=NAME   -- ne_10m_populated_places_simple_be_nl.geojson ne_50m_admin_0_countries_be_nl.geojson
+````
