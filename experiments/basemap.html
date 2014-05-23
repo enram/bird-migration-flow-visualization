@@ -11,17 +11,18 @@
         </style>
     </title>
     <body>
-
+        <div id="map"></div>
         <script>
-            d3.json("../data/basemap/basemap.topojson", function(error, basemap) {
-              if (error) return console.error(error);
+            var width = 800;
+            var height = 800;
 
-            var width = 800,
-                height = 800;
-
-            var svg = d3.select("body").append("svg")
+            var svg = d3.select("#map").append("svg")
                 .attr("width", width)
                 .attr("height", height);
+
+
+            d3.json("../data/basemap/basemap.topojson", function(error, basemap) {
+                if (error) return console.error(error);
 
               var countries = topojson.feature(basemap, basemap.objects.ne_50m_admin_0_countries);
               var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
