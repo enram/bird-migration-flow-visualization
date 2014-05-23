@@ -1,3 +1,8 @@
+.arrow {
+    stroke-width: 2;
+    stroke: black;
+}
+
 .axis path,
 .axis line {
     fill: none;
@@ -8,3 +13,4 @@
     font-family: sans-serif;
     font-size: 11px;
 }
+
