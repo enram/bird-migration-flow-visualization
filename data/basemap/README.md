@@ -16,7 +16,7 @@ WHERE
   OR iso_a2 = 'NL'
 ```
 
-Result: [ne_50m_admin_0_countries_be_nl.geojson](ne_50m_admin_0_countries_be_nl.geojson)
+Result: [ne_50m_admin_0_countries.geojson](ne_50m_admin_0_countries.geojson)
 
 ### Populated places
 
@@ -33,12 +33,14 @@ WHERE
 	AND scalerank < 8
 ```
 
-Result: [ne_10m_populated_places_simple_be_nl.geojson](ne_10m_populated_places_simple_be_nl.geojson)
+Result: [ne_10m_populated_places_simple.geojson](ne_10m_populated_places_simple.geojson)
 
 ## Combine source data as a topojson
 
 From [this tutorial](http://bost.ocks.org/mike/map/#converting-data):
 
 ```
-topojson -o basemap.json --id-property geonameid --properties name=name -- ne_10m_populated_places_simple_be_nl.geojson ne_50m_admin_0_countries_be_nl.geojson
+topojson -o basemap.json --id-property geonameid --properties name=name -- ne_10m_populated_places_simple.geojson ne_50m_admin_0_countries.geojson
 ```
+
+Result: [basemap.json](basemap.json)
