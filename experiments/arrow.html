@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <head>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
-    
     <link rel="stylesheet" href="css/arrow.css">
 </head>
 <body>
     <h1>Example 1: draw an arrow with d3</h1>
+    <p>
+      x (between 0 and 10): <input id="x-in" type="text"><br>
+      y (between 0 and 10): <input id="y-in" type="text"><br>
+      length: <input id="len-in" type="text"><br>
+      rotation (between 0 and 360): <input id="rot-in" type="text"><br>
+      <button id="draw-but">Draw arrow</button>
+    </p>
     <div id="map"></div>
     <script type="text/javascript" src="js/arrow.js"></script>
 </body>
