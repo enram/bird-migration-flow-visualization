@@ -16,9 +16,13 @@ WHERE
   OR iso_a2 = 'NL'
 ```
 
+Result: [ne_50m_admin_0_countries_be_nl.geojson](ne_50m_admin_0_countries_be_nl.geojson)
+
 ### Populated places
 
 Source: `ne_10m_populated_places_simple` from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/
+
+Selection (in CartoDB):
 
 ```SQL
 SELECT * 
@@ -28,6 +32,8 @@ WHERE
 	OR iso_a2 = 'NL')
 	AND scalerank < 8
 ```
+
+Result: [ne_10m_populated_places_simple_be_nl.geojson](ne_10m_populated_places_simple_be_nl.geojson)
 
 ## Combine source data as a topojson
 
