@@ -40,7 +40,7 @@ Result: [ne_10m_populated_places_simple.geojson](ne_10m_populated_places_simple.
 From [this tutorial](http://bost.ocks.org/mike/map/#converting-data):
 
 ```
-topojson -o basemap.json --id-property geonameid --properties name=name -- ne_10m_populated_places_simple.geojson ne_50m_admin_0_countries.geojson
+topojson -o basemap.topojson --id-property geonameid --properties name=name -- ne_10m_populated_places_simple.geojson ne_50m_admin_0_countries.geojson
 ```
 
 Result: [basemap.json](basemap.json)
