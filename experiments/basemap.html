@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+/* CSS goes here. */
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+
+var width = 960,
+    height = 1160;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+d3.json("../data/basemap/basemap.topojson", function(error, uk) {
+  if (error) return console.error(error);
+
+  svg.append("path")
+      .datum(topojson.feature(uk, uk.objects.ne_50m_admin_0_countries))
+      .attr("d", d3.geo.path().projection(d3.geo.mercator()));
+});
+</script>
