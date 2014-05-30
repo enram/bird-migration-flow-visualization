@@ -33,7 +33,7 @@
             d3.json("../data/basemap/basemap.topojson", function(error, basemap) {
                 if (error) return console.error(error);
 
-                var countries = topojson.feature(basemap, basemap.objects.ne_50m_admin_0_countries);
+                var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
                 var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
 
                 // var projection = d3.geo.mercator()
