@@ -19,7 +19,7 @@ var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-  var countries = topojson.feature(basemap, basemap.objects.ne_50m_admin_0_countries);
+  var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
   var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
 
 /*
