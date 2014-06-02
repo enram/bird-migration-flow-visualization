@@ -11,9 +11,9 @@ SELECT
     WHEN altitude >= 1.6 THEN 'high'
   END AS altitude_band,
   count(*) AS number_of_measurements,
-  avg(u_speed) AS u_speed,
-  avg(v_speed) AS v_speed,
-  avg(bird_density) AS average_bird_density
+  avg(u_speed) AS avg_u_speed,
+  avg(v_speed) AS avg_v_speed,
+  avg(bird_density) AS avg_bird_density
 FROM
   bird_migration_altitude_profiles
 WHERE
