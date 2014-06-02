@@ -1,50 +1,64 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<style type="text/css">
-	.place {
-		fill: red;
-	}
-</style>
-<body>
-<script src="js/d3.v3.min.js"></script>
-<script src="js/topojson.v1.min.js"></script>
-<script>
-d3.json("../data/basemap/basemap.topojson", function(error, basemap) {
-  if (error) return console.error(error);
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="js/d3.v3.min.js"></script>
+        <script src="js/topojson.v1.min.js"></script>
+        <style type="text/css">
+            
+            svg {
+                background: lightgray;
+            }
+            .place {
+                fill: yellow;
+            }
+            path {
+                fill: #0B61A4;
+                stroke: black;
+            }
 
-var width = 800,
-    height = 800;
+        </style>
+    </title>
+    <body>
+        <div id="map"></div>
+        <script>
+            var width = 800;
+            var height = 800;
 
-var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+            var svg = d3.select("#map").append("svg")
+                .attr("width", width)
+                .attr("height", height);
 
-  var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
-  var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
 
-/*
-  var projection = d3.geo.mercator()
-    .scale(5000)
-    .translate([width / 2, height / 2]);
-*/
+            d3.json("../data/basemap/basemap.topojson", function(error, basemap) {
+                if (error) return console.error(error);
 
-var projection = d3.geo.albers()
-    .center([0, 55.4])
-    .rotate([4.4, 0])
-    .parallels([50, 60])
-    .scale(8000)
-    .translate([-350,-100]);
-    
-  var path = d3.geo.path()
-    .projection(projection);
+                var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
+                var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
 
-  svg.append("path")
-    .datum(countries)
-    .attr("d", path);
-  
-  svg.append("path")
-    .datum(cities)
-    .attr("d", path)
-    .attr("class", "place");
-});
-</script>
+                // var projection = d3.geo.mercator()
+                    // .scale(300)
+                    // .translate([width / 2, height / 2]);
+
+                var projection = d3.geo.albers()
+                    .center([0, 51.66])
+                    .rotate([5.14, 0])
+                    .parallels([50, 60])
+                    .scale(3000)
+                    .translate([width / 2, height / 2]);
+
+                var path = d3.geo.path()
+                    .projection(projection);
+
+                svg.append("path")
+                    .datum(countries)
+                    .attr("d", path);
+
+                svg.append("path")
+                    .datum(cities)
+                    .attr("d", path)
+                    .attr("class", "place");
+            });
+        </script>
+    </body>
+</html>
