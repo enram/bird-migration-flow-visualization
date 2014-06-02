@@ -10,7 +10,7 @@
                 background: lightgray;
             }
             .place {
-                fill: red;
+                fill: yellow;
             }
             path {
                 fill: #0B61A4;
@@ -54,10 +54,10 @@
                     .datum(countries)
                     .attr("d", path);
 
-                // svg.append("path")
-                    // .datum(cities)
-                    // .attr("d", path)
-                    // .attr("class", "place");
+                svg.append("path")
+                    .datum(cities)
+                    .attr("d", path)
+                    .attr("class", "place");
             });
         </script>
     </body>
