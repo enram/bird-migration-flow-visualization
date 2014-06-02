@@ -4,7 +4,7 @@
 -- - Average values
 
 SELECT
-  radar_name,
+  radar_id,
   date_trunc('hour', start_time) + date_part('minute', start_time)::int / 20 * interval '20 min' AS interval_start_time,
   CASE
     WHEN altitude >= 0.2 AND altitude < 1.6 THEN 'low'
@@ -21,10 +21,10 @@ WHERE
   AND bird_density >= 10
   AND altitude >= 0.2
 GROUP BY
-  radar_name,
+  radar_id,
   interval_start_time,
   altitude_band
 ORDER BY
-  radar_name,
+  radar_id,
   interval_start_time,
   altitude_band DESC
