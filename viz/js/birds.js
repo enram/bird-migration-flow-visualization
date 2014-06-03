@@ -18,6 +18,13 @@
     var DISPLAY_ID = "#display";
 
     /**
+     * Create settings
+     */
+    var settings = {
+	vectorscale: 0.4
+    };
+
+    /**
      * An object to perform logging when the browser supports it.
      */
     var log = {
@@ -65,6 +72,10 @@
         log.timeEnd("Projection created");
         return projection.scale(s).translate(t);
     } 
+
+    var vectorScale = function(value) {
+	return value*settings.vectorscale;
+    }
 
     function createArrow(g, projection, vscale, x, y, v) {
         g.beginPath();
@@ -118,7 +129,7 @@
             // Create arrow
             d3.select(FIELD_CANVAS_ID).attr("width", view.width).attr("height", view.height);
             var g = d3.select(FIELD_CANVAS_ID).node().getContext("2d");
-            createArrow(g, albers_projection, function(x) {return x}, 4.351829, 50.850383, [100, 100, 1]);
+            createArrow(g, albers_projection, vectorScale, 4.351829, 50.850383, [100, 100, 1]);
         });
     }
 
