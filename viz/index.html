@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta itemprop="name" property="og:title" content="STSM Hackathon"/>
-    	<meta name="description" itemprop="description" property="og:description" content="STSM Hackathon - Bird Migration Flow Visualisation"/>
-    	<meta name="author" itemprop="author" content="LifeWatch - INBO"/>
+    <head>
+        <meta charset="utf-8">
+        <title>Bird migration flow visualisation</title>
+        <meta name="description" content="Bird migration flow visualisation"/>
+        <meta name="author" content="LifeWatch INBO"/>
 
-      <link rel="stylesheet" type="text/css" href="css/styles.css"/>
 
-		<title>Bird Migration Flow Visualisation</title>
-	</head>
-	<body>
-		<div align="center"><h1>Bird Migration Flow Visualization</h1></div>
-		
-		<div id="display" data-topography="http://localhost:8080/enram/data/basemap/basemap.topojson">
-			<div id="map">
-				<svg id="map-svg" xmlns="http://www.w3.org/2000/svg" version="1.1"/>
-			</div>
-			<div id="field">
-				<canvas id="field-canvas"></canvas>
-			</div>
-		</div>
-		<script src="js/d3.v3.min.js"></script>
-	        <script src="js/topojson.v1.min.js"></script>
-		<script src="js/birds.js"></script>
-	</body>
+        <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+    </head>
+    <body>
+        <div align="center"><h1>Bird Migration Flow Visualization</h1></div>
+        
+        <div id="display" data-topography="http://localhost:8080/enram/data/basemap/basemap.topojson">
+            <div id="map">
+                <svg id="map-svg" xmlns="http://www.w3.org/2000/svg" version="1.1"/>
+            </div>
+            <div id="field">
+                <canvas id="field-canvas"></canvas>
+            </div>
+        </div>
+        <script src="js/d3.v3.min.js"></script>
+            <script src="js/topojson.v1.min.js"></script>
+        <script src="js/birds.js"></script>
+    </body>
 </html>
