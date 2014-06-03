@@ -197,8 +197,8 @@
             .attr("height", view.height);
 
 	    // get radar data
-	    var alt = "2";
-	    var radardata = retrieveRadarDataByAltitudeAndTime(alt, "2013-04-08T00:00:00Z");
+	    var alt = 2;
+	    var radardata = retrieveRadarDataByAltitudeAndTime(alt, "2013-04-10T23:20:00Z");
 	    radardata.done(function(data) {
 		console.log(data);
 		animateTimeFrame(data, albers_projection);
@@ -208,3 +208,4 @@
 
     loadMap();
 })();
+
