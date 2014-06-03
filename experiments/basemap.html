@@ -17,6 +17,10 @@
               fill: #0B61A4;
               stroke: black;
           }
+
+          .radar {
+                fill: red;
+          }
         </style>
     </head>    
     <body>
@@ -41,18 +45,8 @@
                 if (error) return console.error(error);
 
                 var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
-                var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
-
-                // var projection = d3.geo.mercator()
-                    // .scale(300)
-                    // .translate([width / 2, height / 2]);
-
-                var projection = d3.geo.albers()
-                    .center([0, 51.66])
-                    .rotate([5.14, 0])
-                    .parallels([50, 60])
-                    .scale(6000)
-                    .translate([view.width / 8, view.height / 2]);
+                //var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
+                var radars = topojson.feature(basemap, basemap.objects.radars);
 
                 var albers_projection = createAlbersProjection(basemap.bbox[0], basemap.bbox[1], basemap.bbox[2], basemap.bbox[3], view);
 
@@ -63,10 +57,15 @@
                     .datum(countries)
                     .attr("d", path);
 
+                // svg.append("path")
+                //     .datum(cities)
+                //     .attr("d", path)
+                //     .attr("class", "place");
+
                 svg.append("path")
-                    .datum(cities)
+                    .datum(radars)
                     .attr("d", path)
-                    .attr("class", "place");
+                    .attr("class", "radar");
             });
 
             /**
