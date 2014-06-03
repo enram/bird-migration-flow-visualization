@@ -15,18 +15,40 @@
         <link rel="stylesheet" type="text/css" href="css/custom.css"/>
     </head>
     <body>
-        <div align="center"><h1>Bird Migration Flow Visualization</h1></div>
-        
-        <div id="display" data-topography="http://localhost:8080/enram/data/basemap/basemap.topojson">
-            <div id="map">
-                <svg id="map-svg" xmlns="http://www.w3.org/2000/svg" version="1.1"/>
+        <div class="container">
+            <div class="header">
+                <header class="clearfix">
+                    <h2><a href="http://lifewatch.inbo.be/blog">Lifewatch INBO</a></h2>
+                </header>
+                <div><img src="http://lifewatch.inbo.be/blog/theme/img/inbo-logo.png" alt="inbo-logo"></div>
             </div>
-            <div id="field">
-                <canvas id="field-canvas"></canvas>
+
+            <div class="content">
+                <section>
+                    <header>
+                        <h1>Bird migration flow visualization</h1>
+                    </header>
+                    <div id="display" data-topography="http://localhost:8080/enram/data/basemap/basemap.topojson">
+                        <div id="map">
+                            <svg id="map-svg" xmlns="http://www.w3.org/2000/svg" version="1.1"/>
+                        </div>
+                        <div id="field">
+                            <canvas id="field-canvas"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="footer">
+                <footer class="clearfix">
+                    <div><img src="http://lifewatch.inbo.be/blog/theme/img/lifewatch-inbo-logo.png" alt="lifewatch-inbo-logo"/></div>
+                </footer>
             </div>
         </div>
-        <script src="js/d3.v3.min.js"></script>
-            <script src="js/topojson.v1.min.js"></script>
-        <script src="js/birds.js"></script>
+
+        <!-- Scripts -->
+        <script type="text/javascript" src="js/d3.v3.min.js"></script>
+        <script type="text/javascript" src="js/topojson.v1.min.js"></script>
+        <script type="text/javascript" src="js/birds.js"></script>
     </body>
 </html>
