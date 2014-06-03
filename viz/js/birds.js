@@ -129,7 +129,7 @@
 	    d3.select(FIELD_CANVAS_ID).attr("width", view.width).attr("height", view.height);
 
 	    // get radar data
-	    var alt = "high";
+	    var alt = "2";
 	    var radardata = retrieveRadarDataByAltitudeAndTime(alt, "2013-04-08T12:00:00Z");
 	    radardata.done(function(data) {
 		console.log(data);
