@@ -121,6 +121,8 @@
             //     .attr("d", path)
             //     .attr("class", "place");
 
+            path.pointRadius(1.8);
+
             svg.append("path")
                 .datum(radars)
                 .attr("d", path)
