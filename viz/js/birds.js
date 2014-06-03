@@ -21,8 +21,13 @@
      * Create settings
      */
     var settings = {
-	vectorscale: 5
+	vectorscale: 0.2,
+        frameRate: 100,
+        maxParticleAge: 20
     };
+
+    var particles = [];
+    var g;
 
     /**
      * An object to perform logging when the browser supports it.
@@ -45,6 +50,7 @@
         log.debug("View size width:" + x + " height: "+ y);
         return {width: x, height: y};
     }();
+
 
     /**
      * Returns a d3 Albers conical projection (en.wikipedia.org/wiki/Albers_projection) that maps the bounding box
@@ -73,20 +79,77 @@
         return projection.scale(s).translate(t);
     } 
 
-    var vectorScale = function(value) {
-	return value*settings.vectorscale;
+    // Create particle objects based on the data
+    function createParticles(projection, data) {
+        particles = [];
+        data.rows.forEach(function(point) {
+            var p = projection([point.longitude, point.latitude]);
+            var particle = {
+                x: p[0],
+                y: p[1],
+                xt: 0,
+                yt: 0,
+                u: point.avg_u_speed,
+                v: point.avg_v_speed,
+                age: 0
+            };
+            particles.push(particle);
+        });
+        console.log(particles.length + "particles created: ");
+        console.log(particles);
     }
 
-    function createArrow(g, projection, vscale, x, y, v) {
-	console.log("draw arrow");
+    // Calculate the next particle's position
+    function evolve() {
+        particles.forEach(function(particle) {
+            if (particle.age < settings.maxParticleAge) {
+                var x = particle.x;
+                var y = particle.y;
+                var xt = x + particle.u * settings.vectorscale;
+                var yt = y + particle.v * settings.vectorscale;
+                particle.age += 1;
+                particle.xt = xt;
+                particle.yt = yt;
+            };
+        });
+    }
+
+    // Draw a line between a particle's current and next position
+    function draw() {
+        particles.forEach(function(particle) {
+            // Fade existing trails
+            var prev = g.globalCompositeOperation;
+            g.globalCompositeOperation = "destination-in";
+            g.fillRect(0, 0, view.width, view.height);
+            g.globalCompositeOperation = prev;
+
+            // Draw new particle trails
+            if (particle.age < settings.maxParticleAge) {
+                g.moveTo(particle.x, particle.y);
+                g.lineTo(particle.xt, particle.yt);
+                particle.x = particle.xt;
+                particle.y = particle.yt;
+            };
+        });
+    }
+
+    // This function will run the animation for 1 time frame
+    function runTimeFrame() {
         g.beginPath();
-        var start_x = projection([x, y])[0];
-        var start_y = projection([x, y])[1];
-        var end_x = start_x + vscale(v[0]);
-        var end_y = start_y + vscale(v[1]);
-        g.moveTo(start_x, start_y);
-        g.lineTo(end_x, end_y);
+        evolve();
+        draw();
         g.stroke();
+        setTimeout(runTimeFrame, settings.frameRate);
+    };
+
+    function animateTimeFrame(data, projection) {
+        g = d3.select(FIELD_CANVAS_ID).node().getContext("2d");
+        g.lineWidth = 1.0;
+        g.strokeStyle = "rgba(10, 10, 10, 1)";
+        g.fillStyle = "rgba(255, 255, 255, 0.98";
+        var particles = createParticles(projection, data);
+        console.log("particles: " + particles);
+        runTimeFrame()
     }
 
         /**
@@ -130,16 +193,10 @@
 
 	    // get radar data
 	    var alt = "high";
-	    var radardata = retrieveRadarDataByAltitudeAndTime(alt, "2013-04-08T12:00:00Z");
+	    var radardata = retrieveRadarDataByAltitudeAndTime(alt, "2013-04-08T00:00:00Z");
 	    radardata.done(function(data) {
 		console.log(data);
-		data.rows.forEach(function(point) {
-		    // Create arrow
-		    var g = d3.select(FIELD_CANVAS_ID).node().getContext("2d");
-		    var v = [point.avg_u_speed, point.avg_v_speed, point.avg_bird_density];
-		    console.log("u: " + point.avg_u_speed + ", v: " + point.avg_v_speed);
-		    createArrow(g, albers_projection, vectorScale, point.longitude, point.latitude, v);
-		});
+		animateTimeFrame(data, albers_projection);
 	    });
         });
     }
