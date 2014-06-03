@@ -16,7 +16,6 @@
     // special document elements
     var MAP_SVG_ID = "#map-svg";
     var FIELD_CANVAS_ID = "#field-canvas";
-    var DISPLAY_ID = "#display";
 
     /**
      * Create settings
