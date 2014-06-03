@@ -41,13 +41,13 @@
     };
 
     /**
-     * An object {width:, height:} that describes the extent of the browser's view in pixels.
+     * An object {width:, height:} that describes the extent of the container's view in pixels.
      */
     var view = function() {
-        var w = window, d = document.documentElement, b = document.getElementsByTagName("#MAP_SVG_ID")[0];
-        var x = w.innerWidth || d.clientWidth || b.clientWidth;
-        var y = w.innerHeight || d.clientHeight || b.clientHeight;
-        log.debug("View size width:" + x + " height: "+ y);
+        var b = document.getElementById("display");
+        var x = b.clientWidth;
+        var y = b.clientHeight;
+        log.debug("Container size width:" + x + " height: "+ y);
         return {width: x, height: y};
     }();
 
@@ -169,7 +169,7 @@
             var path = d3.geo.path()
                 .projection(albers_projection);
 			
-			var svg = d3.select(MAP_SVG_ID).append("svg")
+			var svg = d3.select(MAP_SVG_ID)
                 .attr("width", view.width)
                 .attr("height", view.height);
 
@@ -192,7 +192,9 @@
                 .attr("class", "radars");
 
 	    // set field_canvas width and height
-	    d3.select(FIELD_CANVAS_ID).attr("width", view.width).attr("height", view.height);
+	    d3.select(FIELD_CANVAS_ID)
+            .attr("width", view.width)
+            .attr("height", view.height);
 
 	    // get radar data
 	    var alt = "2";
