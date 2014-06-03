@@ -106,7 +106,7 @@
                 var x = particle.x;
                 var y = particle.y;
                 var xt = x + particle.u * settings.vectorscale;
-                var yt = y + particle.v * settings.vectorscale;
+                var yt = y - particle.v * settings.vectorscale; // v should be negated (because pixels go down, but the axis goes up)
                 particle.age += 1;
                 particle.xt = xt;
                 particle.yt = yt;
