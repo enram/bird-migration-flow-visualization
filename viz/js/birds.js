@@ -14,6 +14,7 @@
 
     // special document elements
     var MAP_SVG_ID = "#map-svg";
+    var FIELD_CANVAS_ID = "#field-canvas";
     var DISPLAY_ID = "#display";
 
     /**
@@ -65,6 +66,19 @@
         return projection.scale(s).translate(t);
     } 
 
+    function createArrow(g, projection, vscale, x, y, v) {
+        g.beginPath();
+        var start_x = projection([x, y])[0];
+        var start_y = projection([x, y])[1];
+	console.log("draw from: " + start_x + ", " + start_y);
+        var end_x = start_x + vscale(v[0]);
+        var end_y = start_y + vscale(v[1]);
+	console.log("draw to: " + end_x + ", " + end_y);
+        g.moveTo(start_x, start_y);
+        g.lineTo(end_x, end_y);
+        g.stroke();
+    }
+
         /**
      * Returns a promise for a JSON resource (URL) fetched via XHR. If the load fails, the promise rejects with an
      * object describing the reason: {error: http-status-code, message: http-status-text, resource:}.
@@ -100,6 +114,11 @@
                 .datum(radars)
                 .attr("d", path)
                 .attr("class", "radar");
+
+            // Create arrow
+            d3.select(FIELD_CANVAS_ID).attr("width", view.width).attr("height", view.height);
+            var g = d3.select(FIELD_CANVAS_ID).node().getContext("2d");
+            createArrow(g, albers_projection, function(x) {return x}, 4.351829, 50.850383, [100, 100, 1]);
         });
     }
 
