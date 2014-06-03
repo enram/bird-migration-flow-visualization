@@ -16,8 +16,6 @@
     var MAP_SVG_ID = "#map-svg";
     var DISPLAY_ID = "#display";
 
-    var topography;
-
     /**
      * An object to perform logging when the browser supports it.
      */
