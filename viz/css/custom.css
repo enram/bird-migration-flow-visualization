@@ -1,0 +1,37 @@
+/* Override some settings from main.css */
+.content {
+    padding-top: 1em;
+    max-width: 100%;
+}
+.header {
+    min-width: 24em; /* Necessary for relative position: 20em + padding */
+    position: relative;
+}
+
+/* Custom css */
+
+/* Basemap */
+#map {
+        border: 1px solid #CCCCCC;
+    }
+    svg {
+        background-color: transparent;
+    }
+    path.countries {
+        fill: #DDDDDD;
+        stroke: #CCCCCC;
+    }
+    path.radars {
+        fill: #0182C3;
+    }
+
+/* Animation */
+
+#display {
+    position: relative;
+}
+#field {
+    left: 0;
+    position: absolute;
+    top: 0;
+}

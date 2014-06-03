@@ -10,8 +10,8 @@ WITH aggregated_data AS (
   		ST_Y(r.the_geom) AS latitude,
   		date_trunc('hour', b.start_time) + date_part('minute', b.start_time)::int / 20 * interval '20 min' AS interval_start_time,
         CASE
-            WHEN b.altitude >= 0.2 AND b.altitude < 1.6 THEN 'low'
-            WHEN b.altitude >= 1.6 THEN 'high'
+            WHEN b.altitude >= 0.2 AND b.altitude < 1.6 THEN 1
+            WHEN b.altitude >= 1.6 THEN 2
         END AS altitude_band,
         count(*) AS number_of_measurements,
         avg(b.u_speed) AS avg_u_speed,

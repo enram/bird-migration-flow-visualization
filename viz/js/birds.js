@@ -176,23 +176,26 @@
 
             svg.append("path")
                 .datum(countries)
-                .attr("d", path);
+                .attr("d", path)
+                .attr("class", "countries");
 
             // svg.append("path")
             //     .datum(cities)
             //     .attr("d", path)
             //     .attr("class", "place");
 
+            path.pointRadius(1.8);
+
             svg.append("path")
                 .datum(radars)
                 .attr("d", path)
-                .attr("class", "radar");
+                .attr("class", "radars");
 
 	    // set field_canvas width and height
 	    d3.select(FIELD_CANVAS_ID).attr("width", view.width).attr("height", view.height);
 
 	    // get radar data
-	    var alt = "high";
+	    var alt = "2";
 	    var radardata = retrieveRadarDataByAltitudeAndTime(alt, "2013-04-08T00:00:00Z");
 	    radardata.done(function(data) {
 		console.log(data);
