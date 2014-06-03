@@ -1,0 +1,15 @@
+/*
+	This is the CSS file for styling of the basemap used in the visualisation of bird migration flows
+*/
+svg {
+    background: lightgray;
+}
+
+.place {
+    fill: yellow;
+}
+
+path {
+    fill: #0B61A4;
+    stroke: black;
+}
