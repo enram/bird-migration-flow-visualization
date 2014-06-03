@@ -17,11 +17,11 @@
     svg {
         
     }
-    path {
+    path.countries {
         fill: #CCCCCC;
         stroke: black;
     }
-    path.radar {
+    path.radars {
         fill: #0182C3;
     }
 

@@ -113,7 +113,8 @@
 
             svg.append("path")
                 .datum(countries)
-                .attr("d", path);
+                .attr("d", path)
+                .attr("class", "countries");
 
             // svg.append("path")
             //     .datum(cities)
@@ -123,7 +124,7 @@
             svg.append("path")
                 .datum(radars)
                 .attr("d", path)
-                .attr("class", "radar");
+                .attr("class", "radars");
 
 	    // set field_canvas width and height
 	    d3.select(FIELD_CANVAS_ID).attr("width", view.width).attr("height", view.height);
