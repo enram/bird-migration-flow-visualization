@@ -13,6 +13,7 @@
 #display {
     border: 1px solid #CCCCCC;
     position: relative;
+    overflow: hidden; /* Cuts of #map-svg and #field-canvas */
 }
 
 /* Basemap */
