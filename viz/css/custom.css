@@ -11,7 +11,7 @@ svg {
 }
 /* Locations of radars */
 .radar {
-	fill: #8B0000; /* Dark red */
+    fill: #8B0000; /* Dark red */
 }
 /* Border of the drawn map */
 path {
