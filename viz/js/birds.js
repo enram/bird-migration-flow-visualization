@@ -15,7 +15,7 @@
 
     // special document elements
     var MAP_SVG_ID = "#map-svg";
-    var FIELD_CANVAS_ID = "#field-canvas";
+    var ANIMATION_CANVAS_ID = "#animation-canvas";
 
     /**
      * Create settings
@@ -143,7 +143,7 @@
     };
 
     function animateTimeFrame(data, projection) {
-        g = d3.select(FIELD_CANVAS_ID).node().getContext("2d");
+        g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
         g.lineWidth = 1.0;
         g.strokeStyle = "rgba(10, 10, 10, 1)";
         g.fillStyle = "rgba(255, 255, 255, 0.98";
@@ -191,8 +191,8 @@
                 .attr("d", path)
                 .attr("class", "radars");
 
-	    // set field_canvas width and height
-	    d3.select(FIELD_CANVAS_ID)
+	    // set animation-canvas width and height
+	    d3.select(ANIMATION_CANVAS_ID)
             .attr("width", view.width)
             .attr("height", view.height);
 
