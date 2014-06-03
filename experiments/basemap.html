@@ -1,50 +1,98 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<style type="text/css">
-	.place {
-		fill: red;
-	}
-</style>
-<body>
-<script src="js/d3.v3.min.js"></script>
-<script src="js/topojson.v1.min.js"></script>
-<script>
-d3.json("../data/basemap/basemap.topojson", function(error, basemap) {
-  if (error) return console.error(error);
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="js/d3.v3.min.js"></script>
+        <script src="js/topojson.v1.min.js"></script>
+        <style type="text/css">
+          svg {
+              background: lightgray;
+          }
 
-var width = 800,
-    height = 800;
+          .place {
+              fill: yellow;
+          }
 
-var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+          path {
+              fill: #0B61A4;
+              stroke: black;
+          }
 
-  var countries = topojson.feature(basemap, basemap.objects.ne_50m_admin_0_countries);
-  var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
+          .radar {
+                fill: red;
+          }
+        </style>
+    </head>    
+    <body>
+        <div id="map"></div>
+        <script>
+            /**
+             * An object {width:, height:} that describes the extent of the browser's view in pixels.
+             */
+            var view = function() {
+                var w = window, d = document.documentElement, b = document.getElementsByTagName("body")[0];
+                var x = w.innerWidth || d.clientWidth || b.clientWidth;
+                var y = w.innerHeight || d.clientHeight || b.clientHeight;
+                return {width: x, height: y};
+            }();
 
-/*
-  var projection = d3.geo.mercator()
-    .scale(5000)
-    .translate([width / 2, height / 2]);
-*/
+            var svg = d3.select("#map").append("svg")
+                .attr("width", view.width)
+                .attr("height", view.height);
 
-var projection = d3.geo.albers()
-    .center([0, 55.4])
-    .rotate([4.4, 0])
-    .parallels([50, 60])
-    .scale(8000)
-    .translate([-350,-100]);
-    
-  var path = d3.geo.path()
-    .projection(projection);
 
-  svg.append("path")
-    .datum(countries)
-    .attr("d", path);
-  
-  svg.append("path")
-    .datum(cities)
-    .attr("d", path)
-    .attr("class", "place");
-});
-</script>
+            d3.json("../data/basemap/basemap.topojson", function(error, basemap) {
+                if (error) return console.error(error);
+
+                var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
+                //var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
+                var radars = topojson.feature(basemap, basemap.objects.radars);
+
+                var albers_projection = createAlbersProjection(basemap.bbox[0], basemap.bbox[1], basemap.bbox[2], basemap.bbox[3], view);
+
+                var path = d3.geo.path()
+                    .projection(albers_projection);
+
+                svg.append("path")
+                    .datum(countries)
+                    .attr("d", path);
+
+                // svg.append("path")
+                //     .datum(cities)
+                //     .attr("d", path)
+                //     .attr("class", "place");
+
+                svg.append("path")
+                    .datum(radars)
+                    .attr("d", path)
+                    .attr("class", "radar");
+            });
+
+            /**
+             * Returns a d3 Albers conical projection (en.wikipedia.org/wiki/Albers_projection) that maps the bounding box
+             * defined by the lower left geographic coordinates (lng0, lat0) and upper right coordinates (lng1, lat1) onto
+             * the view port having (0, 0) as the upper left point and (width, height) as the lower right point.
+             */
+            function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
+                // Construct a unit projection centered on the bounding box. NOTE: center calculation will not be correct
+                // when the bounding box crosses the 180th meridian. Don't expect that to happen to Tokyo for a while...
+                var projection = d3.geo.albers()
+                    .rotate([-((lng0 + lng1) / 2), 0]) // rotate the globe from the prime meridian to the bounding box's center
+                    .center([0, (lat0 + lat1) / 2])    // set the globe vertically on the bounding box's center
+                    .scale(1)
+                    .translate([0, 0]);
+
+                // Project the two longitude/latitude points into pixel space. These will be tiny because scale is 1.
+                var p0 = projection([lng0, lat0]);
+                var p1 = projection([lng1, lat1]);
+                // The actual scale is the ratio between the size of the bounding box in pixels and the size of the view port.
+                // Reduce by 5% for a nice border.
+                var s = 1 / Math.max((p1[0] - p0[0]) / view.width, (p0[1] - p1[1]) / view.height) * 0.95;
+                // Move the center to (0, 0) in pixel space.
+                var t = [view.width / 2, view.height / 2];
+
+                return projection.scale(s).translate(t);
+            }
+        </script>
+    </body>
+</html>

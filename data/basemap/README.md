@@ -4,23 +4,23 @@
 
 ### Countries
 
-Source: `ne_50m_admin_0_countries` from http://www.naturalearthdata.com/downloads/50m-cultural-vectors/
+Source: `ne_10m_admin_0_countries` from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/
 
 Selection (in CartoDB):
 
 ```SQL
 SELECT * 
-FROM ne_50m_admin_0_countries
+FROM ne_10m_admin_0_countries
 WHERE
   iso_a2 = 'BE'
   OR iso_a2 = 'NL'
 ```
 
-Result: [ne_50m_admin_0_countries.geojson](ne_50m_admin_0_countries.geojson)
+Result: [ne_10m_admin_0_countries.geojson](ne_10m_admin_0_countries.geojson)
 
 ### Populated places
 
-Source: `ne_10m_populated_places_simple` from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/
+Source: `ne_10m_populated_places_simple` from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/
 
 Selection (in CartoDB):
 
@@ -35,12 +35,20 @@ WHERE
 
 Result: [ne_10m_populated_places_simple.geojson](ne_10m_populated_places_simple.geojson)
 
+### Radars
+
+Source: `radars` from https://github.com/enram/data-challenge/tree/master/data/radars
+
+Result: [radars.json](https://github.com/enram/data-challenge/blob/master/data/radars/radars.geojson)
+
 ## Combine source data as a topojson
 
 From [this tutorial](http://bost.ocks.org/mike/map/#converting-data):
 
 ```
-topojson -o basemap.topojson --id-property geonameid --properties name=name -- ne_10m_populated_places_simple.geojson ne_50m_admin_0_countries.geojson
+topojson -o basemap.topojson --id-property geonameid --properties name=name --bbox -- ne_10m_populated_places_simple.geojson ne_10m_admin_0_countries.geojson ../../../data-challenge/data/radars/radars.geojson
 ```
+
+Note: this assumes you have also cloned the [data-challenge repository](https://github.com/enram/data-challenge).
 
 Result: [basemap.topojson](basemap.topojson)
