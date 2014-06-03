@@ -5,28 +5,35 @@
 
 WITH aggregated_data AS (
     SELECT
-        radar_id,
-        date_trunc('hour', start_time) + date_part('minute', start_time)::int / 20 * interval '20 min' AS interval_start_time,
+        b.radar_id,
+        ST_X(r.the_geom) AS longitude,
+  		ST_Y(r.the_geom) AS latitude,
+  		date_trunc('hour', b.start_time) + date_part('minute', b.start_time)::int / 20 * interval '20 min' AS interval_start_time,
         CASE
-            WHEN altitude >= 0.2 AND altitude < 1.6 THEN 'low'
-            WHEN altitude >= 1.6 THEN 'high'
+            WHEN b.altitude >= 0.2 AND b.altitude < 1.6 THEN 1
+            WHEN b.altitude >= 1.6 THEN 2
         END AS altitude_band,
         count(*) AS number_of_measurements,
-        avg(u_speed) AS avg_u_speed,
-        avg(v_speed) AS avg_v_speed,
-        avg(bird_density) AS avg_bird_density
+        avg(b.u_speed) AS avg_u_speed,
+        avg(b.v_speed) AS avg_v_speed,
+        avg(b.bird_density) AS avg_bird_density
     FROM
-        bird_migration_altitude_profiles
+        bird_migration_altitude_profiles b
+    LEFT JOIN
+  		radars r
+    ON
+  		b.radar_id = r.cartodb_id
     WHERE
-        radial_velocity_std >= 2
-        AND bird_density >= 10
-        AND altitude >= 0.2
+        b.radial_velocity_std >= 2
+        AND b.bird_density >= 10
+        AND b.altitude >= 0.2
     GROUP BY
-        radar_id,
+        b.radar_id,
+  		r.the_geom,
         interval_start_time,
         altitude_band
     ORDER BY
-        radar_id,
+        b.radar_id,
         interval_start_time,
         altitude_band DESC
 )

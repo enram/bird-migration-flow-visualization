@@ -1,0 +1,29 @@
+/*
+	This is the CSS file for styling of the basemap used in the visualisation of bird migration flows
+*/
+/* Background of svg map */
+svg {
+    background: lightgray;
+}
+/* Locations of cities */
+.place {
+    fill: yellow;
+}
+/* Locations of radars */
+.radar {
+	fill: #8B0000; /* Dark red */
+}
+/* Border of the drawn map */
+path {
+    fill: #0B61A4; /* Blue */
+    stroke: black;
+}
+
+#display {
+    position: relative;
+}
+#field {
+    top: 0;
+    left: 0;
+    position: absolute;
+}

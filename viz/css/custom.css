@@ -24,3 +24,14 @@
     path.radar {
         fill: #0182C3;
     }
+
+/* Animation */
+
+#display {
+    position: relative;
+}
+#field {
+    left: 0;
+    position: absolute;
+    top: 0;
+}

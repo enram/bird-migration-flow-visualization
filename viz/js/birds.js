@@ -14,7 +14,15 @@
 
     // special document elements
     var MAP_SVG_ID = "#map-svg";
+    var FIELD_CANVAS_ID = "#field-canvas";
     var DISPLAY_ID = "#display";
+
+    /**
+     * Create settings
+     */
+    var settings = {
+	vectorscale: 5
+    };
 
     /**
      * An object to perform logging when the browser supports it.
@@ -65,6 +73,22 @@
         return projection.scale(s).translate(t);
     } 
 
+    var vectorScale = function(value) {
+	return value*settings.vectorscale;
+    }
+
+    function createArrow(g, projection, vscale, x, y, v) {
+	console.log("draw arrow");
+        g.beginPath();
+        var start_x = projection([x, y])[0];
+        var start_y = projection([x, y])[1];
+        var end_x = start_x + vscale(v[0]);
+        var end_y = start_y + vscale(v[1]);
+        g.moveTo(start_x, start_y);
+        g.lineTo(end_x, end_y);
+        g.stroke();
+    }
+
         /**
      * Returns a promise for a JSON resource (URL) fetched via XHR. If the load fails, the promise rejects with an
      * object describing the reason: {error: http-status-code, message: http-status-text, resource:}.
@@ -100,6 +124,23 @@
                 .datum(radars)
                 .attr("d", path)
                 .attr("class", "radar");
+
+	    // set field_canvas width and height
+	    d3.select(FIELD_CANVAS_ID).attr("width", view.width).attr("height", view.height);
+
+	    // get radar data
+	    var alt = "2";
+	    var radardata = retrieveRadarDataByAltitudeAndTime(alt, "2013-04-08T12:00:00Z");
+	    radardata.done(function(data) {
+		console.log(data);
+		data.rows.forEach(function(point) {
+		    // Create arrow
+		    var g = d3.select(FIELD_CANVAS_ID).node().getContext("2d");
+		    var v = [point.avg_u_speed, point.avg_v_speed, point.avg_bird_density];
+		    console.log("u: " + point.avg_u_speed + ", v: " + point.avg_v_speed);
+		    createArrow(g, albers_projection, vectorScale, point.longitude, point.latitude, v);
+		});
+	    });
         });
     }
 
