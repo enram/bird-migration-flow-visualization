@@ -18,3 +18,12 @@ path {
     fill: #0B61A4; /* Blue */
     stroke: black;
 }
+
+#display {
+    position: relative;
+}
+#field {
+    top: 0;
+    left: 0;
+    position: absolute;
+}
