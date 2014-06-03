@@ -15,11 +15,11 @@
         border: 1px solid #CCCCCC;
     }
     svg {
-        
+        background-color: transparent;
     }
     path.countries {
-        fill: #CCCCCC;
-        stroke: black;
+        fill: #DDDDDD;
+        stroke: #CCCCCC;
     }
     path.radars {
         fill: #0182C3;
