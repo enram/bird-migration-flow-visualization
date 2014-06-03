@@ -10,26 +10,25 @@
 
 /* Custom css */
 
-/* Basemap */
-#map {
-        border: 1px solid #CCCCCC;
-    }
-    svg {
-        background-color: transparent;
-    }
-    path.countries {
-        fill: #DDDDDD;
-        stroke: #CCCCCC;
-    }
-    path.radars {
-        fill: #0182C3;
-    }
-
-/* Animation */
-
 #display {
+    border: 1px solid #CCCCCC;
     position: relative;
 }
+
+/* Basemap */
+#map {
+    }
+    #map-svg {
+        }
+        path.countries {
+            fill: #DDDDDD;
+            stroke: #CCCCCC;
+        }
+        path.radars {
+            fill: #0182C3;
+        }
+
+/* Animation */
 #field {
     left: 0;
     position: absolute;
