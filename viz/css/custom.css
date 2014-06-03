@@ -1,10 +1,10 @@
 /* Override some settings from main.css */
 .content {
-    padding-top: 1em;
+    padding-top: 2em; /* No h1 */
     max-width: 100%;
 }
 .header {
-    min-width: 24em; /* Necessary for relative position: 20em + padding */
+    min-width: 24em;
     position: relative;
 }
 
