@@ -1,5 +1,6 @@
 /* Override some settings from main.css */
 .content {
+    padding-bottom: 2em;
     padding-top: 2em; /* No h1 */
     max-width: 100%;
 }
