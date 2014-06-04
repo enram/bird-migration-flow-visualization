@@ -13,6 +13,7 @@
 "use strict";
 
 // special document elements
+var DISPLAY_ID = "#display";
 var MAP_SVG_ID = "#map-svg";
 var ANIMATION_CANVAS_ID = "#animation-canvas";
 
@@ -31,6 +32,13 @@ var g;
 var albers_projection;
 var interval;
 var iteration;
+
+/** 
+ * Extract parameters sent to us by the server.
+ */
+var displayData = {
+    topography: d3.select(DISPLAY_ID).attr("data-topography"),
+};
 
 /**
  * An object to perform logging when the browser supports it.
@@ -54,6 +62,16 @@ var view = function() {
     return {width: x, height: y};
 }();
 
+/**
+ * Initialize the application
+ */
+function init() {
+    log.debug("Topography URI: " + displayData.topography);
+    // Modify the display elements to fill the screen.
+    d3.select(DISPLAY_ID).attr("width", view.width).attr("height", view.height);
+    d3.select(MAP_SVG_ID).attr("width", view.width).attr("height", view.height);
+    d3.select(ANIMATION_CANVAS_ID).attr("width", view.width).attr("height", view.height);
+} 
 
 /**
  * Returns a d3 Albers conical projection (en.wikipedia.org/wiki/Albers_projection) that maps the bounding box
@@ -65,11 +83,10 @@ function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
     // when the bounding box crosses the 180th meridian. Don't expect that to happen to Tokyo for a while...
     log.time("Creating projection");
     var projection = d3.geo.albers()
-	.rotate([-((lng0 + lng1) / 2), 0]) // rotate the globe from the prime meridian to the bounding box's center
-	.center([0, (lat0 + lat1) / 2])    // set the globe vertically on the bounding box's center
-	.scale(1)
-	.translate([0, 0]);
-
+        .rotate([-((lng0 + lng1) / 2), 0]) // rotate the globe from the prime meridian to the bounding box's center
+        .center([0, (lat0 + lat1) / 2])    // set the globe vertically on the bounding box's center
+        .scale(1)
+        .translate([0, 0]);
     // Project the two longitude/latitude points into pixel space. These will be tiny because scale is 1.
     var p0 = projection([lng0, lat0]);
     var p1 = projection([lng1, lat1]);
@@ -86,53 +103,53 @@ function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
 function createParticles(projection, data) {
     particles = [];
     data.rows.forEach(function(point) {
-	var p = projection([point.longitude, point.latitude]);
-	var particle = {
-	    x: p[0],
-	    y: p[1],
-	    xt: 0,
-	    yt: 0,
-	    u: point.avg_u_speed,
-	    v: point.avg_v_speed,
-	    age: 0
-	};
-	particles.push(particle);
+    var p = projection([point.longitude, point.latitude]);
+    var particle = {
+        x: p[0],
+        y: p[1],
+        xt: 0,
+        yt: 0,
+        u: point.avg_u_speed,
+        v: point.avg_v_speed,
+        age: 0
+    };
+    particles.push(particle);
     });
-    console.log(particles.length + "particles created: ");
-    console.log(particles);
+    log.debug(particles.length + "particles created: ");
+    log.debug(particles);
 }
 
 // Calculate the next particle's position
 function evolve() {
     particles.forEach(function(particle) {
-	if (particle.age < settings.maxParticleAge) {
-	    var x = particle.x;
-	    var y = particle.y;
-	    var xt = x + particle.u * settings.vectorscale;
-	    var yt = y - particle.v * settings.vectorscale; // v should be negated (because pixels go down, but the axis goes up)
-	    particle.age += 1;
-	    particle.xt = xt;
-	    particle.yt = yt;
-	};
+    if (particle.age < settings.maxParticleAge) {
+        var x = particle.x;
+        var y = particle.y;
+        var xt = x + particle.u * settings.vectorscale;
+        var yt = y - particle.v * settings.vectorscale; // v should be negated (because pixels go down, but the axis goes up)
+        particle.age += 1;
+        particle.xt = xt;
+        particle.yt = yt;
+    };
     });
 }
 
 // Draw a line between a particle's current and next position
 function draw() {
     particles.forEach(function(particle) {
-	// Fade existing trails
-	var prev = g.globalCompositeOperation;
-	g.globalCompositeOperation = "destination-in";
-	g.fillRect(0, 0, view.width, view.height);
-	g.globalCompositeOperation = prev;
+    // Fade existing trails
+    var prev = g.globalCompositeOperation;
+    g.globalCompositeOperation = "destination-in";
+    g.fillRect(0, 0, view.width, view.height);
+    g.globalCompositeOperation = prev;
 
-	// Draw new particle trails
-	if (particle.age < settings.maxParticleAge) {
-	    g.moveTo(particle.x, particle.y);
-	    g.lineTo(particle.xt, particle.yt);
-	    particle.x = particle.xt;
-	    particle.y = particle.yt;
-	};
+    // Draw new particle trails
+    if (particle.age < settings.maxParticleAge) {
+        g.moveTo(particle.x, particle.y);
+        g.lineTo(particle.xt, particle.yt);
+        particle.x = particle.xt;
+        particle.y = particle.yt;
+    };
     });
 }
 
@@ -140,7 +157,7 @@ function draw() {
 function runTimeFrame() {
     iteration++;
     if (iteration > settings.framesPerTime) {
-	clearInterval(interval);
+    clearInterval(interval);
     }
     g.beginPath();
     evolve();
@@ -149,76 +166,127 @@ function runTimeFrame() {
 };
 
 function animateTimeFrame(data, projection) {
-    console.log("animateTimeFrame() called.");
+    log.debug("animateTimeFrame() called.");
     g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
     g.lineWidth = 1.0;
-    g.strokeStyle = "rgba(10, 10, 10, 1)";
-    g.fillStyle = "rgba(255, 255, 255, 0.98";
+    g.strokeStyle = "rgba(255, 255, 255, 1)";
+    g.fillStyle = "rgba(255, 255, 255, 0.98)";
     var particles = createParticles(projection, data);
-    console.log("particles: " + particles);
+    log.debug("particles: " + particles);
     iteration = 0;
     interval = setInterval(runTimeFrame, settings.frameRate);
 }
+
 
 /**
  * Returns a promise for a JSON resource (URL) fetched via XHR. If the load fails, the promise rejects with an
  * object describing the reason: {error: http-status-code, message: http-status-text, resource:}.
  */
-function loadMap() {
-    d3.json("../data/basemap/basemap.topojson", function(error, basemap) {
-	if (error) return console.error(error);
 
-	var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
-	//var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
-	var radars = topojson.feature(basemap, basemap.objects.radars);
-
-	albers_projection = createAlbersProjection(basemap.bbox[0], basemap.bbox[1], basemap.bbox[2], basemap.bbox[3], view);
-
-	var path = d3.geo.path()
-	    .projection(albers_projection);
-		    
-		    var svg = d3.select(MAP_SVG_ID)
-	    .attr("width", view.width)
-	    .attr("height", view.height);
-
-
-	svg.append("path")
-	    .datum(countries)
-	    .attr("d", path)
-	    .attr("class", "countries");
-
-	// svg.append("path")
-	//     .datum(cities)
-	//     .attr("d", path)
-	//     .attr("class", "place");
-
-	path.pointRadius(1.8);
-
-	svg.append("path")
-	    .datum(radars)
-	    .attr("d", path)
-	    .attr("class", "radars");
-
-	// set animation-canvas width and height
-	d3.select(ANIMATION_CANVAS_ID)
-	.attr("width", view.width)
-	.attr("height", view.height);
-
-	show();
+function loadJson(resource) {
+    log.time("JSON Retrieval...");
+    log.debug("JSON Retrieval...");
+    var d = when.defer();
+    d3.json(resource, function(error, result) {
+        log.debug("Retrieval finished");
+        return error ?
+            !error.status ?
+                d.reject({error: -1, message: "Cannot load resource: " + resource, resource: resource}) :
+                d.reject({error: error.status, message: error.statusText, resource: resource}) :
+            d.resolve(result);
     });
+    log.timeEnd("JSON Retrieved");
+    return d.promise;
 }
 
-loadMap();
+/**
+ * Load the basemap in the svg with the countries, country border and radars
+ */
+function loadMap(basemap) {
+    log.debug("Creating basemap...");
+    var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
+    //var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
+    var radars = topojson.feature(basemap, basemap.objects.radars);
+
+    albers_projection = createAlbersProjection(basemap.bbox[0], basemap.bbox[1], basemap.bbox[2], basemap.bbox[3], view);
+
+    var path = d3.geo.path()
+        .projection(albers_projection);
+
+    var svg = d3.select(MAP_SVG_ID);
+
+    svg.append("path")
+        .datum(countries)
+        .attr("d", path)
+        .attr("class", "countries");
+
+    // svg.append("path")
+    //      .datum(cities)
+    //      .attr("d", path)
+    //      .attr("class", "place");
+
+    path.pointRadius(2);
+
+    svg.append("path")
+        .datum(radars)
+        .attr("d", path)
+        .attr("class", "radars");
+
+    log.debug("Basemap created");
+}
 
 function show() {
     var altBand = $("#alt-band").val();
-    var datetime = $("#time-in").val();
+    var datetime = $("#time-int").val();
     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, datetime);
     radardata.done(function(data) {
-	animateTimeFrame(data, albers_projection);
+    animateTimeFrame(data, albers_projection);
     });
 }
 
-$("#redraw").on("click", function(event) {
+function changeAltitude() {
     show();
-});
+}
+
+/**
+ * Subtract 20 minutes from entered time and show results
+ */
+function previous() {
+    var datetime = $("#time-int").val();
+    var date = new Date(datetime);
+    date.addMinutes(-20);
+    $("#time-int").val(date.toISOString());
+    show();
+}
+
+/**
+ * Add 20 minutes from entered time and show results
+ */
+function next(){
+    var datetime = $("#time-int").val();
+    var date = new Date(datetime);
+    date.addMinutes(20);
+    $("#time-int").val(date.toISOString());
+    show();
+}
+
+/**
+ * Returns a function that takes an array and applies it as arguments to the specified function. Yup. Basically
+ * the same as when.js/apply.
+ *
+ * Used in the when/then calls
+ */
+function apply(f) {
+    return function(args) {
+        return f.apply(null, args);
+    }
+}
+
+/**
+ * Dependency tree build with whenjs to define the order of tasks 
+ * to be run when loading the application.
+ */
+var taskTopoJson       = loadJson(displayData.topography);
+var taskInitialization = when.all(true).then(apply(init));
+var taskRenderMap      = when.all([taskTopoJson]).then(apply(loadMap));
+var taskRadarData      = when.all([taskRenderMap]).then(apply(show));
