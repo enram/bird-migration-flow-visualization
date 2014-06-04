@@ -16,17 +16,23 @@
                 <p>Result of a 5 day hackathon by the <a href="http://lifewatch.inbo.be/blog">LifeWatch INBO</a> team. Source code is on <a href="https://github.com/enram/bird-migration-flow-visualization">GitHub</a>.</p>
             </div>
 
-                    <div id="navigation">
-                        <input id="time-int" type="text" value="2013-04-09T03:00:00Z">
-                        <button id="prev20min"> - </button>
-                        <button id="next20min"> + </button>
-                        Altitude band:
-                        <select id="alt-band">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                        </select>
-                        <button id="redraw">Redraw</button>
-                    </div>
+            <form id="navigation" class="form-inline well clearfix">
+                <div class="form-group">
+                    <label class="sr-only" for="time-int">Date/time</label>
+                    <input type="datetime" id="time-int" class="form-control" value="2013-04-09T03:00:00Z">
+                </div>
+                <div class="form-group">
+                    <button type="button" id="previous" class="btn btn-default" onclick="previous()"><span class="glyphicon glyphicon-minus"></span></button>
+                    <button type="button" id="next" class="btn btn-default" onclick="next()"><span class="glyphicon glyphicon-plus lg"></span></button>
+                </div>
+                <div class="form-group pull-right">
+                    <label>Altitude band </label>
+                    <select class="form-control" id="alt-band" onchange="changeAltitude()">
+                        <option value="1">200-1600m</option>
+                        <option value="2">above 1600m</option>
+                    </select>
+                </div>
+            </form>
 
             <div id="display" data-topography="../data/basemap/basemap.topojson">
                 <div id="map">
