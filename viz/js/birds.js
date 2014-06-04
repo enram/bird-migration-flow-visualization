@@ -21,23 +21,11 @@ var TIME_INTERVAL_ID = "#time-int";
 var TIME_OFFSET = 20;
 var DATE_FORMAT = 'MMMM D YYYY, HH:mm ';
 
-/**
- * Create settings
- */
-var settings = {
-    vectorscale: 0.3,
-    frameRate: 100,
-    framesPerTime: 60,
-    maxParticleAge: 60,
-    particleCount: 300
-};
-
 // Declare required globals
 var particles = [];
 var g;
 var albers_projection;
 var interval;
-var iteration;
 var basemap;
 var field;
 var minX;
@@ -74,6 +62,17 @@ var view = function() {
     log.debug("Container size width:" + x + " height: "+ y);
     return {width: x, height: y};
 }();
+
+/**
+ * Create settings
+ */
+var settings = {
+    vectorscale: (view.height / 4000),
+    frameRate: 100,
+    framesPerTime: 60,
+    maxParticleAge: 60,
+    particleCount: 100
+};
 
 /**
  * Initialize the application
@@ -126,8 +125,12 @@ function createParticle(age) {
 
 // Calculate the next particle's position
 function evolve() {
-    particles.forEach(function(particle) {
-    if (particle.age < settings.maxParticleAge) {
+    particles.forEach(function(particle, i) {
+	if (particle.age >= settings.maxParticleAge) {
+            particles.splice(i, 1);
+            particle = createParticle(Math.floor(rand(0, settings.maxParticleAge))); // respawn
+            particles.push(particle);
+        }
         var x = particle.x;
         var y = particle.y;
         var uv = field(x, y);
@@ -138,7 +141,6 @@ function evolve() {
         particle.age += 1;
         particle.xt = xt;
         particle.yt = yt;
-    };
     });
 }
 
@@ -163,10 +165,6 @@ function draw() {
 
 // This function will run the animation for 1 time frame
 function runTimeFrame() {
-    iteration++;
-    if (iteration > settings.framesPerTime) {
-    clearInterval(interval);
-    }
     g.beginPath();
     evolve();
     draw();
@@ -182,7 +180,6 @@ function animateTimeFrame(data, projection) {
     for (var i=0; i< settings.particleCount; i++) {
         particles.push(createParticle(Math.floor(rand(0, settings.maxParticleAge))));
     }
-    iteration = 0;
     interval = setInterval(runTimeFrame, settings.frameRate);
 }
 
@@ -398,7 +395,7 @@ function apply(f) {
 /**
  * Dependency tree build with whenjs to define the order of tasks 
  * to be run when loading the application.
- */
+*/
 var taskTopoJson       = loadJson(displayData.topography);
 var taskInitialization = when.all(true).then(apply(init));
 var taskRenderMap      = when.all([taskTopoJson]).then(apply(loadMap));
