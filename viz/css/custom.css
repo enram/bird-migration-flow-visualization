@@ -1,22 +1,7 @@
-/* Override some settings from main.css */
-.content {
-    padding-bottom: 2em;
-    padding-top: 2em; /* No h1 */
-    max-width: 100%;
-}
-.header {
-    min-width: 24em;
-    position: relative;
-}
-
-/* Custom css */
-
-#navigation {
-    height: 2em;
-}
-
+/* Viz container */
 #display {
     background: #313131;
+    margin-bottom: 3em;
     overflow: hidden; /* Cuts of #map-svg and #field-canvas */
     position: relative;
 }

@@ -6,34 +6,17 @@
         <meta name="description" content="Bird migration flow visualisation"/>
         <meta name="author" content="LifeWatch INBO"/>
 
-        <link rel="shortcut icon" href="http://lifewatch.inbo.be/blog/theme/img/favicon.ico">
-        <link rel="stylesheet" href="http://lifewatch.inbo.be/blog/theme/css/normalize.css">
-        <link rel="stylesheet" href="http://lifewatch.inbo.be/blog/theme/css/main.css">
-        <link rel="stylesheet" href="http://lifewatch.inbo.be/blog/theme/css/font-awesome.min.css">
-        <!--[if IE 7]>
-        <link rel="stylesheet" href="http://lifewatch.inbo.be/blog/theme/css/font-awesome-ie7.min.css">
-        <![endif]-->
-
-        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Noto+Sans:400">
-
+        <link rel="stylesheet" href="css/bootstrap-min.css">
         <link rel="stylesheet" type="text/css" href="css/custom.css"/>
     </head>
     <body>
         <div class="container">
-            <div class="header">
-                <header class="clearfix">
-                    <h2><a href="http://lifewatch.inbo.be/blog">Lifewatch INBO</a></h2>
-                    <nav>
-                        <ul>
-                            <li><a href="https://github.com/enram/bird-migration-flow-visualization">Source code</a></li>
-                        </ul>
-                    </nav>
-                </header>
-                <div><img src="http://lifewatch.inbo.be/blog/theme/img/inbo-logo.png" alt="inbo-logo"></div>
+            <div class="page-header">
+                <h1>Bird migration flow visualization</h1>
+                <p>Result of a 5 day hackathon by the <a href="http://lifewatch.inbo.be/blog">LifeWatch INBO</a> team. Source code is on <a href="https://github.com/enram/bird-migration-flow-visualization">GitHub</a>.</p>
             </div>
 
             <div class="content">
-                <section>
                     <div id="navigation">
                         <input id="time-int" type="text" value="2013-04-09T03:00:00Z">
                         <button id="prev20min"> - </button>
@@ -53,7 +36,6 @@
                             <canvas id="animation-canvas"></canvas>
                         </div>
                     </div>
-                </section>
             </div>
         </div>
 
