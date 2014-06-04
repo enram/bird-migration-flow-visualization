@@ -16,6 +16,10 @@
 var DISPLAY_ID = "#display";
 var MAP_SVG_ID = "#map-svg";
 var ANIMATION_CANVAS_ID = "#animation-canvas";
+var ALTITUDE_BAND_ID = "#alt-band";
+var TIME_INTERVAL_ID = "#time-int";
+var TIME_OFFSET = 20;
+var DATE_FORMAT = 'MMMM D YYYY, hh:mm';
 
 /**
  * Create settings
@@ -236,11 +240,12 @@ function loadMap(basemap) {
 }
 
 function show() {
-    var altBand = $("#alt-band").val();
-    var datetime = $("#time-int").val();
-    var radardata = retrieveRadarDataByAltitudeAndTime(altBand, datetime);
+    var altBand = $(ALTITUDE_BAND_ID).val();
+    var datetime = $(TIME_INTERVAL_ID).val();
+    var date = moment.utc(datetime, DATE_FORMAT);
+    var radardata = retrieveRadarDataByAltitudeAndTime(altBand, moment.utc(date));
     radardata.done(function(data) {
-    animateTimeFrame(data, albers_projection);
+        animateTimeFrame(data, albers_projection);
     });
 }
 
@@ -249,24 +254,24 @@ function changeAltitude() {
 }
 
 /**
- * Subtract 20 minutes from entered time and show results
+ * Subtract TIME_OFFSET minutes from entered time and show results
  */
 function previous() {
-    var datetime = $("#time-int").val();
-    var date = new Date(datetime);
-    date.addMinutes(-20);
-    $("#time-int").val(date.toISOString());
+    var datetime = $(TIME_INTERVAL_ID).val();
+    var date = moment.utc(datetime, DATE_FORMAT);
+    date = moment(date).subtract('minutes', 20);
+    $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
     show();
 }
 
 /**
- * Add 20 minutes from entered time and show results
+ * Add TIME_OFFSET minutes from entered time and show results
  */
 function next(){
-    var datetime = $("#time-int").val();
-    var date = new Date(datetime);
-    date.addMinutes(20);
-    $("#time-int").val(date.toISOString());
+    var datetime = $(TIME_INTERVAL_ID).val();
+    var date = moment.utc(datetime, DATE_FORMAT);
+    date = moment(date).add('minutes', 20);
+    $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
     show();
 }
 
