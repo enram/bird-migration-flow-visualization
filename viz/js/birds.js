@@ -31,6 +31,7 @@ var g;
 var albers_projection;
 var interval;
 var iteration;
+var basemap;
 
 /**
  * An object to perform logging when the browser supports it.
@@ -81,6 +82,7 @@ function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
     log.timeEnd("Projection created");
     return projection.scale(s).translate(t);
 } 
+
 
 // Create particle objects based on the data
 function createParticles(projection, data) {
@@ -207,6 +209,83 @@ function loadMap() {
 	show();
     });
 }
+
+/**
+ * Here comes all the interpolation stuff
+ */
+
+// Build points based on the data retrieved from the data back end
+function buildPointsFromRadars(projection, data) {
+    var points = [];
+    data.rows.forEach(function(row) {
+	var p = projection([row.longitude, row.latitude]);
+	var point = [p[0], p[1], [row.avg_u_speed, -row.avg_v_speed]]; // negate v because pixel space grows downwards, not upwards
+	points.push(point);
+    });
+    return points;
+}
+
+function createField(columns) {
+    var nilVector = [NaN, NaN, NIL];
+    var field = function(x, y) {
+	var column = columns[Math.round(x)];
+	if (column) {
+	    var v = column[Math.round(y)];
+	    if (v) {
+		return v;
+	    }
+	}
+	return nilVector;
+    }
+}
+
+function interpolateField(data, settings, masks) {
+    var d = when.defer();
+    var points = buildPointsFromRadars(projection, data);
+
+    var interpolate = mvi.inverseDistanceWeighting(test_points, 5);
+    var columns = [];
+    var minX = basemap.bbox[0];
+    var maxX = basemap.bbox[2];
+    var minY = basemap.bbox[1];
+    var maxY = basemap.bbox[3];
+
+    function interpolateColumn(x) {
+	column = [];
+	for (var y=minY; y<=maxY; y++) {
+	    var v = [0, 0, 0];
+	    v = interpolate(x, y, v);
+	    v = mvi.scaleVector(v, settings.vectorscale);
+	    column.push(v);
+		
+	}
+	return column;
+    }
+
+    var x = minX;
+    (function batchInterpolate() {
+	try {
+	    var start = +new Date;
+	    while (x<maxX) {
+		columns[x] = interpolateColumn(x);
+		x++;
+		if ((+new Date - start) > MAX_TASK_TIME) {
+		    displayStatus("Interpolating: " + x + "/" + maxX);
+		    setTimeout(batchInterpolate, MIN_SLEEP_TIME);
+		    return;
+		}
+	    }
+	    d.resolve(createField(columns));
+	}
+	catch (e) {
+	    d.reject(e);
+	}
+    })();
+}
+
+/**
+ * End of the interpolation stuff
+ */
 
 loadMap();
 
