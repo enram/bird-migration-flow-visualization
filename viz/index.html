@@ -2,64 +2,58 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Bird migration flow visualisation</title>
-        <meta name="description" content="Bird migration flow visualisation"/>
+        <title>Bird migration flow visualization</title>
         <meta name="author" content="LifeWatch INBO"/>
 
-        <link rel="shortcut icon" href="http://lifewatch.inbo.be/blog/theme/img/favicon.ico">
-        <link rel="stylesheet" href="http://lifewatch.inbo.be/blog/theme/css/normalize.css">
-        <link rel="stylesheet" href="http://lifewatch.inbo.be/blog/theme/css/main.css">
-        <link rel="stylesheet" href="http://lifewatch.inbo.be/blog/theme/css/font-awesome.min.css">
-        <!--[if IE 7]>
-        <link rel="stylesheet" href="http://lifewatch.inbo.be/blog/theme/css/font-awesome-ie7.min.css">
-        <![endif]-->
-
-        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Noto+Sans:400">
-
+        <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/custom.css"/>
     </head>
     <body>
         <div class="container">
-            <div class="header">
-                <header class="clearfix">
-                    <h2><a href="http://lifewatch.inbo.be/blog">Lifewatch INBO</a></h2>
-                    <nav>
-                        <ul>
-                            <li><a href="https://github.com/enram/bird-migration-flow-visualization">Source code</a></li>
-                        </ul>
-                    </nav>
-                </header>
-                <div><img src="http://lifewatch.inbo.be/blog/theme/img/inbo-logo.png" alt="inbo-logo"></div>
+            <div class="page-header">
+                <h1>Bird migration flow visualization</h1>
+                <p>Result of a 5 day hackathon by the <a href="http://lifewatch.inbo.be/blog">LifeWatch INBO</a> team. Source code is on <a href="https://github.com/enram/bird-migration-flow-visualization">GitHub</a>.</p>
             </div>
 
-            <div class="content">
-                <section>
-                    <div id="input">
-			<input id="time-in" type="text" value="2013-04-10T23:00:00Z">
-			Altitude band:
-                        <select id="alt-band">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                        </select>
-                        <button id="redraw">Reload</button>
-                    </div>
-                    <div id="display" data-topography="http://localhost:8080/enram/data/basemap/basemap.topojson">
-                        <div id="map">
-                            <svg id="map-svg" xmlns="http://www.w3.org/2000/svg" version="1.1"/>
-                        </div>
-                        <div id="animation">
-                            <canvas id="animation-canvas"></canvas>
-                        </div>
-                    </div>
-                </section>
+            <div id="navigation" class="form-inline well clearfix">
+                <div class="form-group">
+                    <label class="sr-only" for="time-int">Date/time</label>
+                    <input type="datetime" id="time-int" class="form-control" value="2013-04-09T03:00:00.000Z">
+                </div>
+                <div class="form-group">
+                    <button type="button" id="previous" class="btn btn-default" onclick="previous()"><span class="glyphicon glyphicon-minus"></span></button>
+                    <button type="button" id="next" class="btn btn-default" onclick="next()"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
+                <div class="form-group">
+                    <button type="button" id="play" class="btn btn-default" disabled="disabled"><span class="glyphicon glyphicon-play"></span></button>
+                    <button type="button" id="pause" class="btn btn-default" disabled="disabled"><span class="glyphicon glyphicon-pause"></span></button>
+                </div>
+                <div class="form-group pull-right">
+                    <label>Altitude band </label>
+                    <select class="form-control" id="alt-band" onchange="changeAltitude()">
+                        <option value="1">200-1600m</option>
+                        <option value="2">above 1600m</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="display" data-topography="../data/basemap/basemap.topojson">
+                <div id="map">
+                    <svg id="map-svg" xmlns="http://www.w3.org/2000/svg" version="1.1"/>
+                </div>
+                <div id="animation">
+                    <canvas id="animation-canvas"></canvas>
+                </div>
             </div>
         </div>
 
         <!-- Scripts -->
+        <script type="text/javascript" src="js/when.js"></script>
+        <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
         <script type="text/javascript" src="js/d3.v3.min.js"></script>
         <script type="text/javascript" src="js/topojson.v1.min.js"></script>
         <script type="text/javascript" src="js/sprintf.min.js"></script>
-        <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="js/date.js"></script>
         <script type="text/javascript" src="js/cartodb-connect.js"></script>
         <script type="text/javascript" src="js/mvi.js"></script>
         <script type="text/javascript" src="js/birds.js"></script>
