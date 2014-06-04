@@ -22,7 +22,6 @@ var particles = [];
 var g;
 var albers_projection;
 var interval;
-var iteration;
 var basemap;
 var field;
 var minX;
@@ -159,10 +158,6 @@ function draw() {
 
 // This function will run the animation for 1 time frame
 function runTimeFrame() {
-    iteration++;
-    if (iteration > settings.framesPerTime) {
-    clearInterval(interval);
-    }
     g.beginPath();
     evolve();
     draw();
@@ -178,7 +173,6 @@ function animateTimeFrame(data, projection) {
     for (var i=0; i< settings.particleCount; i++) {
 	particles.push(createParticle(Math.floor(rand(0, settings.maxParticleAge))));
     }
-    iteration = 0;
     interval = setInterval(runTimeFrame, settings.frameRate);
 }
 
