@@ -22,12 +22,15 @@ var ANIMATION_CANVAS_ID = "#animation-canvas";
 var settings = {
     vectorscale: 0.12,
     frameRate: 100,
+    framesPerTime: 60,
     maxParticleAge: 30
 };
 
 var particles = [];
 var g;
 var albers_projection;
+var interval;
+var iteration;
 
 /**
  * An object to perform logging when the browser supports it.
@@ -135,11 +138,14 @@ function draw() {
 
 // This function will run the animation for 1 time frame
 function runTimeFrame() {
+    iteration++;
+    if (iteration > settings.framesPerTime) {
+	clearInterval(interval);
+    }
     g.beginPath();
     evolve();
     draw();
     g.stroke();
-    setTimeout(runTimeFrame, settings.frameRate);
 };
 
 function animateTimeFrame(data, projection) {
@@ -150,7 +156,8 @@ function animateTimeFrame(data, projection) {
     g.fillStyle = "rgba(255, 255, 255, 0.98";
     var particles = createParticles(projection, data);
     console.log("particles: " + particles);
-    runTimeFrame()
+    iteration = 0;
+    interval = setInterval(runTimeFrame, settings.frameRate);
 }
 
 /**
