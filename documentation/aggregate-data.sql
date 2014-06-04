@@ -22,7 +22,7 @@ WITH aggregated_data AS (
     LEFT JOIN
   		radars r
     ON
-  		b.radar_id = r.cartodb_id
+  		b.radar_id = r.radar_id
     WHERE
         b.radial_velocity_std >= 2
         AND b.bird_density >= 10

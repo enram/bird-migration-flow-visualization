@@ -1,19 +1,10 @@
-/* Override some settings from main.css */
-.content {
-    padding-top: 2em; /* No h1 */
-    max-width: 100%;
-}
-.header {
-    min-width: 24em;
-    position: relative;
-}
-
-/* Custom css */
-
+/* Viz container */
 #display {
-    border: 1px solid #CCCCCC;
-    position: relative;
+    background: #313131;
+    margin-bottom: 3em;
+    max-height: 42em;
     overflow: hidden; /* Cuts of #map-svg and #field-canvas */
+    position: relative;
 }
 
 /* Basemap */
@@ -22,8 +13,8 @@
     #map-svg {
         }
         path.countries {
-            fill: #DDDDDD;
-            stroke: #CCCCCC;
+            fill: #101010;
+            stroke: #666666;
         }
         path.radars {
             fill: #0182C3;
