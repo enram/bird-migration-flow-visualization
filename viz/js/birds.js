@@ -197,20 +197,15 @@ function loadMap() {
 	.attr("width", view.width)
 	.attr("height", view.height);
 
-	// get radar data
-	var alt = 2;
-	var radardata = retrieveRadarDataByAltitudeAndTime(alt, "2013-04-10T23:20:00Z");
-	radardata.done(function(data) {
-	    console.log(data);
-	    animateTimeFrame(data, albers_projection);
-	});
+	show();
     });
 }
 
 loadMap();
 
-function show(altBand, datetime) {
-    console.log("show() method called.");
+function show() {
+    var altBand = $("#alt-band").val();
+    var datetime = $("#time-in").val();
     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, datetime);
     radardata.done(function(data) {
 	animateTimeFrame(data, albers_projection);
@@ -218,7 +213,5 @@ function show(altBand, datetime) {
 }
 
 $("#redraw").on("click", function(event) {
-    var altBand = $("#alt-band").val();
-    console.log("clicked on redraw button for altitude: " + altBand);
-    show(altBand, "2013-04-10T23:00:00Z");
+    show();
 });
