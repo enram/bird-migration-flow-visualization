@@ -10,6 +10,10 @@
 
 /* Custom css */
 
+#navigation {
+    background: transparent;
+}
+
 #display {
     border: 1px solid #CCCCCC;
     position: relative;
