@@ -244,31 +244,31 @@ function show() {
     });
 }
 
-$("#redraw").on("click", function(event) {
+function changeAltitude() {
     show();
-});
+}
 
 /**
  * Subtract 20 minutes from entered time and show results
  */
-$("#previous").on("click", function(event) {
+function previous() {
     var datetime = $("#time-in").val();
     var date = new Date(datetime);
     date.addMinutes(-20);
     $("#time-in").val(date.toISOString());
     show();
-});
+}
 
 /**
  * Add 20 minutes from entered time and show results
  */
-$("#next").on("click", function(event) {
+function next(){
     var datetime = $("#time-in").val();
     var date = new Date(datetime);
     date.addMinutes(20);
     $("#time-in").val(date.toISOString());
     show();
-});
+}
 
 /**
  * Returns a function that takes an array and applies it as arguments to the specified function. Yup. Basically
