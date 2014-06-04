@@ -1,10 +1,9 @@
 /**
- * birds - a project to visualize bird migration flow for Belgium & Netherlands.
- *
- * Copyright (c) 2014 LifeWatch - INBO
- * The MIT License - http://opensource.org/licenses/MIT
+ * Bird migration flow visualization for Belgium & the Netherlands
  *
  * https://github.com/enram/bird-migration-flow-visualization
+ * Copyright (c) 2014 LifeWatch INBO
+ * The MIT License - http://opensource.org/licenses/MIT
  *
  */
 
