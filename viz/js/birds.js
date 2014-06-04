@@ -214,7 +214,7 @@ function loadMap(bm) {
     log.debug("Creating basemap...");
     basemap = bm;
     var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
-    //var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
+    // var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
     var radars = topojson.feature(basemap, basemap.objects.radars);
 
     albers_projection = createAlbersProjection(basemap.bbox[0], basemap.bbox[1], basemap.bbox[2], basemap.bbox[3], view);
@@ -229,12 +229,12 @@ function loadMap(bm) {
         .attr("d", path)
         .attr("class", "countries");
 
+    path.pointRadius(2);
+
     // svg.append("path")
     //      .datum(cities)
     //      .attr("d", path)
-    //      .attr("class", "place");
-
-    path.pointRadius(2);
+    //      .attr("class", "places");
 
     svg.append("path")
         .datum(radars)
