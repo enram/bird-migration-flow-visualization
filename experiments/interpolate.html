@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<head>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+    <link rel="stylesheet" href="css/arrow.css">
+</head>
+<body>
+    <h1>Example: interpolate</h1>
+    <script type="text/javascript" src="mvi.js"></script>
+    <script type="text/javascript">
+// Compute the u and v value for every pixel
+function buildVHash(data) {
+    var min_x = 10;
+    var max_x = 20;
+    var hash = {};
+    for (var i=min_x; i<=max_x; i++) {
+	var vector_array = [];
+	for (var j=0; j<10; j++) {
+	    vector_array.push([5, 5, 5]); // This is a x, y, m vector. Where m represents bird density. 
+	}
+	hash[i] = vector_array;
+    }
+    return hash;
+}
+
+function getLocalUV(x, y) {
+    var h = buildVHash();
+    console.log(h);
+    return h[x][y];
+}
+
+console.log(getLocalUV(12, 4));
+
+function buildPointsFromRadars(projection, data) {
+    var points = [];
+    data.rows.forEach(function(row) {
+	var p = projection([row.longitude, row.latitude]);
+	var point = [p[0], p[1], [row.avg_u_speed, -row.avg_v_speed]]; // negate v because pixel space grows downwards, not upwards
+	points.push(point);
+    });
+    return points;
+}
+
+var mock_projection = function(position) {
+    return position;
+}
+
+var mock_data = {
+rows: [
+      {longitude: 10, latitude: 10, avg_u_speed: 8, avg_v_speed: 5},
+      {longitude: 10, latitude: 20, avg_u_speed: 4, avg_v_speed: 1},
+      {longitude: 20, latitude: 10, avg_u_speed: 2, avg_v_speed: 2},
+      {longitude: 20, latitude: 20, avg_u_speed: 5, avg_v_speed: 3},
+      {longitude: 15, latitude: 16, avg_u_speed: 4, avg_v_speed: 3},
+]};
+
+var test_points = buildPointsFromRadars(mock_projection, mock_data);
+console.log("generated points from dummy data:");
+console.log(test_points);
+
+var interpolate = mvi.inverseDistanceWeighting(test_points, 5);
+console.log("result of interpolation: ");
+console.log(interpolate);
+    </script>
+</body>
