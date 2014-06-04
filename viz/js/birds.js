@@ -152,7 +152,7 @@ function animateTimeFrame(data, projection) {
     console.log("animateTimeFrame() called.");
     g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
     g.lineWidth = 1.0;
-    g.strokeStyle = "rgba(10, 10, 10, 1)";
+    g.strokeStyle = "rgba(255, 255, 255, 1)";
     g.fillStyle = "rgba(255, 255, 255, 0.98)";
     var particles = createParticles(projection, data);
     console.log("particles: " + particles);
@@ -192,7 +192,7 @@ function loadMap() {
     //     .attr("d", path)
     //     .attr("class", "place");
 
-    path.pointRadius(1.8);
+    path.pointRadius(2);
 
     svg.append("path")
         .datum(radars)
