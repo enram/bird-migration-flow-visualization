@@ -24,7 +24,7 @@ var settings = {
     vectorscale: 0.3,
     frameRate: 100,
     framesPerTime: 60,
-    maxParticleAge: 30,
+    maxParticleAge: 60,
     particleCount: 300
 };
 
@@ -140,7 +140,6 @@ function evolve() {
 
 // Draw a line between a particle's current and next position
 function draw() {
-    particles.forEach(function(particle) {
     // Fade existing trails
     var prev = g.globalCompositeOperation;
     g.globalCompositeOperation = "destination-in";
@@ -148,12 +147,13 @@ function draw() {
     g.globalCompositeOperation = prev;
 
     // Draw new particle trails
-    if (particle.age < settings.maxParticleAge) {
-        g.moveTo(particle.x, particle.y);
-        g.lineTo(particle.xt, particle.yt);
-        particle.x = particle.xt;
-        particle.y = particle.yt;
-    };
+    particles.forEach(function(particle) {
+        if (particle.age < settings.maxParticleAge) {
+            g.moveTo(particle.x, particle.y);
+            g.lineTo(particle.xt, particle.yt);
+            particle.x = particle.xt;
+            particle.y = particle.yt;
+        };
     });
 }
 
@@ -173,7 +173,7 @@ function animateTimeFrame(data, projection) {
     g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
     g.lineWidth = 1.0;
     g.strokeStyle = "rgba(255, 255, 255, 1)";
-    g.fillStyle = "rgba(255, 255, 255, 0.98";
+    g.fillStyle = "rgba(255, 255, 255, 0.90)"; /*  White layer to be drawn over existing trails */
     particles = []
     for (var i=0; i< settings.particleCount; i++) {
 	particles.push(createParticle(Math.floor(rand(0, settings.maxParticleAge))));
