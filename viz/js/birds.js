@@ -153,7 +153,7 @@ function animateTimeFrame(data, projection) {
     g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
     g.lineWidth = 1.0;
     g.strokeStyle = "rgba(10, 10, 10, 1)";
-    g.fillStyle = "rgba(255, 255, 255, 0.98";
+    g.fillStyle = "rgba(255, 255, 255, 0.98)";
     var particles = createParticles(projection, data);
     console.log("particles: " + particles);
     iteration = 0;
