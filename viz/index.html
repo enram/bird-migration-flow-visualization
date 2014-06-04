@@ -3,10 +3,9 @@
     <head>
         <meta charset="utf-8">
         <title>Bird migration flow visualization</title>
-        <meta name="description" content="Bird migration flow visualisation"/>
         <meta name="author" content="LifeWatch INBO"/>
 
-        <link rel="stylesheet" href="css/bootstrap-min.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/custom.css"/>
     </head>
     <body>
@@ -24,6 +23,10 @@
                 <div class="form-group">
                     <button type="button" id="previous" class="btn btn-default" onclick="previous()"><span class="glyphicon glyphicon-minus"></span></button>
                     <button type="button" id="next" class="btn btn-default" onclick="next()"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
+                <div class="form-group">
+                    <button type="button" id="play" class="btn btn-default" disabled="disabled"><span class="glyphicon glyphicon-play"></span></button>
+                    <button type="button" id="pause" class="btn btn-default" disabled="disabled"><span class="glyphicon glyphicon-pause"></span></button>
                 </div>
                 <div class="form-group pull-right">
                     <label>Altitude band </label>
