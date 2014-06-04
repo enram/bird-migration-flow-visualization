@@ -199,17 +199,20 @@ function loadJson(resource) {
     return d.promise;
 }
 
+/**
+ * Load the basemap in the svg with the countries, country border and radars
+ */
 function loadMap(basemap) {
     log.debug("Creating basemap...");
-	var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
-	//var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
-	var radars = topojson.feature(basemap, basemap.objects.radars);
+    var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
+    //var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
+    var radars = topojson.feature(basemap, basemap.objects.radars);
 
     albers_projection = createAlbersProjection(basemap.bbox[0], basemap.bbox[1], basemap.bbox[2], basemap.bbox[3], view);
 
-	var path = d3.geo.path()
-	    .projection(albers_projection);
-		    
+    var path = d3.geo.path()
+        .projection(albers_projection);
+
     var svg = d3.select(MAP_SVG_ID);
 
     svg.append("path")
@@ -218,9 +221,9 @@ function loadMap(basemap) {
         .attr("class", "countries");
 
     // svg.append("path")
-    //     .datum(cities)
-    //     .attr("d", path)
-    //     .attr("class", "place");
+    //      .datum(cities)
+    //      .attr("d", path)
+    //      .attr("class", "place");
 
     path.pointRadius(2);
 
@@ -242,6 +245,28 @@ function show() {
 }
 
 $("#redraw").on("click", function(event) {
+    show();
+});
+
+/**
+ * Subtract 20 minutes from entered time and show results
+ */
+$("#previous").on("click", function(event) {
+    var datetime = $("#time-in").val();
+    var date = new Date(datetime);
+    date.addMinutes(-20);
+    $("#time-in").val(date.toISOString());
+    show();
+});
+
+/**
+ * Add 20 minutes from entered time and show results
+ */
+$("#next").on("click", function(event) {
+    var datetime = $("#time-in").val();
+    var date = new Date(datetime);
+    date.addMinutes(20);
+    $("#time-in").val(date.toISOString());
     show();
 });
 
