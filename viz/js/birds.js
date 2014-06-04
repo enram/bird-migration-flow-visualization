@@ -67,7 +67,7 @@ var settings = {
     frameRate: 100,
     framesPerTime: 60,
     maxParticleAge: 30,
-    particleCount: 300
+    particleCount: 100
 };
 
 /**
@@ -121,19 +121,22 @@ function createParticle(age) {
 
 // Calculate the next particle's position
 function evolve() {
-    particles.forEach(function(particle) {
-	if (particle.age < settings.maxParticleAge) {
-	    var x = particle.x;
-	    var y = particle.y;
-	    var uv = field(x, y);
-	    var u = uv[0];
-	    var v = uv[1];
-	    var xt = x + u;
-	    var yt = y + v;
-	    particle.age += 1;
-	    particle.xt = xt;
-	    particle.yt = yt;
-	};
+    particles.forEach(function(particle, i) {
+	if (particle.age >= settings.maxParticleAge) {
+	    particles.splice(i, 1);
+	    particle = createParticle(Math.floor(rand(0, settings.maxParticleAge))); // respawn
+	    particles.push(particle);
+	}
+	var x = particle.x;
+	var y = particle.y;
+	var uv = field(x, y);
+	var u = uv[0];
+	var v = uv[1];
+	var xt = x + u;
+	var yt = y + v;
+	particle.age += 1;
+	particle.xt = xt;
+	particle.yt = yt;
     });
 }
 
@@ -148,6 +151,10 @@ function draw() {
     // Draw new particle trails
     particles.forEach(function(particle) {
 	if (particle.age < settings.maxParticleAge) {
+	    if (particle.x == 0 || particle.y == 0 || particle.xt == 0 || particle.yt == 0) {
+		log.debug("this particle is shooting to the north west");
+		log.debug(particle);
+	    }
 	    g.moveTo(particle.x, particle.y);
 	    g.lineTo(particle.xt, particle.yt);
 	    particle.x = particle.xt;
@@ -387,7 +394,7 @@ function apply(f) {
 /**
  * Dependency tree build with whenjs to define the order of tasks 
  * to be run when loading the application.
- */
+*/
 var taskTopoJson       = loadJson(displayData.topography);
 var taskInitialization = when.all(true).then(apply(init));
 var taskRenderMap      = when.all([taskTopoJson]).then(apply(loadMap));
