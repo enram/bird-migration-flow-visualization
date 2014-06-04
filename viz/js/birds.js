@@ -23,12 +23,15 @@ var ANIMATION_CANVAS_ID = "#animation-canvas";
 var settings = {
     vectorscale: 0.12,
     frameRate: 100,
+    framesPerTime: 60,
     maxParticleAge: 30
 };
 
 var particles = [];
 var g;
 var albers_projection;
+var interval;
+var iteration;
 
 /** 
  * Extract parameters sent to us by the server.
@@ -152,11 +155,14 @@ function draw() {
 
 // This function will run the animation for 1 time frame
 function runTimeFrame() {
+    iteration++;
+    if (iteration > settings.framesPerTime) {
+	clearInterval(interval);
+    }
     g.beginPath();
     evolve();
     draw();
     g.stroke();
-    setTimeout(runTimeFrame, settings.frameRate);
 };
 
 function animateTimeFrame(data, projection) {
@@ -167,7 +173,8 @@ function animateTimeFrame(data, projection) {
     g.fillStyle = "rgba(255, 255, 255, 0.98";
     var particles = createParticles(projection, data);
     log.debug("particles: " + particles);
-    runTimeFrame();
+    iteration = 0;
+    interval = setInterval(runTimeFrame, settings.frameRate);
 }
 
 
@@ -254,7 +261,6 @@ function apply(f) {
  * to be run when loading the application.
  */
 var taskTopoJson       = loadJson(displayData.topography);
-//var taskInitialization = when.all([true]).then(init);
 var taskInitialization = when.all(true).then(apply(init));
 var taskRenderMap      = when.all([taskTopoJson]).then(apply(loadMap));
 var taskRadarData      = when.all([taskRenderMap]).then(apply(show));
