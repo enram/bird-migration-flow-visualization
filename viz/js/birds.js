@@ -252,10 +252,10 @@ function changeAltitude() {
  * Subtract 20 minutes from entered time and show results
  */
 function previous() {
-    var datetime = $("#time-in").val();
+    var datetime = $("#time-int").val();
     var date = new Date(datetime);
     date.addMinutes(-20);
-    $("#time-in").val(date.toISOString());
+    $("#time-int").val(date.toISOString());
     show();
 }
 
@@ -263,10 +263,10 @@ function previous() {
  * Add 20 minutes from entered time and show results
  */
 function next(){
-    var datetime = $("#time-in").val();
+    var datetime = $("#time-int").val();
     var date = new Date(datetime);
     date.addMinutes(20);
-    $("#time-in").val(date.toISOString());
+    $("#time-int").val(date.toISOString());
     show();
 }
 
