@@ -198,6 +198,9 @@ function loadJson(resource) {
     return d.promise;
 }
 
+/**
+ * Load the basemap in the svg with the countries, country border and radars
+ */
 function loadMap(basemap) {
     log.debug("Creating basemap...");
 	var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
@@ -236,13 +239,36 @@ function show() {
     var datetime = $("#time-in").val();
     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, datetime);
     radardata.done(function(data) {
-	animateTimeFrame(data, albers_projection);
+	   animateTimeFrame(data, albers_projection);
     });
 }
 
 $("#redraw").on("click", function(event) {
     show();
 });
+
+/**
+ * Subtract 20 minutes from entered time and show results
+ */
+$("#previous").on("click", function(event) {
+    var datetime = $("#time-in").val();
+    var date = new Date(datetime);
+    date.addMinutes(-20);
+    $("#time-in").val(date.toISOString());
+    show();
+});
+
+/**
+ * Add 20 minutes from entered time and show results
+ */
+$("#next").on("click", function(event) {
+    var datetime = $("#time-in").val();
+    var date = new Date(datetime);
+    date.addMinutes(20);
+    $("#time-in").val(date.toISOString());
+    show();
+});
+
 
 /**
  * Returns a function that takes an array and applies it as arguments to the specified function. Yup. Basically
