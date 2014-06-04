@@ -20,10 +20,11 @@ var ANIMATION_CANVAS_ID = "#animation-canvas";
  * Create settings
  */
 var settings = {
-    vectorscale: 0.12,
+    vectorscale: 0.3,
     frameRate: 100,
     framesPerTime: 60,
-    maxParticleAge: 30
+    maxParticleAge: 30,
+    particleCount: 300
 };
 
 var particles = [];
@@ -32,6 +33,12 @@ var albers_projection;
 var interval;
 var iteration;
 var basemap;
+var field;
+var minX;
+var maxX;
+var minY;
+var maxY;
+var columns;
 
 /**
  * An object to perform logging when the browser supports it.
@@ -84,24 +91,16 @@ function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
 } 
 
 
-// Create particle objects based on the data
-function createParticles(projection, data) {
-    particles = [];
-    data.rows.forEach(function(point) {
-	var p = projection([point.longitude, point.latitude]);
-	var particle = {
-	    x: p[0],
-	    y: p[1],
-	    xt: 0,
-	    yt: 0,
-	    u: point.avg_u_speed,
-	    v: point.avg_v_speed,
-	    age: 0
-	};
-	particles.push(particle);
-    });
-    console.log(particles.length + "particles created: ");
-    console.log(particles);
+// Create particle object
+function createParticle(age) {
+    var particle = {
+	age: age,
+	x: rand(minX, maxX),
+	y: rand(minY, maxY),
+	xt: 0,
+	yt: 0
+    }
+    return particle
 }
 
 // Calculate the next particle's position
@@ -110,8 +109,11 @@ function evolve() {
 	if (particle.age < settings.maxParticleAge) {
 	    var x = particle.x;
 	    var y = particle.y;
-	    var xt = x + particle.u * settings.vectorscale;
-	    var yt = y - particle.v * settings.vectorscale; // v should be negated (because pixels go down, but the axis goes up)
+	    var uv = field(x, y);
+	    var u = uv[0];
+	    var v = uv[1];
+	    var xt = x + u;
+	    var yt = y + v;
 	    particle.age += 1;
 	    particle.xt = xt;
 	    particle.yt = yt;
@@ -151,13 +153,14 @@ function runTimeFrame() {
 };
 
 function animateTimeFrame(data, projection) {
-    console.log("animateTimeFrame() called.");
     g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
     g.lineWidth = 1.0;
     g.strokeStyle = "rgba(10, 10, 10, 1)";
     g.fillStyle = "rgba(255, 255, 255, 0.98";
-    var particles = createParticles(projection, data);
-    console.log("particles: " + particles);
+    particles = []
+    for (var i=0; i< settings.particleCount; i++) {
+	particles.push(createParticle(Math.floor(rand(0, settings.maxParticleAge))));
+    }
     iteration = 0;
     interval = setInterval(runTimeFrame, settings.frameRate);
 }
@@ -167,9 +170,10 @@ function animateTimeFrame(data, projection) {
  * object describing the reason: {error: http-status-code, message: http-status-text, resource:}.
  */
 function loadMap() {
-    d3.json("../data/basemap/basemap.topojson", function(error, basemap) {
+    d3.json("../data/basemap/basemap.topojson", function(error, bm) {
 	if (error) return console.error(error);
 
+	basemap = bm;
 	var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
 	//var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
 	var radars = topojson.feature(basemap, basemap.objects.radars);
@@ -214,20 +218,44 @@ function loadMap() {
  * Here comes all the interpolation stuff
  */
 
+// Return a random number between min (inclusive) and max (exclusive).
+function rand(min, max) {
+    return min + Math.random() * (max - min);
+}
+/**
+ *      * Returns the index of v in array a (adapted from Java and darkskyapp/binary-search).
+ *           */
+function binarySearch(a, v) {
+    var low = 0, high = a.length - 1;
+    while (low <= high) {
+	var mid = low + ((high - low) >> 1), p = a[mid];
+	if (p < v) {
+	    low = mid + 1;
+	}
+	else if (p === v) {
+	    return mid;
+	}
+	else {
+	    high = mid - 1;
+	}
+    }
+    return -(low + 1);
+}
+
 // Build points based on the data retrieved from the data back end
-function buildPointsFromRadars(projection, data) {
+function buildPointsFromRadars(data) {
     var points = [];
     data.rows.forEach(function(row) {
-	var p = projection([row.longitude, row.latitude]);
+	var p = albers_projection([row.longitude, row.latitude]);
 	var point = [p[0], p[1], [row.avg_u_speed, -row.avg_v_speed]]; // negate v because pixel space grows downwards, not upwards
 	points.push(point);
     });
     return points;
 }
 
-function createField(columns) {
-    var nilVector = [NaN, NaN, NIL];
-    var field = function(x, y) {
+function createField() {
+    var nilVector = [NaN, NaN, NaN];
+    field = function(x, y) {
 	var column = columns[Math.round(x)];
 	if (column) {
 	    var v = column[Math.round(y)];
@@ -237,50 +265,50 @@ function createField(columns) {
 	}
 	return nilVector;
     }
+
+    return field;
 }
 
-function interpolateField(data, settings, masks) {
-    var d = when.defer();
-    var points = buildPointsFromRadars(projection, data);
-
-    var interpolate = mvi.inverseDistanceWeighting(test_points, 5);
-    var columns = [];
-    var minX = basemap.bbox[0];
-    var maxX = basemap.bbox[2];
-    var minY = basemap.bbox[1];
-    var maxY = basemap.bbox[3];
+function interpolateField(data) {
+    var points = buildPointsFromRadars(data);
+    var interpolate = mvi.inverseDistanceWeighting(points, 2);
+    columns = [];
+    var p0 = albers_projection([basemap.bbox[0], basemap.bbox[1]]);
+    var p1 = albers_projection([basemap.bbox[2], basemap.bbox[3]]);
+    minX = Math.floor(p0[0]);
+    maxX = Math.floor(p1[0]);
+    minY = Math.floor(p1[1]);
+    maxY = Math.floor(p0[1]);
+    var x = minX;
+    var MAX_TASK_TIME = 100;  // amount of time before a task yields control (milliseconds)
+    var MIN_SLEEP_TIME = 25;
 
     function interpolateColumn(x) {
-	column = [];
+	var column = [];
 	for (var y=minY; y<=maxY; y++) {
 	    var v = [0, 0, 0];
 	    v = interpolate(x, y, v);
 	    v = mvi.scaleVector(v, settings.vectorscale);
 	    column.push(v);
-		
 	}
 	return column;
     }
 
-    var x = minX;
-    (function batchInterpolate() {
-	try {
-	    var start = +new Date;
-	    while (x<maxX) {
-		columns[x] = interpolateColumn(x);
-		x++;
-		if ((+new Date - start) > MAX_TASK_TIME) {
-		    displayStatus("Interpolating: " + x + "/" + maxX);
-		    setTimeout(batchInterpolate, MIN_SLEEP_TIME);
-		    return;
-		}
+    function batchInterpolate() {
+	var start = +new Date;
+	while (x<maxX) {
+	    columns[x] = interpolateColumn(x);
+	    x++;
+	    if ((+new Date - start) > MAX_TASK_TIME) {
+		console.log("Interpolating: " + x + "/" + maxX);
+		setTimeout(batchInterpolate, MIN_SLEEP_TIME);
+		return;
 	    }
-	    d.resolve(createField(columns));
 	}
-	catch (e) {
-	    d.reject(e);
-	}
-    })();
+	return createField();
+    }
+
+    batchInterpolate();
 }
 
 /**
@@ -294,6 +322,7 @@ function show() {
     var datetime = $("#time-in").val();
     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, datetime);
     radardata.done(function(data) {
+	interpolateField(data);
 	animateTimeFrame(data, albers_projection);
     });
 }
