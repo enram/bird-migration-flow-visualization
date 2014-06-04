@@ -28,6 +28,7 @@ var settings = {
     particleCount: 300
 };
 
+// Declare required globals
 var particles = [];
 var g;
 var albers_projection;
