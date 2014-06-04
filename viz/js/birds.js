@@ -65,10 +65,10 @@ function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
     // when the bounding box crosses the 180th meridian. Don't expect that to happen to Tokyo for a while...
     log.time("Creating projection");
     var projection = d3.geo.albers()
-	.rotate([-((lng0 + lng1) / 2), 0]) // rotate the globe from the prime meridian to the bounding box's center
-	.center([0, (lat0 + lat1) / 2])    // set the globe vertically on the bounding box's center
-	.scale(1)
-	.translate([0, 0]);
+    .rotate([-((lng0 + lng1) / 2), 0]) // rotate the globe from the prime meridian to the bounding box's center
+    .center([0, (lat0 + lat1) / 2])    // set the globe vertically on the bounding box's center
+    .scale(1)
+    .translate([0, 0]);
 
     // Project the two longitude/latitude points into pixel space. These will be tiny because scale is 1.
     var p0 = projection([lng0, lat0]);
@@ -86,17 +86,17 @@ function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
 function createParticles(projection, data) {
     particles = [];
     data.rows.forEach(function(point) {
-	var p = projection([point.longitude, point.latitude]);
-	var particle = {
-	    x: p[0],
-	    y: p[1],
-	    xt: 0,
-	    yt: 0,
-	    u: point.avg_u_speed,
-	    v: point.avg_v_speed,
-	    age: 0
-	};
-	particles.push(particle);
+    var p = projection([point.longitude, point.latitude]);
+    var particle = {
+        x: p[0],
+        y: p[1],
+        xt: 0,
+        yt: 0,
+        u: point.avg_u_speed,
+        v: point.avg_v_speed,
+        age: 0
+    };
+    particles.push(particle);
     });
     console.log(particles.length + "particles created: ");
     console.log(particles);
@@ -105,34 +105,34 @@ function createParticles(projection, data) {
 // Calculate the next particle's position
 function evolve() {
     particles.forEach(function(particle) {
-	if (particle.age < settings.maxParticleAge) {
-	    var x = particle.x;
-	    var y = particle.y;
-	    var xt = x + particle.u * settings.vectorscale;
-	    var yt = y - particle.v * settings.vectorscale; // v should be negated (because pixels go down, but the axis goes up)
-	    particle.age += 1;
-	    particle.xt = xt;
-	    particle.yt = yt;
-	};
+    if (particle.age < settings.maxParticleAge) {
+        var x = particle.x;
+        var y = particle.y;
+        var xt = x + particle.u * settings.vectorscale;
+        var yt = y - particle.v * settings.vectorscale; // v should be negated (because pixels go down, but the axis goes up)
+        particle.age += 1;
+        particle.xt = xt;
+        particle.yt = yt;
+    };
     });
 }
 
 // Draw a line between a particle's current and next position
 function draw() {
     particles.forEach(function(particle) {
-	// Fade existing trails
-	var prev = g.globalCompositeOperation;
-	g.globalCompositeOperation = "destination-in";
-	g.fillRect(0, 0, view.width, view.height);
-	g.globalCompositeOperation = prev;
+    // Fade existing trails
+    var prev = g.globalCompositeOperation;
+    g.globalCompositeOperation = "destination-in";
+    g.fillRect(0, 0, view.width, view.height);
+    g.globalCompositeOperation = prev;
 
-	// Draw new particle trails
-	if (particle.age < settings.maxParticleAge) {
-	    g.moveTo(particle.x, particle.y);
-	    g.lineTo(particle.xt, particle.yt);
-	    particle.x = particle.xt;
-	    particle.y = particle.yt;
-	};
+    // Draw new particle trails
+    if (particle.age < settings.maxParticleAge) {
+        g.moveTo(particle.x, particle.y);
+        g.lineTo(particle.xt, particle.yt);
+        particle.x = particle.xt;
+        particle.y = particle.yt;
+    };
     });
 }
 
@@ -140,7 +140,7 @@ function draw() {
 function runTimeFrame() {
     iteration++;
     if (iteration > settings.framesPerTime) {
-	clearInterval(interval);
+    clearInterval(interval);
     }
     g.beginPath();
     evolve();
@@ -166,45 +166,45 @@ function animateTimeFrame(data, projection) {
  */
 function loadMap() {
     d3.json("../data/basemap/basemap.topojson", function(error, basemap) {
-	if (error) return console.error(error);
+    if (error) return console.error(error);
 
-	var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
-	//var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
-	var radars = topojson.feature(basemap, basemap.objects.radars);
+    var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
+    //var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
+    var radars = topojson.feature(basemap, basemap.objects.radars);
 
-	albers_projection = createAlbersProjection(basemap.bbox[0], basemap.bbox[1], basemap.bbox[2], basemap.bbox[3], view);
+    albers_projection = createAlbersProjection(basemap.bbox[0], basemap.bbox[1], basemap.bbox[2], basemap.bbox[3], view);
 
-	var path = d3.geo.path()
-	    .projection(albers_projection);
-		    
-		    var svg = d3.select(MAP_SVG_ID)
-	    .attr("width", view.width)
-	    .attr("height", view.height);
+    var path = d3.geo.path()
+        .projection(albers_projection);
+            
+            var svg = d3.select(MAP_SVG_ID)
+        .attr("width", view.width)
+        .attr("height", view.height);
 
 
-	svg.append("path")
-	    .datum(countries)
-	    .attr("d", path)
-	    .attr("class", "countries");
+    svg.append("path")
+        .datum(countries)
+        .attr("d", path)
+        .attr("class", "countries");
 
-	// svg.append("path")
-	//     .datum(cities)
-	//     .attr("d", path)
-	//     .attr("class", "place");
+    // svg.append("path")
+    //     .datum(cities)
+    //     .attr("d", path)
+    //     .attr("class", "place");
 
-	path.pointRadius(1.8);
+    path.pointRadius(1.8);
 
-	svg.append("path")
-	    .datum(radars)
-	    .attr("d", path)
-	    .attr("class", "radars");
+    svg.append("path")
+        .datum(radars)
+        .attr("d", path)
+        .attr("class", "radars");
 
-	// set animation-canvas width and height
-	d3.select(ANIMATION_CANVAS_ID)
-	.attr("width", view.width)
-	.attr("height", view.height);
+    // set animation-canvas width and height
+    d3.select(ANIMATION_CANVAS_ID)
+    .attr("width", view.width)
+    .attr("height", view.height);
 
-	show();
+    show();
     });
 }
 
@@ -215,7 +215,7 @@ function show() {
     var datetime = $("#time-in").val();
     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, datetime);
     radardata.done(function(data) {
-	animateTimeFrame(data, albers_projection);
+    animateTimeFrame(data, albers_projection);
     });
 }
 
