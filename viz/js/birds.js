@@ -212,7 +212,7 @@ loadMap();
 
 function show() {
     var altBand = $("#alt-band").val();
-    var datetime = $("#time-in").val();
+    var datetime = $("#time-int").val();
     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, datetime);
     radardata.done(function(data) {
     animateTimeFrame(data, albers_projection);
