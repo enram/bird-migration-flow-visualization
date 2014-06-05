@@ -128,7 +128,7 @@ function evolve() {
     particles.forEach(function(particle, i) {
 	if (particle.age >= settings.maxParticleAge) {
             particles.splice(i, 1);
-            particle = createParticle(Math.floor(rand(0, settings.maxParticleAge))); // respawn
+            particle = createParticle(Math.floor(rand(0, settings.maxParticleAge/2))); // respawn
             particles.push(particle);
         }
         var x = particle.x;
