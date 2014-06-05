@@ -298,7 +298,11 @@ function createField() {
 
 function interpolateField(data) {
     var points = buildPointsFromRadars(data);
-    var interpolate = mvi.inverseDistanceWeighting(points, 2);
+    var numberOfPoints = points.length;
+    if (numberOfPoints > 5) {
+        numberOfPoints = 5; // maximum number of points to interpolate from.
+    }
+    var interpolate = mvi.inverseDistanceWeighting(points, numberOfPoints);
     columns = [];
     var p0 = albers_projection([basemap.bbox[0], basemap.bbox[1]]);
     var p1 = albers_projection([basemap.bbox[2], basemap.bbox[3]]);
