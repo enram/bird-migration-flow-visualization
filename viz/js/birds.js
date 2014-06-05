@@ -19,12 +19,13 @@ var ANIMATION_CANVAS_ID = "#animation-canvas";
 var ALTITUDE_BAND_ID = "#alt-band";
 var TIME_INTERVAL_ID = "#time-int";
 var TIME_OFFSET = 20;
-var DATE_FORMAT = 'MMMM D YYYY, HH:mm ';
+var DATE_FORMAT = 'MMMM D YYYY, HH:mm';
 
 // Declare required globals
 var particles = [];
 var g;
 var albers_projection;
+var data;
 var interval;
 var basemap;
 var field;
@@ -67,11 +68,11 @@ var view = function() {
  * Create settings
  */
 var settings = {
-    vectorscale: (view.height / 4000),
-    frameRate: 100,
-    framesPerTime: 60,
-    maxParticleAge: 60,
-    particleCount: 100
+    vectorscale: (view.height / 1500),
+    frameRate: 60, // desired milliseconds per frame
+    framesPerTime: 40, // desired frames per time interval
+    maxParticleAge: 60, // max number of frames a particle is drawn before regeneration
+    particleCount: 300
 };
 
 /**
@@ -128,7 +129,7 @@ function evolve() {
     particles.forEach(function(particle, i) {
 	if (particle.age >= settings.maxParticleAge) {
             particles.splice(i, 1);
-            particle = createParticle(Math.floor(rand(0, settings.maxParticleAge))); // respawn
+            particle = createParticle(Math.floor(rand(0, settings.maxParticleAge/2))); // respawn
             particles.push(particle);
         }
         var x = particle.x;
@@ -173,9 +174,9 @@ function runTimeFrame() {
 
 function animateTimeFrame(data, projection) {
     g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
-    g.lineWidth = 1.0;
+    g.lineWidth = 0.7;
     g.strokeStyle = "rgba(255, 255, 255, 1)";
-    g.fillStyle = "rgba(255, 255, 255, 0.90)"; /*  White layer to be drawn over existing trails */
+    g.fillStyle = "rgba(255, 255, 255, 0.97)"; /*  White layer to be drawn over existing trails */
     particles = []
     for (var i=0; i< settings.particleCount; i++) {
         particles.push(createParticle(Math.floor(rand(0, settings.maxParticleAge))));
@@ -298,7 +299,11 @@ function createField() {
 
 function interpolateField(data) {
     var points = buildPointsFromRadars(data);
-    var interpolate = mvi.inverseDistanceWeighting(points, 2);
+    var numberOfPoints = points.length;
+    if (numberOfPoints > 5) {
+        numberOfPoints = 5; // maximum number of points to interpolate from.
+    }
+    var interpolate = mvi.inverseDistanceWeighting(points, numberOfPoints);
     columns = [];
     var p0 = albers_projection([basemap.bbox[0], basemap.bbox[1]]);
     var p1 = albers_projection([basemap.bbox[2], basemap.bbox[3]]);
@@ -343,19 +348,55 @@ function interpolateField(data) {
  */
 
 
-function show() {
+function startAnimation() {
+    log.debug("All data is available, start animation");
+    log.debug("data: " + data);
+    log.debug("albers: " + albers_projection);
+    animateTimeFrame(data, albers_projection);
+}
+/**
+ *
+ */
+function updateRadarData() {
+    log.debug("get radar data");
+    var d = when.defer();
     var altBand = $(ALTITUDE_BAND_ID).val();
     var datetime = $(TIME_INTERVAL_ID).val();
     var date = moment.utc(datetime, DATE_FORMAT);
     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, moment.utc(date));
-    radardata.done(function(data) {
-    interpolateField(data);
-    animateTimeFrame(data, albers_projection);
+    radardata.done(function(birdData) {
+        d.resolve(birdData);
+        data = birdData;
+        // Dummy data to inspect the impact on the visualization
+        // data = {
+        //     rows: [
+        //         {avg_v_speed: 3, avg_u_speed: -80, latitude: 52.9533, longitude: 4.7899},
+        //         {avg_v_speed: 0, avg_u_speed: -20, latitude: 52.1017, longitude: 5.1783},
+        //         {avg_v_speed: -80, avg_u_speed: 40, latitude: 51.1927, longitude: 3.0654},
+        //         {avg_v_speed: 0, avg_u_speed: 20, latitude: 50.901, longitude: 4.451},
+        //         {avg_v_speed: 160, avg_u_speed: 0, latitude: 49.914, longitude: 5.5045},
+        //     ]
+        // }
+        interpolateField(data);
     });
+    log.debug("return data");
+    return d.promise;
 }
 
+/**
+ * Hacky hack hack, imo...
+ * Bind to input field to make enter work when user changes date manually
+ */
+$(TIME_INTERVAL_ID).bind("keyup", function(event) {
+    if (event.which == 13) {
+        updateRadarData();
+        event.preventDefault();
+        event.stopPropagation();
+    }
+});
+
 function changeAltitude() {
-    show();
+    updateRadarData();
 }
 
 /**
@@ -366,7 +407,7 @@ function previous() {
     var date = moment.utc(datetime, DATE_FORMAT);
     date = moment(date).subtract('minutes', 20);
     $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
-    show();
+    updateRadarData();
 }
 
 /**
@@ -377,7 +418,7 @@ function next(){
     var date = moment.utc(datetime, DATE_FORMAT);
     date = moment(date).add('minutes', 20);
     $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
-    show();
+    updateRadarData();
 }
 
 /**
@@ -399,4 +440,5 @@ function apply(f) {
 var taskTopoJson       = loadJson(displayData.topography);
 var taskInitialization = when.all(true).then(apply(init));
 var taskRenderMap      = when.all([taskTopoJson]).then(apply(loadMap));
-var taskRadarData      = when.all([taskRenderMap]).then(apply(show));
+var taskRadarData      = when.all([taskRenderMap]).then(apply(updateRadarData));
+var taskAnimation      = when.all([taskRadarData, taskRenderMap]).then(apply(startAnimation))
