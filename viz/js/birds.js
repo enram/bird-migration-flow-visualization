@@ -16,22 +16,23 @@
 var DISPLAY_ID = "#display";
 var MAP_SVG_ID = "#map-svg";
 var ANIMATION_CANVAS_ID = "#animation-canvas";
+var ALTITUDE_BAND_ID = "#alt-band";
+var TIME_INTERVAL_ID = "#time-int";
+var TIME_OFFSET = 20;
+var DATE_FORMAT = 'MMMM D YYYY, HH:mm ';
 
-/**
- * Create settings
- */
-var settings = {
-    vectorscale: 0.12,
-    frameRate: 100,
-    framesPerTime: 60,
-    maxParticleAge: 30
-};
-
+// Declare required globals
 var particles = [];
 var g;
 var albers_projection;
 var interval;
-var iteration;
+var basemap;
+var field;
+var minX;
+var maxX;
+var minY;
+var maxY;
+var columns;
 
 /** 
  * Extract parameters sent to us by the server.
@@ -61,6 +62,17 @@ var view = function() {
     log.debug("Container size width:" + x + " height: "+ y);
     return {width: x, height: y};
 }();
+
+/**
+ * Create settings
+ */
+var settings = {
+    vectorscale: (view.height / 4000),
+    frameRate: 100,
+    framesPerTime: 60,
+    maxParticleAge: 60,
+    particleCount: 100
+};
 
 /**
  * Initialize the application
@@ -99,44 +111,41 @@ function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
     return projection.scale(s).translate(t);
 } 
 
-// Create particle objects based on the data
-function createParticles(projection, data) {
-    particles = [];
-    data.rows.forEach(function(point) {
-    var p = projection([point.longitude, point.latitude]);
+// Create particle object
+function createParticle(age) {
     var particle = {
-        x: p[0],
-        y: p[1],
-        xt: 0,
-        yt: 0,
-        u: point.avg_u_speed,
-        v: point.avg_v_speed,
-        age: 0
-    };
-    particles.push(particle);
-    });
-    log.debug(particles.length + "particles created: ");
-    log.debug(particles);
+    age: age,
+    x: rand(minX, maxX),
+    y: rand(minY, maxY),
+    xt: 0,
+    yt: 0
+    }
+    return particle
 }
 
 // Calculate the next particle's position
 function evolve() {
-    particles.forEach(function(particle) {
-    if (particle.age < settings.maxParticleAge) {
+    particles.forEach(function(particle, i) {
+	if (particle.age >= settings.maxParticleAge) {
+            particles.splice(i, 1);
+            particle = createParticle(Math.floor(rand(0, settings.maxParticleAge))); // respawn
+            particles.push(particle);
+        }
         var x = particle.x;
         var y = particle.y;
-        var xt = x + particle.u * settings.vectorscale;
-        var yt = y - particle.v * settings.vectorscale; // v should be negated (because pixels go down, but the axis goes up)
+        var uv = field(x, y);
+        var u = uv[0];
+        var v = uv[1];
+        var xt = x + u;
+        var yt = y + v;
         particle.age += 1;
         particle.xt = xt;
         particle.yt = yt;
-    };
     });
 }
 
 // Draw a line between a particle's current and next position
 function draw() {
-    particles.forEach(function(particle) {
     // Fade existing trails
     var prev = g.globalCompositeOperation;
     g.globalCompositeOperation = "destination-in";
@@ -144,21 +153,18 @@ function draw() {
     g.globalCompositeOperation = prev;
 
     // Draw new particle trails
-    if (particle.age < settings.maxParticleAge) {
-        g.moveTo(particle.x, particle.y);
-        g.lineTo(particle.xt, particle.yt);
-        particle.x = particle.xt;
-        particle.y = particle.yt;
-    };
+    particles.forEach(function(particle) {
+        if (particle.age < settings.maxParticleAge) {
+            g.moveTo(particle.x, particle.y);
+            g.lineTo(particle.xt, particle.yt);
+            particle.x = particle.xt;
+            particle.y = particle.yt;
+        };
     });
 }
 
 // This function will run the animation for 1 time frame
 function runTimeFrame() {
-    iteration++;
-    if (iteration > settings.framesPerTime) {
-    clearInterval(interval);
-    }
     g.beginPath();
     evolve();
     draw();
@@ -166,17 +172,16 @@ function runTimeFrame() {
 };
 
 function animateTimeFrame(data, projection) {
-    log.debug("animateTimeFrame() called.");
     g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
     g.lineWidth = 1.0;
     g.strokeStyle = "rgba(255, 255, 255, 1)";
-    g.fillStyle = "rgba(255, 255, 255, 0.98)";
-    var particles = createParticles(projection, data);
-    log.debug("particles: " + particles);
-    iteration = 0;
+    g.fillStyle = "rgba(255, 255, 255, 0.90)"; /*  White layer to be drawn over existing trails */
+    particles = []
+    for (var i=0; i< settings.particleCount; i++) {
+        particles.push(createParticle(Math.floor(rand(0, settings.maxParticleAge))));
+    }
     interval = setInterval(runTimeFrame, settings.frameRate);
 }
-
 
 /**
  * Returns a promise for a JSON resource (URL) fetched via XHR. If the load fails, the promise rejects with an
@@ -202,10 +207,11 @@ function loadJson(resource) {
 /**
  * Load the basemap in the svg with the countries, country border and radars
  */
-function loadMap(basemap) {
+function loadMap(bm) {
     log.debug("Creating basemap...");
+    basemap = bm;
     var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
-    //var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
+    // var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
     var radars = topojson.feature(basemap, basemap.objects.radars);
 
     albers_projection = createAlbersProjection(basemap.bbox[0], basemap.bbox[1], basemap.bbox[2], basemap.bbox[3], view);
@@ -220,12 +226,12 @@ function loadMap(basemap) {
         .attr("d", path)
         .attr("class", "countries");
 
+    path.pointRadius(2);
+
     // svg.append("path")
     //      .datum(cities)
     //      .attr("d", path)
-    //      .attr("class", "place");
-
-    path.pointRadius(2);
+    //      .attr("class", "places");
 
     svg.append("path")
         .datum(radars)
@@ -235,11 +241,115 @@ function loadMap(basemap) {
     log.debug("Basemap created");
 }
 
+/**
+ * Here comes all the interpolation stuff
+ */
+
+// Return a random number between min (inclusive) and max (exclusive).
+function rand(min, max) {
+    return min + Math.random() * (max - min);
+}
+/**
+ *      * Returns the index of v in array a (adapted from Java and darkskyapp/binary-search).
+ *           */
+function binarySearch(a, v) {
+    var low = 0, high = a.length - 1;
+    while (low <= high) {
+    var mid = low + ((high - low) >> 1), p = a[mid];
+    if (p < v) {
+        low = mid + 1;
+    }
+    else if (p === v) {
+        return mid;
+    }
+    else {
+        high = mid - 1;
+    } 
+    }
+    return -(low + 1);
+}
+
+// Build points based on the data retrieved from the data back end
+function buildPointsFromRadars(data) {
+    var points = [];
+    data.rows.forEach(function(row) {
+    var p = albers_projection([row.longitude, row.latitude]);
+    var point = [p[0], p[1], [row.avg_u_speed, -row.avg_v_speed]]; // negate v because pixel space grows downwards, not upwards
+    points.push(point);    
+    });
+    return points;
+}
+
+function createField() {
+    var nilVector = [NaN, NaN, NaN];
+    field = function(x, y) {
+    var column = columns[Math.round(x)];
+    if (column) {
+        var v = column[Math.round(y)];
+        if (v) {
+        return v;
+        }
+    }
+    return nilVector;
+    }
+
+    return field;
+}
+
+function interpolateField(data) {
+    var points = buildPointsFromRadars(data);
+    var interpolate = mvi.inverseDistanceWeighting(points, 2);
+    columns = [];
+    var p0 = albers_projection([basemap.bbox[0], basemap.bbox[1]]);
+    var p1 = albers_projection([basemap.bbox[2], basemap.bbox[3]]);
+    minX = Math.floor(p0[0]);
+    maxX = Math.floor(p1[0]);
+    minY = Math.floor(p1[1]);
+    maxY = Math.floor(p0[1]);
+    var x = minX;
+    var MAX_TASK_TIME = 100;  // amount of time before a task yields control (milliseconds)
+    var MIN_SLEEP_TIME = 25;
+
+    function interpolateColumn(x) {
+    var column = [];
+    for (var y=minY; y<=maxY; y++) {
+        var v = [0, 0, 0];
+        v = interpolate(x, y, v);
+        v = mvi.scaleVector(v, settings.vectorscale);
+        column.push(v);
+    }
+    return column;
+    }
+
+    function batchInterpolate() {
+    var start = +new Date;
+    while (x<maxX) {
+        columns[x] = interpolateColumn(x);
+        x++;
+        if ((+new Date - start) > MAX_TASK_TIME) {
+        console.log("Interpolating: " + x + "/" + maxX);
+        setTimeout(batchInterpolate, MIN_SLEEP_TIME);
+        return;
+        }
+    }
+    return createField();
+    }
+
+    batchInterpolate();
+}
+
+/**
+ * End of the interpolation stuff
+ */
+
+
 function show() {
-    var altBand = $("#alt-band").val();
-    var datetime = $("#time-int").val();
-    var radardata = retrieveRadarDataByAltitudeAndTime(altBand, datetime);
+    var altBand = $(ALTITUDE_BAND_ID).val();
+    var datetime = $(TIME_INTERVAL_ID).val();
+    var date = moment.utc(datetime, DATE_FORMAT);
+    var radardata = retrieveRadarDataByAltitudeAndTime(altBand, moment.utc(date));
     radardata.done(function(data) {
+    interpolateField(data);
     animateTimeFrame(data, albers_projection);
     });
 }
@@ -249,24 +359,24 @@ function changeAltitude() {
 }
 
 /**
- * Subtract 20 minutes from entered time and show results
+ * Subtract TIME_OFFSET minutes from entered time and show results
  */
 function previous() {
-    var datetime = $("#time-int").val();
-    var date = new Date(datetime);
-    date.addMinutes(-20);
-    $("#time-int").val(date.toISOString());
+    var datetime = $(TIME_INTERVAL_ID).val();
+    var date = moment.utc(datetime, DATE_FORMAT);
+    date = moment(date).subtract('minutes', 20);
+    $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
     show();
 }
 
 /**
- * Add 20 minutes from entered time and show results
+ * Add TIME_OFFSET minutes from entered time and show results
  */
 function next(){
-    var datetime = $("#time-int").val();
-    var date = new Date(datetime);
-    date.addMinutes(20);
-    $("#time-int").val(date.toISOString());
+    var datetime = $(TIME_INTERVAL_ID).val();
+    var date = moment.utc(datetime, DATE_FORMAT);
+    date = moment(date).add('minutes', 20);
+    $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
     show();
 }
 
@@ -285,7 +395,7 @@ function apply(f) {
 /**
  * Dependency tree build with whenjs to define the order of tasks 
  * to be run when loading the application.
- */
+*/
 var taskTopoJson       = loadJson(displayData.topography);
 var taskInitialization = when.all(true).then(apply(init));
 var taskRenderMap      = when.all([taskTopoJson]).then(apply(loadMap));
