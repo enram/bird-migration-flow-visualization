@@ -20,6 +20,10 @@ var ALTITUDE_BAND_ID = "#alt-band";
 var TIME_INTERVAL_ID = "#time-int";
 var TIME_OFFSET = 20;
 var DATE_FORMAT = 'MMMM D YYYY, HH:mm';
+var SECONDS_TO_PLAY = 2;
+var intervalRunning = true;
+var interval;
+
 
 // Declare required globals
 var particles = [];
@@ -60,7 +64,7 @@ var view = function() {
     var b = document.getElementById("display");
     var x = b.clientWidth;
     var y = b.clientHeight;
-    log.debug("Container size width:" + x + " height: "+ y);
+    // log.debug("Container size width:" + x + " height: "+ y);
     return {width: x, height: y};
 }();
 
@@ -77,9 +81,10 @@ var settings = {
 
 /**
  * Initialize the application
+ * Determine screen sizes
  */
 function init() {
-    log.debug("Topography URI: " + displayData.topography);
+    // log.debug("Topography URI: " + displayData.topography);
     // Modify the display elements to fill the screen.
     d3.select(DISPLAY_ID).attr("width", view.width).attr("height", view.height);
     d3.select(MAP_SVG_ID).attr("width", view.width).attr("height", view.height);
@@ -94,7 +99,7 @@ function init() {
 function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
     // Construct a unit projection centered on the bounding box. NOTE: center calculation will not be correct
     // when the bounding box crosses the 180th meridian. Don't expect that to happen to Tokyo for a while...
-    log.time("Creating projection");
+    // log.time("Creating projection");
     var projection = d3.geo.albers()
         .rotate([-((lng0 + lng1) / 2), 0]) // rotate the globe from the prime meridian to the bounding box's center
         .center([0, (lat0 + lat1) / 2])    // set the globe vertically on the bounding box's center
@@ -108,7 +113,7 @@ function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
     var s = 1 / Math.max((p1[0] - p0[0]) / view.width, (p0[1] - p1[1]) / view.height) * 0.95;
     // Move the center to (0, 0) in pixel space.
     var t = [view.width / 2, view.height / 2];
-    log.timeEnd("Projection created");
+    // log.timeEnd("Projection created");
     return projection.scale(s).translate(t);
 } 
 
@@ -190,8 +195,8 @@ function animateTimeFrame(data, projection) {
  */
 
 function loadJson(resource) {
-    log.time("JSON Retrieval...");
-    log.debug("JSON Retrieval...");
+    // log.time("JSON Retrieval...");
+    // log.debug("JSON Retrieval...");
     var d = when.defer();
     d3.json(resource, function(error, result) {
         log.debug("Retrieval finished");
@@ -201,7 +206,7 @@ function loadJson(resource) {
                 d.reject({error: error.status, message: error.statusText, resource: resource}) :
             d.resolve(result);
     });
-    log.timeEnd("JSON Retrieved");
+    // log.timeEnd("JSON Retrieved");
     return d.promise;
 }
 
@@ -209,7 +214,7 @@ function loadJson(resource) {
  * Load the basemap in the svg with the countries, country border and radars
  */
 function loadMap(bm) {
-    log.debug("Creating basemap...");
+    // log.debug("Creating basemap...");
     basemap = bm;
     var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
     // var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
@@ -239,7 +244,7 @@ function loadMap(bm) {
         .attr("d", path)
         .attr("class", "radars");
 
-    log.debug("Basemap created");
+    // log.debug("Basemap created");
 }
 
 /**
@@ -251,8 +256,8 @@ function rand(min, max) {
     return min + Math.random() * (max - min);
 }
 /**
- *      * Returns the index of v in array a (adapted from Java and darkskyapp/binary-search).
- *           */
+ * Returns the index of v in array a (adapted from Java and darkskyapp/binary-search).
+ */
 function binarySearch(a, v) {
     var low = 0, high = a.length - 1;
     while (low <= high) {
@@ -332,7 +337,7 @@ function interpolateField(data) {
         columns[x] = interpolateColumn(x);
         x++;
         if ((+new Date - start) > MAX_TASK_TIME) {
-        console.log("Interpolating: " + x + "/" + maxX);
+        // log.debug("Interpolating: " + x + "/" + maxX);
         setTimeout(batchInterpolate, MIN_SLEEP_TIME);
         return;
         }
@@ -349,16 +354,17 @@ function interpolateField(data) {
 
 
 function startAnimation() {
-    log.debug("All data is available, start animation");
-    log.debug("data: " + data);
-    log.debug("albers: " + albers_projection);
+    // log.debug("All data is available, start animation");
+    // log.debug("data: " + data);
+    // log.debug("albers: " + albers_projection);
     animateTimeFrame(data, albers_projection);
+    play();
 }
 /**
- *
+ * Read the values for time and altitude, retrieve data from cartodb and interpolate all fields again
  */
 function updateRadarData() {
-    log.debug("get radar data");
+    // log.debug("get radar data");
     var d = when.defer();
     var altBand = $(ALTITUDE_BAND_ID).val();
     var datetime = $(TIME_INTERVAL_ID).val();
@@ -379,7 +385,7 @@ function updateRadarData() {
         // }
         interpolateField(data);
     });
-    log.debug("return data");
+    // log.debug("return data");
     return d.promise;
 }
 
@@ -390,11 +396,15 @@ function updateRadarData() {
 $(TIME_INTERVAL_ID).bind("keyup", function(event) {
     if (event.which == 13) {
         updateRadarData();
+        pause();
         event.preventDefault();
         event.stopPropagation();
     }
 });
 
+/**
+ * Change the altitude and update radar data
+ */
 function changeAltitude() {
     updateRadarData();
 }
@@ -419,6 +429,53 @@ function next(){
     date = moment(date).add('minutes', 20);
     $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
     updateRadarData();
+}
+
+/**
+ * Function used from next button on html, needs to pause the time running as wel as go to next timeframe
+ */
+function nextWithPause() {
+    next();
+    pause();
+}
+
+/**
+ * Function used from previous button on html, needs to pause the time running as wel as go to previous timeframe
+ */
+function previousWithPause() {
+    previous();
+    pause();
+}
+
+/** 
+ * Start interval for time running
+ */
+function play() {
+    // log.debug("Play clicked");
+    interval = setInterval(function() {
+        next();
+    }, SECONDS_TO_PLAY*1000);
+    intervalRunning = true;
+}
+
+/** 
+ * Pause interval for time running
+ */
+function pause() {
+    // log.debug("Pause clicked");
+    clearInterval(interval);
+    intervalRunning = false;
+}
+
+/** 
+ * Play/Pause functionality. When paused, continue animation but do not update radar data
+ */
+function playPause() {
+    if (intervalRunning == true) {
+        pause();
+    } else {
+        play();
+    }
 }
 
 /**
