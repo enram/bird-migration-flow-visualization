@@ -19,7 +19,7 @@ var ANIMATION_CANVAS_ID = "#animation-canvas";
 var ALTITUDE_BAND_ID = "#alt-band";
 var TIME_INTERVAL_ID = "#time-int";
 var TIME_OFFSET = 20;
-var DATE_FORMAT = 'MMMM D YYYY, HH:mm ';
+var DATE_FORMAT = 'MMMM D YYYY, HH:mm';
 
 // Declare required globals
 var particles = [];
