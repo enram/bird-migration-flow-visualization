@@ -309,7 +309,7 @@ function interpolateField(data) {
         numberOfPoints = 5; // maximum number of points to interpolate from.
     }
     var interpolate = mvi.inverseDistanceWeighting(points, numberOfPoints);
-    columns = [];
+    var tempColumns = [];
     var p0 = albers_projection([basemap.bbox[0], basemap.bbox[1]]);
     var p1 = albers_projection([basemap.bbox[2], basemap.bbox[3]]);
     minX = Math.floor(p0[0]);
@@ -317,7 +317,7 @@ function interpolateField(data) {
     minY = 0;
     maxY = view.height;
     var x = minX;
-    var MAX_TASK_TIME = 100;  // amount of time before a task yields control (milliseconds)
+    var MAX_TASK_TIME = 50;  // amount of time before a task yields control (milliseconds)
     var MIN_SLEEP_TIME = 25;
 
     function interpolateColumn(x) {
@@ -334,17 +334,17 @@ function interpolateField(data) {
     function batchInterpolate() {
     var start = +new Date;
     while (x<maxX) {
-        columns[x] = interpolateColumn(x);
+        tempColumns[x] = interpolateColumn(x);
         x++;
         if ((+new Date - start) > MAX_TASK_TIME) {
-        // log.debug("Interpolating: " + x + "/" + maxX);
+        log.debug("Interpolating: " + x + "/" + maxX);
         setTimeout(batchInterpolate, MIN_SLEEP_TIME);
         return;
         }
     }
+    columns = tempColumns;
     return createField();
     }
-
     batchInterpolate();
 }
 
