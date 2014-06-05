@@ -19,7 +19,7 @@ var ANIMATION_CANVAS_ID = "#animation-canvas";
 var ALTITUDE_BAND_ID = "#alt-band";
 var TIME_INTERVAL_ID = "#time-int";
 var TIME_OFFSET = 20;
-var DATE_FORMAT = 'MMMM D YYYY, HH:mm ';
+var DATE_FORMAT = 'MMMM D YYYY, HH:mm';
 
 /**
  * Create settings
@@ -34,6 +34,7 @@ var settings = {
 var particles = [];
 var g;
 var albers_projection;
+var data;
 var interval;
 var iteration;
 
@@ -239,14 +240,38 @@ function loadMap(basemap) {
     log.debug("Basemap created");
 }
 
-function show() {
+// function show() {
+//     var altBand = $(ALTITUDE_BAND_ID).val();
+//     var datetime = $(TIME_INTERVAL_ID).val();
+//     var date = moment.utc(datetime, DATE_FORMAT);
+//     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, moment.utc(date));
+//     radardata.done(function(data) {
+//         animateTimeFrame(data, albers_projection);
+//     });
+// }
+
+function startAnimation() {
+    log.debug("All data is available, start animation");
+    log.debug("data: " + data);
+    log.debug("albers: " + albers_projection);
+    animateTimeFrame(data, albers_projection);
+}
+/**
+ *
+ */
+function updateRadarData() {
+    log.debug("get radar data");
+    var d = when.defer();
     var altBand = $(ALTITUDE_BAND_ID).val();
     var datetime = $(TIME_INTERVAL_ID).val();
     var date = moment.utc(datetime, DATE_FORMAT);
     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, moment.utc(date));
-    radardata.done(function(data) {
-        animateTimeFrame(data, albers_projection);
+    radardata.done(function(birdData) {
+        d.resolve(birdData);
+        data = birdData;
     });
+    log.debug("return data");
+    return d.promise;
 }
 
 /**
@@ -255,14 +280,14 @@ function show() {
  */
 $(TIME_INTERVAL_ID).bind("keyup", function(event) {
     if (event.which == 13) {
-        show();
+        updateRadarData();
         event.preventDefault();
         event.stopPropagation();
     }
 });
 
 function changeAltitude() {
-    show();
+    updateRadarData();
 }
 
 /**
@@ -273,7 +298,7 @@ function previous() {
     var date = moment.utc(datetime, DATE_FORMAT);
     date = moment(date).subtract('minutes', 20);
     $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
-    show();
+    updateRadarData();
 }
 
 /**
@@ -284,7 +309,7 @@ function next(){
     var date = moment.utc(datetime, DATE_FORMAT);
     date = moment(date).add('minutes', 20);
     $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
-    show();
+    updateRadarData();
 }
 
 /**
@@ -306,4 +331,5 @@ function apply(f) {
 var taskTopoJson       = loadJson(displayData.topography);
 var taskInitialization = when.all(true).then(apply(init));
 var taskRenderMap      = when.all([taskTopoJson]).then(apply(loadMap));
-var taskRadarData      = when.all([taskRenderMap]).then(apply(show));
+var taskRadarData      = when.all([taskRenderMap]).then(apply(updateRadarData));
+var taskAnimation      = when.all([taskRadarData, taskRenderMap]).then(apply(startAnimation))
