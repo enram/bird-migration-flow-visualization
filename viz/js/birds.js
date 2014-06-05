@@ -309,8 +309,8 @@ function interpolateField(data) {
     var p1 = albers_projection([basemap.bbox[2], basemap.bbox[3]]);
     minX = Math.floor(p0[0]);
     maxX = Math.floor(p1[0]);
-    minY = Math.floor(p1[1]);
-    maxY = Math.floor(p0[1]);
+    minY = 0;
+    maxY = view.height;
     var x = minX;
     var MAX_TASK_TIME = 100;  // amount of time before a task yields control (milliseconds)
     var MIN_SLEEP_TIME = 25;
