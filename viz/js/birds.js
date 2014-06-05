@@ -353,8 +353,18 @@ function show() {
     var date = moment.utc(datetime, DATE_FORMAT);
     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, moment.utc(date));
     radardata.done(function(data) {
-    interpolateField(data);
-    animateTimeFrame(data, albers_projection);
+        // Dummy data to inspect the impact on the visualization
+        // data = {
+        //     rows: [
+        //         {avg_v_speed: 3, avg_u_speed: -80, latitude: 52.9533, longitude: 4.7899},
+        //         {avg_v_speed: 0, avg_u_speed: -20, latitude: 52.1017, longitude: 5.1783},
+        //         {avg_v_speed: -80, avg_u_speed: 40, latitude: 51.1927, longitude: 3.0654},
+        //         {avg_v_speed: 0, avg_u_speed: 20, latitude: 50.901, longitude: 4.451},
+        //         {avg_v_speed: 160, avg_u_speed: 0, latitude: 49.914, longitude: 5.5045},
+        //     ]
+        // } 
+        interpolateField(data);
+        animateTimeFrame(data, albers_projection);
     });
 }
 
