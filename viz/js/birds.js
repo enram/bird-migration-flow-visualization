@@ -249,6 +249,18 @@ function show() {
     });
 }
 
+/**
+ * Hacky hack hack, imo...
+ * Bind to input field to make enter work when user changes date manually
+ */
+$(TIME_INTERVAL_ID).bind("keyup", function(event) {
+    if (event.which == 13) {
+        show();
+        event.preventDefault();
+        event.stopPropagation();
+    }
+});
+
 function changeAltitude() {
     show();
 }
