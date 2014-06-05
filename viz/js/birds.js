@@ -240,16 +240,6 @@ function loadMap(basemap) {
     log.debug("Basemap created");
 }
 
-// function show() {
-//     var altBand = $(ALTITUDE_BAND_ID).val();
-//     var datetime = $(TIME_INTERVAL_ID).val();
-//     var date = moment.utc(datetime, DATE_FORMAT);
-//     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, moment.utc(date));
-//     radardata.done(function(data) {
-//         animateTimeFrame(data, albers_projection);
-//     });
-// }
-
 function startAnimation() {
     log.debug("All data is available, start animation");
     log.debug("data: " + data);
@@ -273,6 +263,16 @@ function updateRadarData() {
     log.debug("return data");
     return d.promise;
 }
+
+// function show() {
+//     var altBand = $(ALTITUDE_BAND_ID).val();
+//     var datetime = $(TIME_INTERVAL_ID).val();
+//     var date = moment.utc(datetime, DATE_FORMAT);
+//     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, moment.utc(date));
+//     radardata.done(function(data) {
+//         animateTimeFrame(data, albers_projection);
+//     });
+// }
 
 /**
  * Hacky hack hack, imo...
