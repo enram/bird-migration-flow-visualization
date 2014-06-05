@@ -25,6 +25,7 @@ var DATE_FORMAT = 'MMMM D YYYY, HH:mm';
 var particles = [];
 var g;
 var albers_projection;
+var data;
 var interval;
 var basemap;
 var field;
@@ -347,12 +348,25 @@ function interpolateField(data) {
  */
 
 
-function show() {
+function startAnimation() {
+    log.debug("All data is available, start animation");
+    log.debug("data: " + data);
+    log.debug("albers: " + albers_projection);
+    animateTimeFrame(data, albers_projection);
+}
+/**
+ *
+ */
+function updateRadarData() {
+    log.debug("get radar data");
+    var d = when.defer();
     var altBand = $(ALTITUDE_BAND_ID).val();
     var datetime = $(TIME_INTERVAL_ID).val();
     var date = moment.utc(datetime, DATE_FORMAT);
     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, moment.utc(date));
-    radardata.done(function(data) {
+    radardata.done(function(birdData) {
+        d.resolve(birdData);
+        data = birdData;
         // Dummy data to inspect the impact on the visualization
         // data = {
         //     rows: [
@@ -362,14 +376,27 @@ function show() {
         //         {avg_v_speed: 0, avg_u_speed: 20, latitude: 50.901, longitude: 4.451},
         //         {avg_v_speed: 160, avg_u_speed: 0, latitude: 49.914, longitude: 5.5045},
         //     ]
-        // } 
+        // }
         interpolateField(data);
-        animateTimeFrame(data, albers_projection);
     });
+    log.debug("return data");
+    return d.promise;
 }
 
+/**
+ * Hacky hack hack, imo...
+ * Bind to input field to make enter work when user changes date manually
+ */
+$(TIME_INTERVAL_ID).bind("keyup", function(event) {
+    if (event.which == 13) {
+        updateRadarData();
+        event.preventDefault();
+        event.stopPropagation();
+    }
+});
+
 function changeAltitude() {
-    show();
+    updateRadarData();
 }
 
 /**
@@ -380,7 +407,7 @@ function previous() {
     var date = moment.utc(datetime, DATE_FORMAT);
     date = moment(date).subtract('minutes', 20);
     $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
-    show();
+    updateRadarData();
 }
 
 /**
@@ -391,7 +418,7 @@ function next(){
     var date = moment.utc(datetime, DATE_FORMAT);
     date = moment(date).add('minutes', 20);
     $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
-    show();
+    updateRadarData();
 }
 
 /**
@@ -413,4 +440,5 @@ function apply(f) {
 var taskTopoJson       = loadJson(displayData.topography);
 var taskInitialization = when.all(true).then(apply(init));
 var taskRenderMap      = when.all([taskTopoJson]).then(apply(loadMap));
-var taskRadarData      = when.all([taskRenderMap]).then(apply(show));
+var taskRadarData      = when.all([taskRenderMap]).then(apply(updateRadarData));
+var taskAnimation      = when.all([taskRadarData, taskRenderMap]).then(apply(startAnimation))
