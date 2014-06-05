@@ -20,7 +20,7 @@ var ALTITUDE_BAND_ID = "#alt-band";
 var TIME_INTERVAL_ID = "#time-int";
 var TIME_OFFSET = 20;
 var DATE_FORMAT = 'MMMM D YYYY, HH:mm';
-var SECONDS_TO_PLAY = 2;
+var SECONDS_TO_PLAY = 1;
 var intervalRunning = true;
 var interval;
 
