@@ -26,3 +26,11 @@
     position: absolute;
     top: 0;
 }
+
+btn-active {
+    color: green;
+}
+
+btn-inactive {
+    color: red;
+}
