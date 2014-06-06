@@ -23,7 +23,7 @@ For an overview of the achieved milestones for the visualization, [see here](htt
 
 ### Monday June 2
 
-* Introduction meeting with [UvA team](http://ibed.uva.nl/research/research-groups/research-groups/research-groups/content/folder/computational-geo-ecology/computational-geo-ecology.html) (Judy Shamoun-Baranes and Willem Bouten), [LifeWatch INBO team](http://http://lifewatch.inbo.be) (Peter Desmet, Bart Aelterman, and Kevin Azijn), and ENRAM collaborators (Hidde Leijnse ([KMNI](http://www.knmi.nl) and Hans van Gasteren)
+* Introduction meeting with [UvA team](http://ibed.uva.nl/research/research-groups/research-groups/research-groups/content/folder/computational-geo-ecology/computational-geo-ecology.html) (Dr. Judy Shamoun-Baranes and Prof. Dr. Willem Bouten), [LifeWatch INBO team](http://http://lifewatch.inbo.be) (Peter Desmet, Bart Aelterman, and Kevin Azijn), and ENRAM collaborators (Hidde Leijnse ([KMNI](http://www.knmi.nl) and Hans van Gasteren)
 * Define use cases and milestones for the visualization prototype
 * Define milestones for the case study dataset
 * **Milestone**: create open-source [GitHub repository for the visualization](https://github.com/enram/bird-migration-flow-visualization/)
@@ -53,6 +53,7 @@ For an overview of the achieved milestones for the visualization, [see here](htt
 * **Milestone**: [Visualization with time selection](https://github.com/enram/bird-migration-flow-visualization/issues?milestone=7&state=closed)
 * **Milestone**: [Visualization with interpolated points](https://github.com/enram/bird-migration-flow-visualization/issues?milestone=8&state=closed)
 * **Milestone**: [Visualization with time animation](https://github.com/enram/bird-migration-flow-visualization/issues?milestone=13&state=closed)
+* Discussion with Dr. Judy Shamoun-Baranes regarding further collaborations/opportunities
 
 ### Friday June 6
 
@@ -69,7 +70,7 @@ To be completed by Bart, Kevin, and Peter.
 
 Description of the main results obtained.
 
-## Future collaborations/results
+## Future collaborations/opportunities
 
 * Future collaboration with the host institution (if applicable).
 * Foreseen publications/articles resulting from the STSM (if applicable).
