@@ -72,7 +72,7 @@ var view = function() {
  * Create settings
  */
 var settings = {
-    vectorscale: (view.height / 1500),
+    vectorscale: (view.height / 1000),
     frameRate: 60, // desired milliseconds per frame
     framesPerTime: 40, // desired frames per time interval
     maxParticleAge: 60, // max number of frames a particle is drawn before regeneration
@@ -244,7 +244,7 @@ function animateTimeFrame(data, projection) {
     g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
     g.lineWidth = 0.7;
     g.strokeStyle = "rgba(255, 255, 255, 1)";
-    g.fillStyle = "rgba(255, 255, 255, 0.97)"; /*  White layer to be drawn over existing trails */
+    g.fillStyle = "rgba(255, 255, 255, 0.7)"; /*  White layer to be drawn over existing trails */
     particles = []
     for (var i=0; i< settings.particleCount; i++) {
         particles.push(createParticle(Math.floor(rand(0, settings.maxParticleAge))));
