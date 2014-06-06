@@ -127,7 +127,7 @@ function loadJson(resource) {
     // log.debug("JSON Retrieval...");
     var d = when.defer();
     d3.json(resource, function(error, result) {
-        log.debug("Retrieval finished");
+        // log.debug("Retrieval finished");
         return error ?
             !error.status ?
                 d.reject({error: -1, message: "Cannot load resource: " + resource, resource: resource}) :
@@ -339,7 +339,7 @@ function interpolateField(data) {
         tempColumns[x] = interpolateColumn(x);
         x++;
         if ((+new Date - start) > MAX_TASK_TIME) {
-        log.debug("Interpolating: " + x + "/" + maxX);
+        // log.debug("Interpolating: " + x + "/" + maxX);
         setTimeout(batchInterpolate, MIN_SLEEP_TIME);
         return;
         }
@@ -460,7 +460,8 @@ function play() {
     interval = setInterval(function() {
         next();
     }, SECONDS_TO_PLAY*1000);
-    intervalRunning = true;
+    intervalRunning = true; 
+    $("#play-pause").attr("class", "btn btn-default btn-active");
 }
 
 /** 
@@ -470,6 +471,7 @@ function pause() {
     // log.debug("Pause clicked");
     clearInterval(interval);
     intervalRunning = false;
+    $("#play-pause").attr("class", "btn btn-default btn-inactive");
 }
 
 /** 
