@@ -2,7 +2,7 @@
 #display {
     background: #313131;
     margin-bottom: 3em;
-    max-height: 42em;
+    height: 42em;
     overflow: hidden; /* Cuts of #map-svg and #field-canvas */
     position: relative;
 }
