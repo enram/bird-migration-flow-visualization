@@ -19,7 +19,7 @@ The goal of this STSM is threefold:
 
 ## Description of the work
 
-For an overview of the achieved milestones for the visualization, [see here](https://github.com/enram/bird-migration-flow-visualization/issues/milestones?state=closed).
+Milestone links below give a list of the achieved tasks and closed issues. For an overview of all achieved milestones for the visualization, [see here](https://github.com/enram/bird-migration-flow-visualization/issues/milestones?state=closed).
 
 ### Monday June 2
 
