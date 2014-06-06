@@ -20,7 +20,7 @@ var ALTITUDE_BAND_ID = "#alt-band";
 var TIME_INTERVAL_ID = "#time-int";
 var TIME_OFFSET = 20;
 var DATE_FORMAT = 'MMMM D YYYY, HH:mm';
-var SECONDS_TO_PLAY = 2;
+var SECONDS_TO_PLAY = 1;
 var intervalRunning = true;
 var interval;
 
@@ -72,7 +72,7 @@ var view = function() {
  * Create settings
  */
 var settings = {
-    vectorscale: (view.height / 1500),
+    vectorscale: (view.height / 1000),
     frameRate: 60, // desired milliseconds per frame
     framesPerTime: 40, // desired frames per time interval
     maxParticleAge: 60, // max number of frames a particle is drawn before regeneration
@@ -117,78 +117,6 @@ function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
     return projection.scale(s).translate(t);
 } 
 
-// Create particle object
-function createParticle(age) {
-    var particle = {
-    age: age,
-    x: rand(minX, maxX),
-    y: rand(minY, maxY),
-    xt: 0,
-    yt: 0
-    }
-    return particle
-}
-
-// Calculate the next particle's position
-function evolve() {
-    particles.forEach(function(particle, i) {
-	if (particle.age >= settings.maxParticleAge) {
-            particles.splice(i, 1);
-            particle = createParticle(Math.floor(rand(0, settings.maxParticleAge/2))); // respawn
-            particles.push(particle);
-        }
-        var x = particle.x;
-        var y = particle.y;
-        var uv = field(x, y);
-        var u = uv[0];
-        var v = uv[1];
-        var xt = x + u;
-        var yt = y + v;
-        particle.age += 1;
-        particle.xt = xt;
-        particle.yt = yt;
-    });
-}
-
-// Draw a line between a particle's current and next position
-function draw() {
-    // Fade existing trails
-    var prev = g.globalCompositeOperation;
-    g.globalCompositeOperation = "destination-in";
-    g.fillRect(0, 0, view.width, view.height);
-    g.globalCompositeOperation = prev;
-
-    // Draw new particle trails
-    particles.forEach(function(particle) {
-        if (particle.age < settings.maxParticleAge) {
-            g.moveTo(particle.x, particle.y);
-            g.lineTo(particle.xt, particle.yt);
-            particle.x = particle.xt;
-            particle.y = particle.yt;
-        };
-    });
-}
-
-// This function will run the animation for 1 time frame
-function runTimeFrame() {
-    g.beginPath();
-    evolve();
-    draw();
-    g.stroke();
-};
-
-function animateTimeFrame(data, projection) {
-    g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
-    g.lineWidth = 0.7;
-    g.strokeStyle = "rgba(255, 255, 255, 1)";
-    g.fillStyle = "rgba(255, 255, 255, 0.97)"; /*  White layer to be drawn over existing trails */
-    particles = []
-    for (var i=0; i< settings.particleCount; i++) {
-        particles.push(createParticle(Math.floor(rand(0, settings.maxParticleAge))));
-    }
-    interval = setInterval(runTimeFrame, settings.frameRate);
-}
-
 /**
  * Returns a promise for a JSON resource (URL) fetched via XHR. If the load fails, the promise rejects with an
  * object describing the reason: {error: http-status-code, message: http-status-text, resource:}.
@@ -199,7 +127,7 @@ function loadJson(resource) {
     // log.debug("JSON Retrieval...");
     var d = when.defer();
     d3.json(resource, function(error, result) {
-        log.debug("Retrieval finished");
+        // log.debug("Retrieval finished");
         return error ?
             !error.status ?
                 d.reject({error: -1, message: "Cannot load resource: " + resource, resource: resource}) :
@@ -248,8 +176,82 @@ function loadMap(bm) {
 }
 
 /**
- * Here comes all the interpolation stuff
+ * Here comes all the animation and interpolation stuff
  */
+
+
+// Create particle object
+function createParticle(age) {
+    var particle = {
+    age: age,
+    x: rand(minX, maxX),
+    y: rand(minY, maxY),
+    xt: 0,
+    yt: 0
+    }
+    return particle
+}
+
+// Calculate the next particle's position
+function evolve() {
+    particles.forEach(function(particle, i) {
+    if (particle.age >= settings.maxParticleAge) {
+            particles.splice(i, 1);
+            particle = createParticle(Math.floor(rand(0, settings.maxParticleAge/2))); // respawn
+            particles.push(particle);
+        }
+        var x = particle.x;
+        var y = particle.y;
+        var uv = field(x, y);
+        var u = uv[0];
+        var v = uv[1];
+        var xt = x + u;
+        var yt = y + v;
+        particle.age += 1;
+        particle.xt = xt;
+        particle.yt = yt;
+    });
+}
+
+// Draw a line between a particle's current and next position
+function draw() {
+    // Fade existing trails
+    var prev = g.globalCompositeOperation;
+    g.globalCompositeOperation = "destination-in";
+    g.fillRect(0, 0, view.width, view.height);
+    g.globalCompositeOperation = prev;
+
+    // Draw new particle trails
+    particles.forEach(function(particle) {
+        if (particle.age < settings.maxParticleAge) {
+            g.moveTo(particle.x, particle.y);
+            g.lineTo(particle.xt, particle.yt);
+            particle.x = particle.xt;
+            particle.y = particle.yt;
+        };
+    });
+}
+
+// This function will run the animation for 1 time frame
+function runTimeFrame() {
+    g.beginPath();
+    evolve();
+    draw();
+    g.stroke();
+};
+
+function animateTimeFrame(data, projection) {
+    g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
+    g.lineWidth = 0.7;
+    g.strokeStyle = "rgba(255, 255, 255, 1)";
+    g.fillStyle = "rgba(255, 255, 255, 0.7)"; /*  White layer to be drawn over existing trails */
+    particles = []
+    for (var i=0; i< settings.particleCount; i++) {
+        particles.push(createParticle(Math.floor(rand(0, settings.maxParticleAge))));
+    }
+    interval = setInterval(runTimeFrame, settings.frameRate);
+}
+
 
 // Return a random number between min (inclusive) and max (exclusive).
 function rand(min, max) {
@@ -337,7 +339,7 @@ function interpolateField(data) {
         tempColumns[x] = interpolateColumn(x);
         x++;
         if ((+new Date - start) > MAX_TASK_TIME) {
-        log.debug("Interpolating: " + x + "/" + maxX);
+        // log.debug("Interpolating: " + x + "/" + maxX);
         setTimeout(batchInterpolate, MIN_SLEEP_TIME);
         return;
         }
@@ -349,10 +351,13 @@ function interpolateField(data) {
 }
 
 /**
- * End of the interpolation stuff
+ * End of the animation and interpolation stuff
  */
 
-
+/**
+ * Start the animation once the data is in. This method is used in the dependency tree and will 
+ * be triggered once all prerequisites are completed
+ */
 function startAnimation() {
     // log.debug("All data is available, start animation");
     // log.debug("data: " + data);
@@ -448,23 +453,25 @@ function previousWithPause() {
 }
 
 /** 
- * Start interval for time running
- */
-function play() {
-    // log.debug("Play clicked");
-    interval = setInterval(function() {
-        next();
-    }, SECONDS_TO_PLAY*1000);
-    intervalRunning = true;
-}
-
-/** 
  * Pause interval for time running
  */
 function pause() {
     // log.debug("Pause clicked");
     clearInterval(interval);
     intervalRunning = false;
+    $("#play-pause").addClass("active");
+}
+
+/** 
+ * Start interval for time running
+ */
+function play() {
+    // log.debug("Paused unclicked");
+    interval = setInterval(function() {
+        next();
+    }, SECONDS_TO_PLAY*1000);
+    intervalRunning = true; 
+    $("#play-pause").removeClass("active");
 }
 
 /** 
