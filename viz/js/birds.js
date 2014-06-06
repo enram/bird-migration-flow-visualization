@@ -456,25 +456,25 @@ function previousWithPause() {
 }
 
 /** 
- * Start interval for time running
- */
-function play() {
-    // log.debug("Play clicked");
-    interval = setInterval(function() {
-        next();
-    }, SECONDS_TO_PLAY*1000);
-    intervalRunning = true; 
-    $("#play-pause").attr("class", "btn btn-default btn-active");
-}
-
-/** 
  * Pause interval for time running
  */
 function pause() {
     // log.debug("Pause clicked");
     clearInterval(interval);
     intervalRunning = false;
-    $("#play-pause").attr("class", "btn btn-default btn-inactive");
+    $("#play-pause").addClass("active");
+}
+
+/** 
+ * Start interval for time running
+ */
+function play() {
+    // log.debug("Paused unclicked");
+    interval = setInterval(function() {
+        next();
+    }, SECONDS_TO_PLAY*1000);
+    intervalRunning = true; 
+    $("#play-pause").removeClass("active");
 }
 
 /** 
