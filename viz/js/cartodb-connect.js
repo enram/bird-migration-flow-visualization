@@ -8,10 +8,10 @@
  */
 
 function fetchRadarData(url) {
-	var result = jQuery.get(url, function(data) {
- 		jQuery('.result').html(data);
- 	});
- 	return result;
+    var result = jQuery.get(url, function(data) {
+        jQuery('.result').html(data);
+    });
+    return result;
  }
 
 /*
@@ -19,9 +19,9 @@ function fetchRadarData(url) {
  * @param altitude a number to define which altitude band you need.  Currently 1 == low and 2 == high 
  */
 function retrieveRadarDataByAltitudeAndTime(altitude, time) {
-	var time_frame = "20 "; /* Time frames of 20 minutes */
  	var sql = vsprintf("WITH aggregated_data AS ( SELECT b.radar_id, ST_X(r.the_geom) AS longitude, ST_Y(r.the_geom) AS latitude, date_trunc('hour', b.start_time) + date_part('minute', b.start_time)::int / %s * interval '%s min' AS interval_start_time, CASE WHEN b.altitude >= 0.2 AND b.altitude < 1.6 THEN 1 WHEN b.altitude >= 1.6 THEN 2 END AS altitude_band, count(*) AS number_of_measurements, avg(b.u_speed) AS avg_u_speed, avg(b.v_speed) AS avg_v_speed, avg(b.bird_density) AS avg_bird_density FROM bird_migration_altitude_profiles b LEFT JOIN radars r ON b.radar_id = r.radar_id WHERE b.radial_velocity_std >= 2 AND b.bird_density >= 10 AND b.altitude >= 0.2 GROUP BY b.radar_id, r.the_geom, interval_start_time, altitude_band ORDER BY b.radar_id, interval_start_time, altitude_band DESC ) SELECT * FROM aggregated_data WHERE altitude_band = %s AND interval_start_time = '%s'", [time_frame, time_frame, altitude, time]);
- 	var url = "https://lifewatch-inbo.cartodb.com/api/v2/sql?q=" + encodeURIComponent(sql);
+    var time_frame = "20 "; /* Time frames of 20 minutes */
+    var url = "https://lifewatch-inbo.cartodb.com/api/v2/sql?q=" + encodeURIComponent(sql);
     var result = fetchRadarData(url, "");
     return result;
 }
