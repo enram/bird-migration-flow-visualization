@@ -26,11 +26,18 @@ var interval;
 
 
 // Declare required globals
-var projections = [];
+var particles = [];
+var g;
+var albers_projection;
+var data;
 var interval;
-var basemaps = [];
-var animationBorders = [];
-var columnsArray = [];
+var basemap;
+var field;
+var minX;
+var maxX;
+var minY;
+var maxY;
+var columns;
 
 /** 
  * Extract parameters sent to us by the server.
@@ -134,15 +141,14 @@ function loadJson(resource) {
 /**
  * Load the basemap in the svg with the countries, country border and radars
  */
-function loadMap(basemap) {
+function loadMap(bm) {
     // log.debug("Creating basemap...");
+    basemap = bm;
     var countries = topojson.feature(basemap, basemap.objects.ne_10m_admin_0_countries);
     // var cities = topojson.feature(basemap, basemap.objects.ne_10m_populated_places_simple);
     var radars = topojson.feature(basemap, basemap.objects.radars);
 
-    var albers_projection = createAlbersProjection(basemap.bbox[0], basemap.bbox[1], basemap.bbox[2], basemap.bbox[3], view);
-    projections.push(albers_projection); // append the projection to the global array containing projections per map on the screen
-    basemaps.push(basemap); // append the basemap to the global array
+    albers_projection = createAlbersProjection(basemap.bbox[0], basemap.bbox[1], basemap.bbox[2], basemap.bbox[3], view);
 
     var path = d3.geo.path()
         .projection(albers_projection);
@@ -175,7 +181,7 @@ function loadMap(basemap) {
 
 
 // Create particle object
-function createParticle(age, minX, maxX, minY, maxY) {
+function createParticle(age) {
     var particle = {
     age: age,
     x: rand(minX, maxX),
@@ -187,21 +193,16 @@ function createParticle(age, minX, maxX, minY, maxY) {
 }
 
 // Calculate the next particle's position
-function evolve(particles, columns, borders) {
-    var newParticles = [];
-    var minX = borders[0];
-    var minY = borders[1];
-    var maxX = borders[2];
-    var maxY = borders[3];
+function evolve() {
     particles.forEach(function(particle, i) {
     if (particle.age >= settings.maxParticleAge) {
             particles.splice(i, 1);
-            particle = createParticle(Math.floor(rand(0, settings.maxParticleAge/2)), minX, maxX, minY, maxY); // respawn
+            particle = createParticle(Math.floor(rand(0, settings.maxParticleAge/2))); // respawn
             particles.push(particle);
         }
         var x = particle.x;
         var y = particle.y;
-        var uv = field(x, y, columns);
+        var uv = field(x, y);
         var u = uv[0];
         var v = uv[1];
         var xt = x + u;
@@ -209,13 +210,11 @@ function evolve(particles, columns, borders) {
         particle.age += 1;
         particle.xt = xt;
         particle.yt = yt;
-        newParticles.push(particle);
     });
-    return newParticles;
 }
 
 // Draw a line between a particle's current and next position
-function draw(g, particles) {
+function draw() {
     // Fade existing trails
     var prev = g.globalCompositeOperation;
     g.globalCompositeOperation = "destination-in";
@@ -234,23 +233,23 @@ function draw(g, particles) {
 }
 
 // This function will run the animation for 1 time frame
-function runTimeFrame(g, particles, columns, borders) {
+function runTimeFrame() {
     g.beginPath();
-    particles = evolve(particles, columns, borders);
-    draw(g, particles);
+    evolve();
+    draw();
     g.stroke();
 };
 
-function animateTimeFrame(data, projection, columns, borders) {
-    var g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
+function animateTimeFrame(data, projection) {
+    g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
     g.lineWidth = 0.7;
     g.strokeStyle = "rgba(255, 255, 255, 1)";
     g.fillStyle = "rgba(255, 255, 255, 0.7)"; /*  White layer to be drawn over existing trails */
-    var particles = []
+    particles = []
     for (var i=0; i< settings.particleCount; i++) {
         particles.push(createParticle(Math.floor(rand(0, settings.maxParticleAge))));
     }
-    interval = setInterval(function () {runTimeFrame(g, particles, columns, borders)}, settings.frameRate);
+    interval = setInterval(runTimeFrame, settings.frameRate);
 }
 
 
@@ -279,17 +278,19 @@ function binarySearch(a, v) {
 }
 
 // Build points based on the data retrieved from the data back end
-function buildPointsFromRadars(data, projection) {
+function buildPointsFromRadars(data) {
     var points = [];
     data.rows.forEach(function(row) {
-    var p = projection([row.longitude, row.latitude]);
+    var p = albers_projection([row.longitude, row.latitude]);
     var point = [p[0], p[1], [row.avg_u_speed, -row.avg_v_speed]]; // negate v because pixel space grows downwards, not upwards
     points.push(point);    
     });
     return points;
 }
 
-function field (x, y, columns) {
+function createField() {
+    var nilVector = [NaN, NaN, NaN];
+    field = function(x, y) {
     var column = columns[Math.round(x)];
     if (column) {
         var v = column[Math.round(y)];
@@ -297,26 +298,26 @@ function field (x, y, columns) {
         return v;
         }
     }
-    return [NaN, NaN, NaN];
+    return nilVector;
+    }
+
+    return field;
 }
 
-function interpolateField(data, projection, basemap) {
-    var points = buildPointsFromRadars(data, projection);
+function interpolateField(data) {
+    var points = buildPointsFromRadars(data);
     var numberOfPoints = points.length;
     if (numberOfPoints > 5) {
         numberOfPoints = 5; // maximum number of points to interpolate from.
     }
     var interpolate = mvi.inverseDistanceWeighting(points, numberOfPoints);
     var tempColumns = [];
-    var tempField;
-    var p0 = projection([basemap.bbox[0], basemap.bbox[1]]);
-    var p1 = projection([basemap.bbox[2], basemap.bbox[3]]);
-    var minX = Math.floor(p0[0]);
-    var maxX = Math.floor(p1[0]);
-    var minY = 0;
-    var maxY = view.height;
-    var borders = [minX, minY, maxX, maxY];
-    animationBorders.push(borders)
+    var p0 = albers_projection([basemap.bbox[0], basemap.bbox[1]]);
+    var p1 = albers_projection([basemap.bbox[2], basemap.bbox[3]]);
+    minX = Math.floor(p0[0]);
+    maxX = Math.floor(p1[0]);
+    minY = 0;
+    maxY = view.height;
     var x = minX;
     var MAX_TASK_TIME = 50;  // amount of time before a task yields control (milliseconds)
     var MIN_SLEEP_TIME = 25;
@@ -343,9 +344,10 @@ function interpolateField(data, projection, basemap) {
         return;
         }
     }
+    columns = tempColumns;
+    return createField();
     }
     batchInterpolate();
-    return tempColumns;
 }
 
 /**
@@ -356,14 +358,11 @@ function interpolateField(data, projection, basemap) {
  * Start the animation once the data is in. This method is used in the dependency tree and will 
  * be triggered once all prerequisites are completed
  */
-function startAnimation(data, projection) {
+function startAnimation() {
     // log.debug("All data is available, start animation");
     // log.debug("data: " + data);
     // log.debug("albers: " + albers_projection);
-    var columns = columnsArray[0]; // idem
-    var borders = animationBorders[0];
-    log.debug(columns);
-    animateTimeFrame(data, projection, columns, borders);
+    animateTimeFrame(data, albers_projection);
     play();
 }
 /**
@@ -372,15 +371,13 @@ function startAnimation(data, projection) {
 function updateRadarData() {
     // log.debug("get radar data");
     var d = when.defer();
-    var projection = projections[0]; // fetch the right projection from the global array
-    var basemap = basemaps[0]; // fetch the right projection from the global array
     var altBand = $(ALTITUDE_BAND_ID).val();
     var datetime = $(TIME_INTERVAL_ID).val();
     var date = moment.utc(datetime, DATE_FORMAT);
     var radardata = retrieveRadarDataByAltitudeAndTime(altBand, moment.utc(date));
     radardata.done(function(birdData) {
         d.resolve(birdData);
-        birdData;
+        data = birdData;
         // Dummy data to inspect the impact on the visualization
         // data = {
         //     rows: [
@@ -391,7 +388,7 @@ function updateRadarData() {
         //         {avg_v_speed: 160, avg_u_speed: 0, latitude: 49.914, longitude: 5.5045},
         //     ]
         // }
-        columnsArray[0] = interpolateField(birdData, projection, basemap);
+        interpolateField(data);
     });
     // log.debug("return data");
     return d.promise;
