@@ -12,6 +12,12 @@ Weather radars can detect bird migration, but visualizing these data in an easy 
 
 We created this visualization during a 5 day hackathon on June 2 to 6, 2014, hosted at the [University of Amsterdam](http://ibed.uva.nl/research/research-groups/research-groups/research-groups/content/folder/computational-geo-ecology/computational-geo-ecology.html) in collaboration with [KMNI](http://www.knmi.nl/). It was created for the [European Network for the Radar Surveillance of Animal Movement (ENRAM)](http://enram.eu) and funded by [COST](http://cost.eu/) as a short term scientific mission ([mission report](documentation/stsm-report.md)).
 
+## Data
+
+* [Case study bird migration altitude profiles](https://github.com/enram/case-study/tree/master/data/bird-migration-altitude-profiles) retrieved from weather radars.
+* [Radar locations](https://github.com/enram/case-study/blob/master/data/radars/radars.geojson)
+* [Basemap for Belgium and the Netherlands as](data/basemap)
+
 ## How it works
 
 ...
