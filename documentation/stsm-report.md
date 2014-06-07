@@ -23,7 +23,7 @@ Milestone links below give a list of the achieved tasks and closed issues. For a
 
 ### Monday June 2
 
-* Introduction meeting with [UvA team](http://ibed.uva.nl/research/research-groups/research-groups/research-groups/content/folder/computational-geo-ecology/computational-geo-ecology.html) (Dr. Judy Shamoun-Baranes and Prof. Dr. Willem Bouten), [LifeWatch INBO team](http://http://lifewatch.inbo.be) (Peter Desmet, Bart Aelterman, and Kevin Azijn), and ENRAM collaborators (Hidde Leijnse ([KMNI](http://www.knmi.nl)) and Hans van Gasteren (RNLAF))
+* Introduction meeting with [UvA team](http://ibed.uva.nl/research/research-groups/research-groups/research-groups/content/folder/computational-geo-ecology/computational-geo-ecology.html) (Dr. Judy Shamoun-Baranes and Prof. Dr. Willem Bouten), [LifeWatch INBO team](http://http://lifewatch.inbo.be) (Peter Desmet, Bart Aelterman, and Kevin Azijn), and ENRAM collaborators (Hidde Leijnse ([KNMI](http://www.knmi.nl)) and Hans van Gasteren (RNLAF))
 * Define use cases and milestones for the visualization prototype
 * Define milestones for the case study dataset
 * **Milestone**: create open-source [GitHub repository for the visualization](https://github.com/enram/bird-migration-flow-visualization/)
