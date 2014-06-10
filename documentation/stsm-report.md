@@ -78,7 +78,7 @@ Available at <https://github.com/enram/case-study>
 * Extracted and uploaded [reflectivity ppi dataset](https://github.com/enram/case-study/tree/master/data/reflectivity-ppi)
 * Extracted, uploaded and documented [basemap for Belgium and the Netherlands](data/basemap)
 * Started [documentation](https://github.com/enram/case-study/blob/master/data/README.md) regarding these data
-* Wrote [description of case story](https://github.com/enram/case-study/blob/master/data/README.md)
+* Wrote [description of the case study](https://github.com/enram/case-study/blob/master/documentation/story.md)
 
 ### Develop a prototype of a flow visualization
 
@@ -93,7 +93,7 @@ Available at <https://github.com/enram/bird-migration-flow-visualization>
 * Case study dataset is almost completely documented, further documentation will be added for the visualization challenge
 * Visualization prototype is fully documented on GitHub (see above), including [all activity](https://github.com/enram/bird-migration-flow-visualization/commits/master)
 
-## Discuss aim and structure of the visualization challenge
+## Discuss aim and structure of a visualization challenge
 
 We plan to organize a visualization challenge (originally "data challenge") end of 2014 / early 2015 to see what other visualizations can be made with the case study data. The idea is to further develop interesting results, so these can be used by researchers and the general public to discover and analyze the data ENRAM will generate.
 
@@ -101,9 +101,9 @@ Provisional timeline:
 
 1. Summer 2014: Further document use case and record specific use cases
 2. October 2014: Present this STSM and announce visualization challenge at the ENRAM meeting in Spain
-3. December 2014: Organize a 3 day hackathon as the kick off for the data challenge. This STSM has learned us that is important to allow enough time for the developers to build up some momentum and to have direct contact with the researchers so questions can be answered quickly. The hackathon will start with an introduction and end with presentations of early results, with the possibility for participants to join remotely.
+3. December 2014: Organize a 3 day hackathon as the kick off for the data challenge. This STSM has learned us that is important to allow enough time for the developers to build up some momentum and to have direct contact with the researchers so questions can be answered quickly. The hackathon will start with an introduction and end with presentations of early results, with the possibility for teams to participate remotely.
 4. January-March 2014: Visualization challenge, where teams can (continue to) work on their visualization remotely. Teams can join at any time, but results should be submitted before the deadline and open sourced.
-5. April 2014: End of the visualization challenge. The most interesting visualizations will be selected and the teams contacted for further collaboration.
+5. April 2014: End of the visualization challenge. The most interesting visualizations will be selected and announced, and the teams contacted for further collaboration.
 
 ## Future collaborations / opportunities
 
