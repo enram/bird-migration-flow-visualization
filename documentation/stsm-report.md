@@ -96,12 +96,12 @@ Available at <https://github.com/enram/bird-migration-flow-visualization>
 * [Open sourced](https://github.com/enram/bird-migration-flow-visualization) the code (under an MIT license)
 * [Documented the visualization](https://github.com/enram/bird-migration-flow-visualization/blob/master/README.md)
 
-### Document dataset and prototype as guidelines for a visualization challenge to be organized in 2015
+### Document dataset and prototype as guidelines for a visualization challenge
 
 * Case study dataset is almost completely documented, further documentation will be added for the visualization challenge
 * Visualization prototype is fully documented on GitHub (see above), including [all activity](https://github.com/enram/bird-migration-flow-visualization/commits/master)
 
-### Discuss aim and structure of a visualization challenge
+### Discuss aim and structure of the visualization challenge
 
 We plan to organize a visualization challenge (originally "data challenge") end of 2014 / early 2015 to see what other visualizations can be made with the case study data. The idea is to further develop interesting results, so these can be used by researchers and the general public to discover and analyze the data ENRAM will generate.
 
