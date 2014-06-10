@@ -58,9 +58,10 @@ Milestone links below give a list of the achieved tasks and closed issues. For a
 ### Friday June 6
 
 * Fix remaining bugs in visualization
-* [Publish visualization](http://enram.github.io/bird-migration-flow-visualization/viz/)
-* Announce visualization via Twitter and other communication channels
+* [Launch visualization](http://enram.github.io/bird-migration-flow-visualization/viz/)
+* Announce visualization via [Twitter](https://twitter.com/LifeWatchINBO) and other communication channels
 * Write report
+* **Milestone**: [README](https://github.com/enram/bird-migration-flow-visualization/issues?milestone=6&state=closed)
 
 ## Personal contribution
 
@@ -72,19 +73,24 @@ Description of the main results obtained.
 
 ## Future collaborations / opportunities
 
-* Work towards a case study that covers a larger extent of the ENRAM network and extend visualization to encompass these areas (collaboration with host institute and additional ENRAM parthers) 
-* Joint development of guidelines for future extensions of flow visualisation
-* Joint publications for scientific community
+All future collaborations will include additional ENRAM partners:
+
+* Work towards a case study that covers a larger extent of the ENRAM network
+* Extend the visualization to encompass larger case study area
+* Extend the visualization with extra functionalities (see [these milestones](https://github.com/enram/bird-migration-flow-visualization/issues/milestones?with_issues=no))
+* Joint collection of use cases for this and other visualizations
+* Joint publications for the scientific community
 * Training of early stage researchers
 
 ## Outreach / foreseen publications
 
-* Judy Shamoun-Baranes, Jason Chapman, Adriaan Dokter, Hans van Gasteren, Maarten de Graaf, Hidde Leijnse, Felix Liechti. 2014. Continental-scale Radar Monitoring of the Aerial Movements of Animals. 26th International Ornithological Congress. 18-24 August 2014, Tokyo, Japan. (oral presentation) 
-* Hidde Leijnse, Adriaan Dokter, Günther Haase, Przemysław Jacewicz, Matti Leskinen, Alessio Balleri, Judy Shamoun-Baranes, Jose A. Alves, Silke Bauer, Ommo Hüppop, Jarmo Koistinen, Felix Liechti, Hans van Gasteren & Jason W. Chapman. 2014. The European Network for the Radar Surveillance of Animal Movement. Presentation at the 8th European Conference on Radar in Meteorology and Hydrology on 1-5 September 2014 in Garmisch-Partenkirchen, Germany.
-* Public dissemination via twitter, ENRAM website, other networks.
+This only includes the outreach and foreseen publications in the 5 days since the visualisation was launched. In this timespan, the visualization was visited by 390 unique visitors from 24 countries.
+
+* Public dissemination via [Twitter](https://twitter.com/cost_enram)
+* Blog post on the [LifeWatch INBO blog](http://lifewatch.inbo.be/blog/posts/bird-migration-flow-visualization.html)
+* Judy Shamoun-Baranes, Jason Chapman, Adriaan Dokter, Hans van Gasteren, Maarten de Graaf, Hidde Leijnse & Felix Liechti. 2014. Continental-scale Radar Monitoring of the Aerial Movements of Animals. 26th International Ornithological Congress. 18-24 August 2014, Tokyo, Japan. (oral presentation) 
+* Hidde Leijnse, Adriaan Dokter, Günther Haase, Przemysław Jacewicz, Matti Leskinen, Alessio Balleri, Judy Shamoun-Baranes, Jose A. Alves, Silke Bauer, Ommo Hüppop, Jarmo Koistinen, Felix Liechti, Hans van Gasteren & Jason W. Chapman. 2014. The European Network for the Radar Surveillance of Animal Movement. 8th European Conference on Radar in Meteorology and Hydrology. 1-5 September 2014, Garmisch-Partenkirchen, Germany. (oral presentation)
 
 ## Confirmation letter by host institution
 
 To be attached.
-
-## Other comments (if any)
