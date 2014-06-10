@@ -59,17 +59,26 @@ Milestone links below give a list of the achieved tasks and closed issues. For a
 
 * Fix remaining bugs in visualization
 * [Launch visualization](http://enram.github.io/bird-migration-flow-visualization/viz/)
-* Announce visualization via [Twitter](https://twitter.com/LifeWatchINBO) and other communication channels
+* Announce visualization via [Twitter](https://twitter.com/lifewatchinbo/status/474850448839802880) and other communication channels
 * Write report
 * **Milestone**: [README](https://github.com/enram/bird-migration-flow-visualization/issues?milestone=6&state=closed)
 
 ## Personal contribution
 
-To be completed by Bart, Kevin, and Peter.
+To be completed by [Bart](https://github.com/bartaelterman), [Kevin](https://github.com/kazijn), and [Peter](https://github.com/peterdesmet).
 
 ## Results
 
-Description of the main results obtained.
+### Create case study dataset
+
+Available at <https://github.com/enram/case-study>
+
+* Extracted, uploaded, and documented [bird migration altitude profiles dataset](https://github.com/enram/case-study/tree/master/data/bird-migration-altitude-profiles) retrieved from weather radars. 
+* Extracted and uploaded [radar locations dataset](https://github.com/enram/case-study/blob/master/data/radars/radars.geojson)
+* Extracted and uploaded [reflectivity ppi dataset](https://github.com/enram/case-study/tree/master/data/reflectivity-ppi)
+* Extracted, uploaded and documented [basemap for Belgium and the Netherlands](data/basemap)
+* Started [documentation](https://github.com/enram/case-study/blob/master/data/README.md) regarding these data.
+* Wrote [description of case story](https://github.com/enram/case-study/blob/master/data/README.md)
 
 ## Future collaborations / opportunities
 
