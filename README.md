@@ -14,6 +14,8 @@ We created this visualization during a 5 day hackathon on June 2 to 6, 2014, hos
 
 ## Data
 
+The visualization uses [case study data](https://github.com/enram/case-study) from one week of intense bird migration in April 2013: 
+
 * [Case study bird migration altitude profiles](https://github.com/enram/case-study/tree/master/data/bird-migration-altitude-profiles) retrieved from weather radars.
 * [Radar locations](https://github.com/enram/case-study/blob/master/data/radars/radars.geojson)
 * [Basemap for Belgium and the Netherlands as topojson](data/basemap)
