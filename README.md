@@ -16,7 +16,7 @@ We created this visualization during a 5 day hackathon on June 2 to 6, 2014, hos
 
 * [Case study bird migration altitude profiles](https://github.com/enram/case-study/tree/master/data/bird-migration-altitude-profiles) retrieved from weather radars.
 * [Radar locations](https://github.com/enram/case-study/blob/master/data/radars/radars.geojson)
-* [Basemap for Belgium and the Netherlands as](data/basemap)
+* [Basemap for Belgium and the Netherlands as topojson](data/basemap)
 
 ## How it works
 
@@ -24,7 +24,7 @@ We created this visualization during a 5 day hackathon on June 2 to 6, 2014, hos
 2. [Bird migration altitude profiles](https://lifewatch-inbo.cartodb.com/tables/bird_migration_altitude_profiles/public) and [radar locations](https://lifewatch-inbo.cartodb.com/tables/radars/public) data are hosted on CartoDB.
 3. Bird migration data are aggregated on time interval (20 minutes) and altitude band (200-1600m, above 1600m), averaging `u_speed` and `v_speed` of the general movement for each radar/altitude/interval, with a threshold (see [SQL](documentation/aggregate-data.sql)).
 4. Data are retrieved via the [CartoDB API](http://developers.cartodb.com/documentation/apis-overview.html).
-5. A grid with interpolated `u_speed` and `v_speed` is generated based on the data from the 5 radars.
+5. A grid with interpolated `u_speed` and `v_speed` is generated based on the data from the 5 radars using inverse distance weighting.
 6. Particles are released in the grid with a randomized position and age.
 7. When the animation is in play modus, the interpolation grid is periodically recalculated based on data from a new time interval. New and existing particles use the new grid to navigate.
 
