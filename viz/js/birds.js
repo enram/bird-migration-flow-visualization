@@ -38,6 +38,8 @@ var maxX;
 var minY;
 var maxY;
 var columns;
+var min_date = moment.utc("April 5 2013, 00:00", DATE_FORMAT);
+var max_date = moment.utc("April 11 2013, 23:40", DATE_FORMAT);
 
 /** 
  * Extract parameters sent to us by the server.
@@ -432,6 +434,9 @@ function next(){
     var datetime = $(TIME_INTERVAL_ID).val();
     var date = moment.utc(datetime, DATE_FORMAT);
     date = moment(date).add('minutes', 20);
+    if (date > max_date) {
+        date = min_date;
+    }
     $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
     updateRadarData();
 }
