@@ -65,7 +65,15 @@ Milestone links below give a list of the achieved tasks and closed issues. For a
 
 ## Personal contribution
 
-To be completed by [Bart](https://github.com/bartaelterman), [Kevin](https://github.com/kazijn), and [Peter](https://github.com/peterdesmet).
+### Peter Desmet ([@peterdesmet](https://twitter.com/peterdesmet))
+
+My main contribution to this STSM was coordination and documentation. I communicated with the involved researchers regarding the case study data, how to document these, the visualization challenge, and how to use GitHub, as well as with my team regarding milestones and priorities for our visualization prototype. I recorded all required use cases and tasks as issues ([here](https://github.com/enram/bird-migration-flow-visualization/issues/created_by/peterdesmet?state=closed) and [here](https://github.com/enram/case-study/issues/created_by/peterdesmet?state=closed)) and documented the majority of the case study data, as well as the visualization. I also added the data to our CartoDB backend and created the design of the visualization.
+
+As all work on this STSM was done publicy on GitHub, my contributions can also be found [here](https://github.com/peterdesmet?tab=contributions&from=2014-06-02&to=2014-06-06#contribution-activity).
+
+### Bart Aelterman ([@bartaelterman](https://twitter.com/bartaelterman))
+
+### Kevin Azijn ([@kazijn](https://twitter.com/kazijn))
 
 ## Results
 
