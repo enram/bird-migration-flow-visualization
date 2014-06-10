@@ -70,10 +70,13 @@ To be completed by Bart, Kevin, and Peter.
 
 Description of the main results obtained.
 
-## Future collaborations/opportunities
+## Future collaborations / opportunities
 
 * Future collaboration with the host institution (if applicable).
-* Foreseen publications/articles resulting from the STSM (if applicable).
+
+## Outreach / foreseen publications
+
+* Hidde Leijnse, Adriaan Dokter, Günther Haase, Przemysław Jacewicz, Matti Leskinen, Alessio Balleri, Judy Shamoun-Baranes, Jose A. Alves, Silke Bauer, Ommo Hüppop, Jarmo Koistinen, Felix Liechti, Hans van Gasteren & Jason W. Chapman. 2014. The European Network for the Radar Surveillance of Animal Movement. Presentation at the 8th European Conference on Radar in Meteorology and Hydrology on 1-5 September 2014 in Garmisch-Partenkirchen, Germany.
 
 ## Confirmation letter by host institution
 
