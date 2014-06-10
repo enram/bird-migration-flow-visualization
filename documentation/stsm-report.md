@@ -72,7 +72,10 @@ Description of the main results obtained.
 
 ## Future collaborations / opportunities
 
-* Future collaboration with the host institution (if applicable).
+* Work towards a case study that covers a larger extent of the ENRAM network and extend visualization to encompass these areas (collaboration with host institute and additional ENRAM parthers) 
+* Joint development of guidelines for future extensions of flow visualisation
+* Joint publications for scientific community
+* Training of early stage researchers
 
 ## Outreach / foreseen publications
 
