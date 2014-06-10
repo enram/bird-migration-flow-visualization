@@ -23,7 +23,7 @@ Milestone links below give a list of the achieved tasks and closed issues. For a
 
 ### Monday June 2
 
-* Introduction meeting with [UvA team](http://ibed.uva.nl/research/research-groups/research-groups/research-groups/content/folder/computational-geo-ecology/computational-geo-ecology.html) (Dr. Judy Shamoun-Baranes and Prof. Dr. Willem Bouten), [LifeWatch INBO team](http://http://lifewatch.inbo.be) (Peter Desmet, Bart Aelterman, and Kevin Azijn), and ENRAM collaborators (Hidde Leijnse ([KNMI](http://www.knmi.nl)) and Hans van Gasteren (RNLAF))
+* Introduction meeting with [UvA team](http://ibed.uva.nl/research/research-groups/research-groups/research-groups/content/folder/computational-geo-ecology/computational-geo-ecology.html) (Dr. Judy Shamoun-Baranes, Prof. Dr. Willem Bouten and Hans van Gasteren), [LifeWatch INBO team](http://http://lifewatch.inbo.be) (Peter Desmet, Bart Aelterman, and Kevin Azijn), and ENRAM collaborator (Hidde Leijnse, [KNMI](http://www.knmi.nl))  
 * Define use cases and milestones for the visualization prototype
 * Define milestones for the case study dataset
 * **Milestone**: create open-source [GitHub repository for the visualization](https://github.com/enram/bird-migration-flow-visualization/)
@@ -41,7 +41,7 @@ Milestone links below give a list of the achieved tasks and closed issues. For a
 
 ### Wednesday June 4
 
-* Follow-up meeting with same participants as introduction meeting and invitees from UvA.
+* Follow-up meeting with same participants as introduction meeting and invitees from UvA, NLeSC and surfSARA.
 * Prioritize remaining milestones
 * Discuss aim and structure of a data challenge to be organized in the coming year, based on the experience of this STSM
 * **Milestone**: [visualization with altitude band selection](https://github.com/enram/bird-migration-flow-visualization/issues?milestone=2&state=closed)
