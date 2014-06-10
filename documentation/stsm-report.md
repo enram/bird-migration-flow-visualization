@@ -43,7 +43,7 @@ Milestone links below give a list of the achieved tasks and closed issues. For a
 
 * Follow-up meeting with same participants as introduction meeting and invitees from UvA, NLeSC and surfSARA.
 * Prioritize remaining milestones
-* Discuss aim and structure of a data challenge to be organized in the coming year, based on the experience of this STSM
+* Discuss aim and structure of a visualization challenge to be organized in the coming year, based on the experience of this STSM
 * **Milestone**: [visualization with altitude band selection](https://github.com/enram/bird-migration-flow-visualization/issues?milestone=2&state=closed)
 * Upload reflectivity-ppi data
 * **Milestone**: [documented bird migration data](https://github.com/enram/case-study/issues?milestone=1&state=closed)
@@ -84,11 +84,26 @@ Available at <https://github.com/enram/case-study>
 
 Available at <https://github.com/enram/bird-migration-flow-visualization>
 
-* Created a [bird migration flow visualization prototype](http://enram.github.io/bird-migration-flow-visualization/viz/) using the data of the case study
-* [Open sourced](https://github.com/enram/bird-migration-flow-visualization) the code (MIT license)
+* Created a functional [bird migration flow visualization prototype](http://enram.github.io/bird-migration-flow-visualization/viz/) using the data of the case study
+* [Open sourced](https://github.com/enram/bird-migration-flow-visualization) the code (under an MIT license)
 * [Documented the visualization](https://github.com/enram/bird-migration-flow-visualization/blob/master/README.md)
 
+### Document dataset and prototype as guidelines for a visualization challenge to be organized in 2015
 
+* Case study dataset is almost completely documented, further documentation will be added for the visualization challenge
+* Visualization prototype is fully documented on GitHub (see above), including [all activity](https://github.com/enram/bird-migration-flow-visualization/commits/master)
+
+## Discuss aim and structure of the visualization challenge
+
+We plan to organize a visualization challenge (originally "data challenge") end of 2014 / early 2015 to see what other visualizations can be made with the case study data. The idea is to further develop interesting results, so these can be used by researchers and the general public to discover and analyze the data ENRAM will generate.
+
+Provisional timeline:
+
+1. Summer 2014: Further document use case and record specific use cases
+2. October 2014: Present this STSM and announce visualization challenge at the ENRAM meeting in Spain
+3. December 2014: Organize a 3 day hackathon as the kick off for the data challenge. This STSM has learned us that is important to allow enough time for the developers to build up some momentum and to have direct contact with the researchers so questions can be answered quickly. The hackathon will start with an introduction and end with presentations of early results, with the possibility for participants to join remotely.
+4. January-March 2014: Visualization challenge, where teams can (continue to) work on their visualization remotely. Teams can join at any time, but results should be submitted before the deadline and open sourced.
+5. April 2014: End of the visualization challenge. The most interesting visualizations will be selected and the teams contacted for further collaboration.
 
 ## Future collaborations / opportunities
 
