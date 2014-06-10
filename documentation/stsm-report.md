@@ -23,7 +23,7 @@ Milestone links below give a list of the achieved tasks and closed issues. For a
 
 ### Monday June 2
 
-* Introduction meeting with [UvA team](http://ibed.uva.nl/research/research-groups/research-groups/research-groups/content/folder/computational-geo-ecology/computational-geo-ecology.html) (Dr. Judy Shamoun-Baranes and Prof. Dr. Willem Bouten), [LifeWatch INBO team](http://http://lifewatch.inbo.be) (Peter Desmet, Bart Aelterman, and Kevin Azijn), and ENRAM collaborators (Hidde Leijnse ([KNMI](http://www.knmi.nl)) and Hans van Gasteren (RNLAF))
+* Introduction meeting with [UvA team](http://ibed.uva.nl/research/research-groups/research-groups/research-groups/content/folder/computational-geo-ecology/computational-geo-ecology.html) (Dr. Judy Shamoun-Baranes, Prof. Dr. Willem Bouten and Hans van Gasteren), [LifeWatch INBO team](http://http://lifewatch.inbo.be) (Peter Desmet, Bart Aelterman, and Kevin Azijn), and ENRAM collaborator (Hidde Leijnse, [KNMI](http://www.knmi.nl))  
 * Define use cases and milestones for the visualization prototype
 * Define milestones for the case study dataset
 * **Milestone**: create open-source [GitHub repository for the visualization](https://github.com/enram/bird-migration-flow-visualization/)
@@ -41,7 +41,7 @@ Milestone links below give a list of the achieved tasks and closed issues. For a
 
 ### Wednesday June 4
 
-* Follow-up meeting with same participants as introduction meeting and invitees from UvA.
+* Follow-up meeting with same participants as introduction meeting and invitees from UvA, NLeSC and surfSARA.
 * Prioritize remaining milestones
 * Discuss aim and structure of a data challenge to be organized in the coming year, based on the experience of this STSM
 * **Milestone**: [visualization with altitude band selection](https://github.com/enram/bird-migration-flow-visualization/issues?milestone=2&state=closed)
@@ -58,9 +58,10 @@ Milestone links below give a list of the achieved tasks and closed issues. For a
 ### Friday June 6
 
 * Fix remaining bugs in visualization
-* [Publish visualization](http://enram.github.io/bird-migration-flow-visualization/viz/)
-* Announce visualization via Twitter and other communication channels
+* [Launch visualization](http://enram.github.io/bird-migration-flow-visualization/viz/)
+* Announce visualization via [Twitter](https://twitter.com/LifeWatchINBO) and other communication channels
 * Write report
+* **Milestone**: [README](https://github.com/enram/bird-migration-flow-visualization/issues?milestone=6&state=closed)
 
 ## Personal contribution
 
@@ -70,13 +71,26 @@ To be completed by Bart, Kevin, and Peter.
 
 Description of the main results obtained.
 
-## Future collaborations/opportunities
+## Future collaborations / opportunities
 
-* Future collaboration with the host institution (if applicable).
-* Foreseen publications/articles resulting from the STSM (if applicable).
+All future collaborations will include additional ENRAM partners:
+
+* Work towards a case study that covers a larger extent of the ENRAM network
+* Extend the visualization to encompass larger case study area
+* Extend the visualization with extra functionalities (see [these milestones](https://github.com/enram/bird-migration-flow-visualization/issues/milestones?with_issues=no))
+* Joint collection of use cases for this and other visualizations
+* Joint publications for the scientific community
+* Training of early stage researchers
+
+## Outreach / foreseen publications
+
+This only includes the outreach and foreseen publications in the 5 days since the visualisation was launched. In this timespan, the visualization was visited by 390 unique visitors from 24 countries.
+
+* Public dissemination via [Twitter](https://twitter.com/cost_enram)
+* Blog post on the [LifeWatch INBO blog](http://lifewatch.inbo.be/blog/posts/bird-migration-flow-visualization.html)
+* Judy Shamoun-Baranes, Jason Chapman, Adriaan Dokter, Hans van Gasteren, Maarten de Graaf, Hidde Leijnse & Felix Liechti. 2014. Continental-scale Radar Monitoring of the Aerial Movements of Animals. 26th International Ornithological Congress. 18-24 August 2014, Tokyo, Japan. (oral presentation) 
+* Hidde Leijnse, Adriaan Dokter, Günther Haase, Przemysław Jacewicz, Matti Leskinen, Alessio Balleri, Judy Shamoun-Baranes, Jose A. Alves, Silke Bauer, Ommo Hüppop, Jarmo Koistinen, Felix Liechti, Hans van Gasteren & Jason W. Chapman. 2014. The European Network for the Radar Surveillance of Animal Movement. 8th European Conference on Radar in Meteorology and Hydrology. 1-5 September 2014, Garmisch-Partenkirchen, Germany. (oral presentation)
 
 ## Confirmation letter by host institution
 
 To be attached.
-
-## Other comments (if any)
