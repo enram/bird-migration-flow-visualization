@@ -73,12 +73,22 @@ To be completed by [Bart](https://github.com/bartaelterman), [Kevin](https://git
 
 Available at <https://github.com/enram/case-study>
 
-* Extracted, uploaded, and documented [bird migration altitude profiles dataset](https://github.com/enram/case-study/tree/master/data/bird-migration-altitude-profiles) retrieved from weather radars. 
+* Extracted, uploaded, and documented [bird migration altitude profiles dataset](https://github.com/enram/case-study/tree/master/data/bird-migration-altitude-profiles) retrieved from weather radars
 * Extracted and uploaded [radar locations dataset](https://github.com/enram/case-study/blob/master/data/radars/radars.geojson)
 * Extracted and uploaded [reflectivity ppi dataset](https://github.com/enram/case-study/tree/master/data/reflectivity-ppi)
 * Extracted, uploaded and documented [basemap for Belgium and the Netherlands](data/basemap)
-* Started [documentation](https://github.com/enram/case-study/blob/master/data/README.md) regarding these data.
+* Started [documentation](https://github.com/enram/case-study/blob/master/data/README.md) regarding these data
 * Wrote [description of case story](https://github.com/enram/case-study/blob/master/data/README.md)
+
+### Develop a prototype of a flow visualization
+
+Available at <https://github.com/enram/bird-migration-flow-visualization>
+
+* Created a [bird migration flow visualization prototype](http://enram.github.io/bird-migration-flow-visualization/viz/) using the data of the case study
+* [Open sourced](https://github.com/enram/bird-migration-flow-visualization) the code (MIT license)
+* [Documented the visualization](https://github.com/enram/bird-migration-flow-visualization/blob/master/README.md)
+
+
 
 ## Future collaborations / opportunities
 
