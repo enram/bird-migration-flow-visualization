@@ -26,3 +26,9 @@
     position: absolute;
     top: 0;
 }
+
+#footer {
+    background-color: #ecf0f1;
+    border-top: 2px solid #dce4ec;
+    padding-top: 1em;
+}
