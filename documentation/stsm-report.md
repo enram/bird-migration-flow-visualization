@@ -131,7 +131,7 @@ This only includes the outreach and foreseen publications in the 5 days since th
 * Public dissemination via [Twitter](https://twitter.com/cost_enram)
 * Blog post on the [LifeWatch INBO blog](http://lifewatch.inbo.be/blog/posts/bird-migration-flow-visualization.html)
 * Judy Shamoun-Baranes, Jason Chapman, Adriaan Dokter, Hans van Gasteren, Maarten de Graaf, Hidde Leijnse & Felix Liechti. 2014. Continental-scale Radar Monitoring of the Aerial Movements of Animals. 26th International Ornithological Congress. 18-24 August 2014, Tokyo, Japan. (oral presentation) 
-* Hidde Leijnse, Adriaan Dokter, Günther Haase, Przemysław Jacewicz, Matti Leskinen, Alessio Balleri, Judy Shamoun-Baranes, Jose A. Alves, Silke Bauer, Ommo Hüppop, Jarmo Koistinen, Felix Liechti, Hans van Gasteren & Jason W. Chapman. 2014. The European Network for the Radar Surveillance of Animal Movement. 8th European Conference on Radar in Meteorology and Hydrology. 1-5 September 2014, Garmisch-Partenkirchen, Germany. (oral presentation)
+* Hidde Leijnse, Adriaan Dokter, Peter Desmet, Bart Aelterman, Kevin Azijn, Günther Haase, Przemysław Jacewicz, Matti Leskinen, Alessio Balleri, Judy Shamoun-Baranes, Jose A. Alves, Silke Bauer, Ommo Hüppop, Jarmo Koistinen, Felix Liechti, Hans van Gasteren & Jason W. Chapman. 2014. The European Network for the Radar Surveillance of Animal Movement. 8th European Conference on Radar in Meteorology and Hydrology. 1-5 September 2014, Garmisch-Partenkirchen, Germany. (oral presentation)
 
 ## Confirmation letter by host institution
 
