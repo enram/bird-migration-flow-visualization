@@ -76,6 +76,8 @@ As all work on this STSM was done publicy on GitHub, my contributions can also b
 For this STSM, we started from an open source visualization, [air](https://github.com/cambecc/air/), showing wind flows above Tokyo. My main focus was on developing the actual animation and the interpolation. To do so, I started with studying the air project's source code and gradually imported pieces into our project as set out by our [milestones](https://github.com/enram/bird-migration-flow-visualization/issues/milestones?state=closed). I optimized the code to fit our purposes and excluded parts that were not relevant. This resulted in particles moving on the map based on the data from the radars. The animation was further tuned to get the visually most pleasing result. The intense study of the air code was extremely instructive and definitely improved my JavaScript skills. 
 ### Kevin Azijn ([@kazijn](https://twitter.com/kazijn))
 
+My main focus was the visualization of the basemap including Belgium and Netherlands dotted with the 5 radar locations used in this STSM.  To achieve this I converted shapefiles to geojson files and combined those in a topojson file. This topojson file was used in combination with [D3.js](http://d3js.org/) to visualize it in the browser. Once this was done I focussed on the timeline and navigation and supported where necessary in the (JavaScript) development. [When.js](https://github.com/cujojs/when) was used to have all tasks run asynchronously and (semi)independently in order to properly run the visualization. [Sprintf](https://github.com/jakobwesthoff/sprintf.js) & other JavaScript libraries were used for the connection with the CartoDB backend and proper handling of dates.
+
 ## Results
 
 ### Create case study dataset
