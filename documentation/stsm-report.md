@@ -73,6 +73,7 @@ As all work on this STSM was done publicy on GitHub, my contributions can also b
 
 ### Bart Aelterman ([@bartaelterman](https://twitter.com/bartaelterman))
 
+For this STSM, we started from an open source visualization, [air](https://github.com/cambecc/air/), showing wind flows above Tokyo. My main focus was on developing the actual animation and the interpolation. To do so, I started with studying the air project's source code and gradually imported pieces into our project as set out by our [milestones](https://github.com/enram/bird-migration-flow-visualization/issues/milestones?state=open). I optimized the code to fit our purposes and excluded parts that were not relevant. This resulted in particles moving on the map based on the data from the radars. The animation was further tuned to get the visually most pleasing result. The intense study of the air code was extremely instructive and definitely improved my JavaScript skills. 
 ### Kevin Azijn ([@kazijn](https://twitter.com/kazijn))
 
 ## Results
