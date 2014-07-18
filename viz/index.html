@@ -6,7 +6,7 @@
         <link rel="shortcut icon" href="img/favicon.ico">
         <meta name="author" content="LifeWatch INBO"/>
 
-        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/custom.css"/>
     </head>
     <body>
@@ -21,7 +21,7 @@
             <div id="navigation" class="form-inline well clearfix">
                 <div class="form-group pull-left">
                     <label class="sr-only" for="time-int">Date/time</label>
-                    <input type="datetime" id="time-int" class="form-control" onfocus="pause()"value="April 5 2013, 00:00">
+                    <input type="datetime" id="time-int" class="form-control" onfocus="pause()" value="April 5 2013, 00:00">
 
                     <button type="button" id="play-pause" class="btn btn-default" onclick="playPause()"><span class="glyphicon glyphicon-pause"></button>
 
@@ -31,7 +31,7 @@
 
                 <div class="form-group pull-right">
                     <label>Altitude band </label>
-                    <select class="form-control" id="alt-band" onchange="changeAltitude()">
+                    <select id="alt-band" class="form-control"  onchange="changeAltitude()">
                         <option value="1">200-1600m</option>
                         <option value="2">above 1600m</option>
                     </select>
