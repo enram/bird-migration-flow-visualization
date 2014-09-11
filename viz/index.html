@@ -11,15 +11,19 @@
         <link rel="stylesheet" type="text/css" href="css/main.css"/>
     </head>
     <body>
-        <div class="viz">
+        <div class="info">
             <div class="container">
                 <div class="page-header">
                     <h1>Bird migration flow visualization</h1>
 
                     <p>This visualization shows <a href="https://github.com/enram/case-study/blob/master/documentation/story.md">one week of intense bird migration in April 2013</a> recorded by 5 weather radars (shown in blue) and interpolated over the entire area. This proof of concept is the result of a 5 day hackathon by the <a href="https://twitter.com/LifeWatchINBO">LifeWatch INBO</a> team, hosted at the <a href="http://ibed.uva.nl/research/research-groups/research-groups/research-groups/content/folder/computational-geo-ecology/computational-geo-ecology.html">University of Amsterdam</a> and in collaboration with the <a href="http://www.knmi.nl">KNMI</a>. The long-term goal of the <a href="http://enram.eu">European Network for the Radar Surveillance of Animal Movement (ENRAM)</a> is to retrieve this kind of data at a European scale. Documentation and source code are available on <a href="https://github.com/enram/bird-migration-flow-visualization">GitHub</a>.</p>
                 </div>
+            </div>
+        </div>
 
-                <div id="controls" class="form-inline well clearfix">
+        <div id="controls">
+            <div class="container">
+                <div class="form-inline well clearfix">
                     <div class="form-group pull-left">
                         <label class="sr-only" for="time-int">Date/time</label>
                         <input type="datetime" id="time-int" class="form-control" onfocus="pause()" value="April 5 2013, 00:00">
@@ -38,7 +42,11 @@
                         </select>
                     </div>
                 </div>
+            </div>
+        </div>
 
+        <div>
+            <div class="container">
                 <div id="display" data-topography="../data/basemap/basemap.topojson">
                     <div id="map">
                         <svg id="map-svg" xmlns="http://www.w3.org/2000/svg" version="1.1"/>
@@ -47,12 +55,14 @@
                         <canvas id="animation-canvas"></canvas>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div id="comments">
-                    <header>
-                        <h2>Comments</h2>
-                    </header>
-                    <div id="disqus_thread"></div>
+        <div id="comments">
+            <div class="container">
+                <h2>Comments</h2>
+                
+                <div id="disqus_thread"></div>
                     <script type="text/javascript">
                         var disqus_shortname = 'lifewatchinbo';
 
