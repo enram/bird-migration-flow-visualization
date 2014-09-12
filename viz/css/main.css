@@ -38,7 +38,9 @@
         }
 
 #footer {
-    background-color: #ecf0f1;
-    border-top: 2px solid #dce4ec;
-    padding-top: 1em;
+    background-color: #f8f8f8;
+    border-top: 1px solid #e7e7e7;
+    margin-top: 20px;
+    padding-bottom: 20px;
+    padding-top: 20px;
 }
