@@ -8,27 +8,27 @@
         height: 600px;
         overflow: hidden; /* Cuts of #map-svg and #field-canvas */
         position: relative;
-}
-
-/* Basemap */
-#map {
-    }
-    #map-svg {
-        }
-        path.countries {
-            fill: #101010;
-            stroke: #666666;
-        }
-        path.radars {
-            fill: #0182C3;
         }
 
-/* Animation */
-#animation {
-    left: 0;
-    position: absolute;
-    top: 0;
-}
+        /* Basemap */
+        #map {
+            }
+            #map-svg {
+                }
+                path.countries {
+                    fill: #101010;
+                    stroke: #666666;
+                }
+                path.radars {
+                    fill: #0182c3;
+                }
+
+        /* Animation */
+        #animation {
+            left: 0;
+            position: absolute;
+            top: 0;
+        }
 
 #footer {
     background-color: #ecf0f1;
