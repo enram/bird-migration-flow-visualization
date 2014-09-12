@@ -1,10 +1,13 @@
 /* Viz container */
 #display {
-    background: #313131;
-    margin-bottom: 3em;
-    height: 42em;
-    overflow: hidden; /* Cuts of #map-svg and #field-canvas */
-    position: relative;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    }
+    #canvas {
+        background: #313131;
+        height: 600px;
+        overflow: hidden; /* Cuts of #map-svg and #field-canvas */
+        position: relative;
 }
 
 /* Basemap */

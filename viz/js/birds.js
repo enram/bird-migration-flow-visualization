@@ -13,7 +13,7 @@
 "use strict";
 
 // special document elements
-var DISPLAY_ID = "#display";
+var CANVAS_ID = "#canvas";
 var MAP_SVG_ID = "#map-svg";
 var ANIMATION_CANVAS_ID = "#animation-canvas";
 var ALTITUDE_BAND_ID = "#alt-band";
@@ -45,7 +45,7 @@ var max_date = moment.utc("April 11 2013, 23:40", DATE_FORMAT);
  * Extract parameters sent to us by the server.
  */
 var displayData = {
-    topography: d3.select(DISPLAY_ID).attr("data-topography"),
+    topography: d3.select(CANVAS_ID).attr("data-topography"),
 };
 
 /**
@@ -63,7 +63,7 @@ var log = {
  * An object {width:, height:} that describes the extent of the container's view in pixels.
  */
 var view = function() {
-    var b = document.getElementById("display");
+    var b = $(CANVAS_ID)[0]; // Similar to document.getElementById
     var x = b.clientWidth;
     var y = b.clientHeight;
     // log.debug("Container size width:" + x + " height: "+ y);
@@ -88,7 +88,7 @@ var settings = {
 function init() {
     // log.debug("Topography URI: " + displayData.topography);
     // Modify the display elements to fill the screen.
-    d3.select(DISPLAY_ID).attr("width", view.width).attr("height", view.height);
+    d3.select(CANVAS_ID).attr("width", view.width).attr("height", view.height);
     d3.select(MAP_SVG_ID).attr("width", view.width).attr("height", view.height);
     d3.select(ANIMATION_CANVAS_ID).attr("width", view.width).attr("height", view.height);
 } 
