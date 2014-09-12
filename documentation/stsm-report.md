@@ -43,7 +43,7 @@ Milestone links below give a list of the achieved tasks and closed issues. For a
 
 * Follow-up meeting with same participants as introduction meeting and invitees from UvA, NLeSC and surfSARA.
 * Prioritize remaining milestones
-* Discuss aim and structure of a data challenge to be organized in the coming year, based on the experience of this STSM
+* Discuss aim and structure of a visualization challenge to be organized in the coming year, based on the experience of this STSM
 * **Milestone**: [visualization with altitude band selection](https://github.com/enram/bird-migration-flow-visualization/issues?milestone=2&state=closed)
 * Upload reflectivity-ppi data
 * **Milestone**: [documented bird migration data](https://github.com/enram/case-study/issues?milestone=1&state=closed)
@@ -59,17 +59,62 @@ Milestone links below give a list of the achieved tasks and closed issues. For a
 
 * Fix remaining bugs in visualization
 * [Launch visualization](http://enram.github.io/bird-migration-flow-visualization/viz/)
-* Announce visualization via [Twitter](https://twitter.com/LifeWatchINBO) and other communication channels
+* Announce visualization via [Twitter](https://twitter.com/lifewatchinbo/status/474850448839802880) and other communication channels
 * Write report
 * **Milestone**: [README](https://github.com/enram/bird-migration-flow-visualization/issues?milestone=6&state=closed)
 
 ## Personal contribution
 
-To be completed by Bart, Kevin, and Peter.
+### Peter Desmet ([@peterdesmet](https://twitter.com/peterdesmet))
+
+My main contribution to this STSM was coordination and documentation. I communicated with the involved researchers regarding the case study data, how to document these, the visualization challenge, and how to use GitHub, as well as with my team regarding milestones and priorities for our visualization prototype. I recorded all required use cases and tasks as issues ([here](https://github.com/enram/bird-migration-flow-visualization/issues/created_by/peterdesmet?state=closed) and [here](https://github.com/enram/case-study/issues/created_by/peterdesmet?state=closed)) and documented the majority of the case study data, as well as the visualization. I also added the data to our CartoDB backend and created the design of the visualization.
+
+As all work on this STSM was done publicy on GitHub, my contributions can also be found [here](https://github.com/peterdesmet?tab=contributions&from=2014-06-02&to=2014-06-06#contribution-activity).
+
+### Bart Aelterman ([@bartaelterman](https://twitter.com/bartaelterman))
+
+For this STSM, we started from an open source visualization, [air](https://github.com/cambecc/air/), showing wind flows above Tokyo. My main focus was on developing the actual animation and the interpolation. To do so, I started with studying the air project's source code and gradually imported pieces into our project as set out by our [milestones](https://github.com/enram/bird-migration-flow-visualization/issues/milestones?state=closed). I optimized the code to fit our purposes and excluded parts that were not relevant. This resulted in particles moving on the map based on the data from the radars. The animation was further tuned to get the visually most pleasing result. The intense study of the air code was extremely instructive and definitely improved my JavaScript skills. 
+### Kevin Azijn ([@kazijn](https://twitter.com/kazijn))
+
+My main focus was the visualization of the basemap including Belgium and Netherlands dotted with the 5 radar locations used in this STSM.  To achieve this I converted shapefiles to geojson files and combined those in a topojson file. This topojson file was used in combination with [D3.js](http://d3js.org/) to visualize it in the browser. Once this was done I focussed on the timeline and navigation and supported where necessary in the (JavaScript) development. [When.js](https://github.com/cujojs/when) was used to have all tasks run asynchronously and (semi)independently in order to properly run the visualization. [Sprintf](https://github.com/jakobwesthoff/sprintf.js) & other JavaScript libraries were used for the connection with the CartoDB backend and proper handling of dates.
 
 ## Results
 
-Description of the main results obtained.
+### Create case study dataset
+
+Available at <https://github.com/enram/case-study>
+
+* Extracted, uploaded, and documented [bird migration altitude profiles dataset](https://github.com/enram/case-study/tree/master/data/bird-migration-altitude-profiles) retrieved from weather radars
+* Extracted and uploaded [radar locations dataset](https://github.com/enram/case-study/blob/master/data/radars/radars.geojson)
+* Extracted and uploaded [reflectivity ppi dataset](https://github.com/enram/case-study/tree/master/data/reflectivity-ppi)
+* Extracted, uploaded and documented [basemap for Belgium and the Netherlands](data/basemap)
+* Started [documentation](https://github.com/enram/case-study/blob/master/data/README.md) regarding these data
+* Wrote [description of the case study](https://github.com/enram/case-study/blob/master/documentation/story.md)
+
+### Develop a prototype of a flow visualization
+
+Available at <https://github.com/enram/bird-migration-flow-visualization>
+
+* Created a functional [bird migration flow visualization prototype](http://enram.github.io/bird-migration-flow-visualization/viz/) using the data of the case study
+* [Open sourced](https://github.com/enram/bird-migration-flow-visualization) the code (under an MIT license)
+* [Documented the visualization](https://github.com/enram/bird-migration-flow-visualization/blob/master/README.md)
+
+### Document dataset and prototype as guidelines for a visualization challenge
+
+* Case study dataset is almost completely documented, further documentation will be added for the visualization challenge
+* Visualization prototype is fully documented on GitHub (see above), including [all activity](https://github.com/enram/bird-migration-flow-visualization/commits/master)
+
+### Discuss aim and structure of the visualization challenge
+
+We plan to organize a visualization challenge (originally "data challenge") end of 2014 / early 2015 to see what other visualizations can be made with the case study data. The idea is to further develop interesting results, so these can be used by researchers and the general public to discover and analyze the data ENRAM will generate.
+
+Provisional timeline:
+
+1. Summer 2014: Further document use case and record specific use cases
+2. October 2014: Present this STSM and announce visualization challenge at the ENRAM meeting in Spain
+3. December 2014: Organize a 3 day hackathon as the kick off for the data challenge. This STSM has learned us that is important to allow enough time for the developers to build up some momentum and to have direct contact with the researchers so questions can be answered quickly. The hackathon will start with an introduction and end with presentations of early results, with the possibility for teams to participate remotely.
+4. January-March 2014: Visualization challenge, where teams can (continue to) work on their visualization remotely. Teams can join at any time, but results should be submitted before the deadline and open sourced.
+5. April 2014: End of the visualization challenge. The most interesting visualizations will be selected and announced, and the teams contacted for further collaboration.
 
 ## Future collaborations / opportunities
 
@@ -89,7 +134,7 @@ This only includes the outreach and foreseen publications in the 5 days since th
 * Public dissemination via [Twitter](https://twitter.com/cost_enram)
 * Blog post on the [LifeWatch INBO blog](http://lifewatch.inbo.be/blog/posts/bird-migration-flow-visualization.html)
 * Judy Shamoun-Baranes, Jason Chapman, Adriaan Dokter, Hans van Gasteren, Maarten de Graaf, Hidde Leijnse & Felix Liechti. 2014. Continental-scale Radar Monitoring of the Aerial Movements of Animals. 26th International Ornithological Congress. 18-24 August 2014, Tokyo, Japan. (oral presentation) 
-* Hidde Leijnse, Adriaan Dokter, Günther Haase, Przemysław Jacewicz, Matti Leskinen, Alessio Balleri, Judy Shamoun-Baranes, Jose A. Alves, Silke Bauer, Ommo Hüppop, Jarmo Koistinen, Felix Liechti, Hans van Gasteren & Jason W. Chapman. 2014. The European Network for the Radar Surveillance of Animal Movement. 8th European Conference on Radar in Meteorology and Hydrology. 1-5 September 2014, Garmisch-Partenkirchen, Germany. (oral presentation)
+* Hidde Leijnse, Adriaan Dokter, Peter Desmet, Bart Aelterman, Kevin Azijn, Günther Haase, Przemysław Jacewicz, Matti Leskinen, Alessio Balleri, Judy Shamoun-Baranes, Jose A. Alves, Silke Bauer, Ommo Hüppop, Jarmo Koistinen, Felix Liechti, Hans van Gasteren & Jason W. Chapman. 2014. The European Network for the Radar Surveillance of Animal Movement. 8th European Conference on Radar in Meteorology and Hydrology. 1-5 September 2014, Garmisch-Partenkirchen, Germany. (oral presentation)
 
 ## Confirmation letter by host institution
 
