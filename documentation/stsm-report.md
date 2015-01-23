@@ -19,7 +19,7 @@ The goal of this STSM is threefold:
 
 ## Description of the work
 
-Milestone links below give a list of the achieved tasks and closed issues. For an overview of all achieved milestones for the visualization, [see here](https://github.com/enram/bird-migration-flow-visualization/issues/milestones?state=closed).
+Milestone links below give a list of the achieved tasks and closed issues. For an overview of all achieved milestones for the visualization, [see here](https://github.com/enram/bird-migration-flow-visualization/milestones?state=closed).
 
 ### Monday June 2
 
@@ -122,7 +122,7 @@ All future collaborations will include additional ENRAM partners:
 
 * Work towards a case study that covers a larger extent of the ENRAM network
 * Extend the visualization to encompass larger case study area
-* Extend the visualization with extra functionalities (see [these milestones](https://github.com/enram/bird-migration-flow-visualization/issues/milestones?with_issues=no))
+* Extend the visualization with extra functionalities (see [these milestones](https://github.com/enram/bird-migration-flow-visualization/milestones?with_issues=no))
 * Joint collection of use cases for this and other visualizations
 * Joint publications for the scientific community
 * Training of early stage researchers
