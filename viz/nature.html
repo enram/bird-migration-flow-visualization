@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Bird migration flow visualization</title>
+        <meta name="author" content="LifeWatch INBO">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/main.css">
+        <style>
+            .container {
+                width: 440px;
+            }
+            #controls {
+                padding: 15px 0;
+                }
+                #controls .container {
+                    height: 36px;
+                }
+                #controls .form-control {
+                    display: inline-block;
+                    width: auto;
+                }
+                #controls .pull-right {
+                    display: none;
+                }
+        </style>
+    </head>
+    
+    <body>
+        <div id="controls">
+            <div class="container">
+                <div class="form-inline clearfix">
+                    <div class="form-group pull-left">
+                        <label class="sr-only" for="time-int">Date/time</label>
+                        <input type="datetime" id="time-int" class="form-control" onfocus="pause()" value="April 6 2013, 12:00">
+
+                        <button type="button" id="play-pause" class="btn btn-default" onclick="playPause()"><span class="glyphicon glyphicon-pause"></button>
+
+                        <button type="button" id="previous" class="btn btn-default" onclick="previousWithPause()"><span class="glyphicon glyphicon-step-backward"></span></button>
+                        <button type="button" id="next" class="btn btn-default" onclick="nextWithPause()"><span class="glyphicon glyphicon-step-forward"></span></button>
+                    </div>
+
+                    <div class="form-group pull-right">
+                        <label>Altitude band </label>
+                        <select id="alt-band" class="form-control"  onchange="changeAltitude()">
+                            <option value="1">200-1600m</option>
+                            <option value="2">above 1600m</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="display">
+            <div class="container">
+                <div id="canvas" data-topography="../data/basemap/basemap.topojson">
+                    <div id="map">
+                        <svg id="map-svg" xmlns="http://www.w3.org/2000/svg" version="1.1"/>
+                    </div>
+                    <div id="animation">
+                        <canvas id="animation-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script type="text/javascript" src="js/when.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sprintf/0.0.7/sprintf.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
+        <script type="text/javascript" src="js/cartodb-connect.js"></script>
+        <script type="text/javascript" src="js/mvi.js"></script>
+        <script type="text/javascript" src="js/birds.js"></script>
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-42312007-2', 'enram.github.io');
+          ga('send', 'pageview');
+        </script>
+    </body>
+</html>
