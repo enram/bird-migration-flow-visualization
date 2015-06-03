@@ -49,8 +49,8 @@ SELECT
         ELSE 0
     END AS avg_bird_density
 FROM
-    lifewatch.bird_migration_altitude_profiles b
-    LEFT JOIN lifewatch.radars r
+    bird_migration_altitude_profiles b
+    LEFT JOIN radars r
     ON b.radar_id = r.radar_id
 WHERE
     b.altitude >= 0.2
