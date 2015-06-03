@@ -17,6 +17,9 @@
             var formatTooltipTitle = d3.time.format("%Y-%m-%d %H:%M");
             var timechart = c3.generate({
                 bindto: "#slider",
+                size: {
+                    height: 200
+                },
                 data: {
                     url: "../data/bird-density/average-density.csv",
                     x: "interval_start_time",
