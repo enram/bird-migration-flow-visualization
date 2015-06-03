@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="css/c3.min.css">
+        <script src="js/d3.min.js"></script>
+        <script src="js/c3.min.js"></script>
+    </head>
+    <body>
+        <div id="slider"></div>
+        <script type="text/javascript">
+            var timechart = c3.generate({
+                bindto: "#slider",
+                data: {
+                    url: "../data/bird-density/average-density.csv",
+                    x: "interval_start_time",
+                    xFormat: '%Y-%m-%d %H:%M:%S+00', // Assumes +00 timezone offset
+                    type: "area-spline"
+                },
+                axis: {
+                    x: {
+                        type: "timeseries",
+                        localtime: false,
+                        tick: {
+                            count: 30,
+                            format: "%Y-%m-%d %H:%M"
+                        }
+                    }
+                },
+                tooltip: {
+                    show: true
+                },
+                legend: {
+                    show: false
+                },
+                point: {
+                    show: false
+                }
+            });
+        </script>
+    </body>
+</html>
