@@ -23,6 +23,9 @@
 
             var showInterval = function(interval) {
                 intervalElement.text(formatInterval(interval));
+                timechart.xgrids([
+                    { value: interval, text: "Current interval" }
+                ]);
                 return false;
             };
             
