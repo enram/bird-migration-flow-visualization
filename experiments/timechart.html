@@ -40,6 +40,10 @@
                         tick: {
                             format: "%Y-%m-%d",
                             count: 30
+                        },
+                        padding: {
+                            left: 0,
+                            right: 0
                         }
                     },
                     y: {
@@ -50,6 +54,7 @@
                     show: false
                 },
                 tooltip: {
+                    show: false,
                     format: {
                         title: function (x) { return formatTooltipTitle(x); }
                     }
@@ -66,7 +71,7 @@
                     { axis: "x", start: "2013-04-09 18:00:00+00", end: "2013-04-10 06:00:00+00", class: "night" },
                     { axis: "x", start: "2013-04-10 18:00:00+00", end: "2013-04-11 06:00:00+00", class: "night" },
                     { axis: "x", start: "2013-04-11 18:00:00+00",                                class: "night" }
-                ],
+                ]
             });
         </script>
     </body>
