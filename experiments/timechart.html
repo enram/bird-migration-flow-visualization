@@ -14,10 +14,18 @@
     </head>
     <body>
         <div id="slider"></div>
+        <div id="interval"></div>
         <script src="js/d3.min.js"></script>
         <script src="js/c3.min.js"></script>
         <script type="text/javascript">
-            var formatTooltipTitle = d3.time.format("%Y-%m-%d %H:%M");
+            var intervalElement = d3.select("#interval"),
+                formatInterval = d3.time.format("%Y-%m-%d %H:%M");
+
+            var showInterval = function(interval) {
+                intervalElement.text(formatInterval(interval));
+                return false;
+            };
+            
             var timechart = c3.generate({
                 bindto: "#slider",
                 size: {
@@ -30,7 +38,8 @@
                     type: "area-spline",
                     colors: {
                         "avg_bird_density": "black"
-                    }
+                    },
+                    onmouseover: function (d) { showInterval(d.x); }
                 },
                 axis: {
                     x: {
@@ -56,7 +65,7 @@
                 tooltip: {
                     show: false,
                     format: {
-                        title: function (x) { return formatTooltipTitle(x); }
+                        title: function (x) { return formatInterval(x); }
                     }
                 },
                 legend: {
