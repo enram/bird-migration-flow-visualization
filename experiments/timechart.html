@@ -5,7 +5,10 @@
         <link rel="stylesheet" type="text/css" href="css/c3.min.css">
         <style>
         .c3-region.night {
-            fill: #666666;
+            fill: #000000;
+        }
+        .c3-line {
+            fill: red;
         }
         </style>
     </head>
@@ -24,20 +27,14 @@
                     url: "../data/bird-density/average-density.csv",
                     x: "interval_start_time",
                     xFormat: '%Y-%m-%d %H:%M:%S+00', // Assumes +00 timezone offset
-                    type: "area-spline"
+                    type: "area-spline",
+                    colors: {
+                        "avg_bird_density": "black"
+                    }
                 },
-                regions: [
-                    { axis: "x",                                  end: "2013-04-05 06:00:00+00", class: "night" },
-                    { axis: "x", start: "2013-04-05 18:00:00+00", end: "2013-04-06 06:00:00+00", class: "night" },
-                    { axis: "x", start: "2013-04-06 18:00:00+00", end: "2013-04-07 06:00:00+00", class: "night" },
-                    { axis: "x", start: "2013-04-07 18:00:00+00", end: "2013-04-08 06:00:00+00", class: "night" },
-                    { axis: "x", start: "2013-04-08 18:00:00+00", end: "2013-04-09 06:00:00+00", class: "night" },
-                    { axis: "x", start: "2013-04-09 18:00:00+00", end: "2013-04-10 06:00:00+00", class: "night" },
-                    { axis: "x", start: "2013-04-10 18:00:00+00", end: "2013-04-11 06:00:00+00", class: "night" },
-                    { axis: "x", start: "2013-04-11 18:00:00+00",                                class: "night" }
-                ],
                 axis: {
                     x: {
+                        show: false,
                         type: "timeseries",
                         localtime: true,
                         tick: {
@@ -49,6 +46,9 @@
                         show: false
                     }
                 },
+                point: {
+                    show: false
+                },
                 tooltip: {
                     format: {
                         title: function (x) { return formatTooltipTitle(x); }
@@ -57,9 +57,16 @@
                 legend: {
                     show: false
                 },
-                point: {
-                    show: false
-                }
+                regions: [
+                    { axis: "x",                                  end: "2013-04-05 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-05 18:00:00+00", end: "2013-04-06 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-06 18:00:00+00", end: "2013-04-07 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-07 18:00:00+00", end: "2013-04-08 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-08 18:00:00+00", end: "2013-04-09 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-09 18:00:00+00", end: "2013-04-10 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-10 18:00:00+00", end: "2013-04-11 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-11 18:00:00+00",                                class: "night" }
+                ],
             });
         </script>
     </body>
