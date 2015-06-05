@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Bubbles</title>
+        <link rel="stylesheet" type="text/css" href="css/c3.min.css">
+        <style>
+        </style>
+    </head>
+    <body>
+        <p>Based on <a href="http://jsfiddle.net/blakedietz/R5cRK/1/">this JSFiddle</a> and <a href="http://stackoverflow.com/questions/20725548/animating-circles-with-d3-js">Discussion</a>.
+        <script src="js/d3.min.js"></script>
+        <script src="js/c3.min.js"></script>
+        <script type="text/javascript">
+            w = 500,
+            h = 500;
+
+            var svg = d3.select("body").append("svg:svg")
+                .attr("width", w)
+                .attr("height", h);
+
+            var circle = svg.selectAll("circle")
+                .data(d3.range(500).map(function(datum,interval) {
+                  return {
+                    x: interval*20,
+                    y: 0,
+                    dx: 5,
+                    dy: -3 * (Math.random()+1),
+                    mu: Math.random()*2
+                  };
+                }))
+              .enter().append("svg:circle")
+                .attr("r", 2.5)
+                .attr("fill","orange")
+                .attr("opacity",".5");
+
+            var text = svg.append("svg:text")
+                .attr("x", 20)
+                .attr("y", 20);
+
+            var start = Date.now(),
+                frames = 0;
+
+            d3.timer(function() 
+            {
+
+              // Update the FPS meter.
+              var now = Date.now(), duration = now - start;
+              text.text(~~(++frames * 1000 / duration));
+              if (duration >= 1000) frames = 0, start = now;
+
+              // Update the circle positions.
+              circle
+                  .attr("cx", function(d) { d.x += Math.random()*3*Math.sin(Math.random()*3*d.x + Math.random()*10); if (d.x > w) d.x -= w; else if (d.x < 0) d.x += w; return d.x; })
+                  .attr("cy", function(d) { d.y += d.dy ; if (d.y > h) d.y -= h; else if (d.y < 0) d.y += h; return d.y; })
+                  .attr("r",function(d)
+                  {
+                    return (d.y < 100) ? d3.select(this).attr("r") : d.mu*500/d.y;
+                  });
+            });
+        </script>
+    </body>
+</html>
