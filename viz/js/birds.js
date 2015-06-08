@@ -29,6 +29,7 @@ var interval;
 var particles = [];
 var g;
 var albers_projection;
+var allradardata;
 var data;
 var interval;
 var basemap;
@@ -40,6 +41,7 @@ var maxY;
 var columns;
 var min_date = moment.utc("April 5 2013, 00:00", DATE_FORMAT);
 var max_date = moment.utc("April 11 2013, 23:40", DATE_FORMAT);
+var datafile = "../data/data.json";
 
 /** 
  * Extract parameters sent to us by the server.
@@ -129,7 +131,6 @@ function loadJson(resource) {
     // log.debug("JSON Retrieval...");
     var d = when.defer();
     d3.json(resource, function(error, result) {
-        // log.debug("Retrieval finished");
         return error ?
             !error.status ?
                 d.reject({error: -1, message: "Cannot load resource: " + resource, resource: resource}) :
@@ -175,6 +176,12 @@ function loadMap(bm) {
         .attr("class", "radars");
 
     // log.debug("Basemap created");
+}
+// Load all radar data in a global variable
+function loadData(indata) {
+    allradardata = indata;
+    console.log("all radar data:");
+    console.log(allradardata);
 }
 
 /**
@@ -507,7 +514,9 @@ function apply(f) {
  * to be run when loading the application.
 */
 var taskTopoJson       = loadJson(displayData.topography);
+var taskDataJson       = loadJson(datafile);
 var taskInitialization = when.all(true).then(apply(init));
+var taskLoadData       = when.all([taskDataJson]).then(apply(loadData));
 var taskRenderMap      = when.all([taskTopoJson]).then(apply(loadMap));
 var taskRadarData      = when.all([taskRenderMap]).then(apply(updateRadarData));
 var taskAnimation      = when.all([taskRadarData, taskRenderMap]).then(apply(startAnimation))
