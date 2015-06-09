@@ -37,15 +37,15 @@ SELECT
     END AS altitude_band,
     count(*) AS number_of_measurements,
     CASE
-        WHEN avg(b.radial_velocity_std) >= 2 AND avg(b.bird_density) >= 10 THEN round(avg(b.u_speed)::numeric,5)
+        WHEN avg(b.radial_velocity_std) >= 2 AND avg(b.bird_density) >= 1 THEN round(avg(b.u_speed)::numeric,5)
         ELSE 0
     END AS avg_u_speed,
     CASE
-        WHEN avg(b.radial_velocity_std) >= 2 AND avg(b.bird_density) >= 10 THEN round(avg(b.v_speed)::numeric,5)
+        WHEN avg(b.radial_velocity_std) >= 2 AND avg(b.bird_density) >= 1 THEN round(avg(b.v_speed)::numeric,5)
         ELSE 0
     END AS avg_v_speed,
     CASE
-        WHEN avg(b.radial_velocity_std) >= 2 AND avg(b.bird_density) >= 10 THEN round(avg(b.bird_density)::numeric,5)
+        WHEN avg(b.radial_velocity_std) >= 2 AND avg(b.bird_density) >= 1 THEN round(avg(b.bird_density)::numeric,5)
         ELSE 0
     END AS avg_bird_density
 FROM
