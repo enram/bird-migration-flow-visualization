@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="css/c3.min.css">
+        <style>
+        .c3-region.night {
+            fill: #000000;
+        }
+        .current-interval line {
+            stroke: red;
+            stroke-width: 1;
+        }
+        </style>
+    </head>
+    <body>
+        <div id="slider"></div>
+        <div id="interval"></div>
+        <script src="js/d3.min.js"></script>
+        <script src="js/c3.min.js"></script>
+        <script type="text/javascript">
+            var intervalElement = d3.select("#interval"),
+                formatInterval = d3.time.format("%Y-%m-%d %H:%M");
+
+            var showInterval = function(interval) {
+                intervalElement.text(formatInterval(interval));
+                timechart.xgrids([
+                    { value: interval, class: "current-interval" }
+                ]);
+                return false;
+            };
+            
+            var timechart = c3.generate({
+                bindto: "#slider",
+                size: {
+                    height: 200
+                },
+                data: {
+                    url: "../data/bird-density/average-density.csv",
+                    x: "interval_start_time",
+                    xFormat: '%Y-%m-%d %H:%M:%S+00', // Assumes +00 timezone offset
+                    type: "area-spline",
+                    colors: {
+                        "avg_bird_density": "black"
+                    },
+                    onmouseover: function (d) { showInterval(d.x); }
+                },
+                axis: {
+                    x: {
+                        show: false,
+                        type: "timeseries",
+                        localtime: true,
+                        tick: {
+                            format: "%Y-%m-%d",
+                            count: 30
+                        },
+                        padding: {
+                            left: 0,
+                            right: 0
+                        }
+                    },
+                    y: {
+                        show: false
+                    }
+                },
+                point: {
+                    show: false
+                },
+                tooltip: {
+                    show: false,
+                    // format: {
+                    //     title: function (x) { return formatInterval(x); }
+                    // }
+                },
+                legend: {
+                    show: false
+                },
+                regions: [
+                    { axis: "x",                                  end: "2013-04-05 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-05 18:00:00+00", end: "2013-04-06 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-06 18:00:00+00", end: "2013-04-07 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-07 18:00:00+00", end: "2013-04-08 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-08 18:00:00+00", end: "2013-04-09 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-09 18:00:00+00", end: "2013-04-10 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-10 18:00:00+00", end: "2013-04-11 06:00:00+00", class: "night" },
+                    { axis: "x", start: "2013-04-11 18:00:00+00",                                class: "night" }
+                ]
+            });
+        </script>
+    </body>
+</html>
