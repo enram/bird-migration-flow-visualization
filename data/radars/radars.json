@@ -1,0 +1,39 @@
+{
+  "radars": [
+      {
+        "name": "Zaventem",
+        "coordinates": [
+          4.45113415842,
+          50.9011162633
+        ]
+      },
+      {
+        "name": "Wideumont",
+        "coordinates": [
+          5.50443367957,
+          49.9141466863
+        ]
+      },
+      {
+        "name": "Jabbeke",
+        "coordinates": [
+          3.06528758596,
+          51.1928594318
+        ]
+      },
+      {
+        "name": "De Bilt",
+        "coordinates": [
+          5.17843467147,
+          52.1018141226
+        ]
+      },
+      {
+        "name": "Den Helder",
+        "coordinates": [
+          4.78976153555,
+          52.9534766313
+        ]
+      }
+  ]
+}

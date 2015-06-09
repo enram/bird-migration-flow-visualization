@@ -22,9 +22,10 @@ function app() {
         particles,
         data,
         datafile = "../data/bird-migration-altitude-profiles/aggregated-data.csv",
+        radardatafile = "../data/radars/radars.json",
+        basemapfile = "../data/basemap/basemap.topojson",
         TIME_INTERVAL_ID = "#time-int",
         ALTITUDE_BAND_ID = "#alt-band",
-        basemapfile = "../data/basemap/basemap.topojson",
         min_date,
         max_date,
         default_alt_band = 1,
@@ -141,17 +142,14 @@ function app() {
             return projection.scale(s).translate(t);
         }
 
+
         /**
          * Load the basemap in the svg with the countries, country border and radars
          */
         function drawBasemap(bm) {
             //log.debug("Creating basemap...");
             var countries = topojson.feature(bm, bm.objects.ne_10m_admin_0_countries);
-            // var cities = topojson.feature(bm, bm.objects.ne_10m_populated_places_simple);
-            var radars = topojson.feature(bm, bm.objects.radars);
-
             albers_projection = createAlbersProjection(bm.bbox[0], bm.bbox[1], bm.bbox[2], bm.bbox[3], view);
-
             var path = d3.geo.path()
                 .projection(albers_projection);
 
@@ -163,19 +161,23 @@ function app() {
                 .attr("class", "countries");
 
             path.pointRadius(2);
-
-            // svg.append("path")
-            //      .datum(cities)
-            //      .attr("d", path)
-            //      .attr("class", "places");
-
-            svg.append("path")
-                .datum(radars)
-                .attr("d", path)
-                .attr("class", "radars");
-
             // log.debug("Basemap created");
         }
+
+        function drawRadars(radarData) {
+            console.log("plotting radars");
+            console.log(radarData);
+
+            var svg = d3.select(MAP_SVG_ID);
+            svg.selectAll("circle")
+                .data(radarData.radars).enter()
+                .append("circle")
+                .attr("cx", function(d) {return albers_projection(d.coordinates)[0];})
+                .attr("cy", function(d) {return albers_projection(d.coordinates)[1];})
+                .attr("r", "2")
+                .attr("class", "radars");
+        }
+
 
         // Create particle object
         function createParticle(age) {
@@ -257,11 +259,12 @@ function app() {
 
 
 
-        var init = function(basemapdata) {
+        var init = function(basemapdata, radarData) {
             d3.select(CANVAS_ID).attr("width", view.width).attr("height", view.height);
             d3.select(MAP_SVG_ID).attr("width", view.width).attr("height", view.height);
             d3.select(ANIMATION_CANVAS_ID).attr("width", view.width).attr("height", view.height);
             drawBasemap(basemapdata);
+            drawRadars(radarData);
             var p0 = albers_projection([basemapdata.bbox[0], basemapdata.bbox[1]]);
             var p1 = albers_projection([basemapdata.bbox[2], basemapdata.bbox[3]]);
             minX = Math.floor(p0[0]);
@@ -498,14 +501,17 @@ function app() {
             min_date = moment.utc(timestamps[0], UTC_DATE_FORMAT);
             max_date = moment.utc(timestamps[timestamps.length - 1], UTC_DATE_FORMAT);
             d3.json(basemapfile, function(basemapdata) {
-                basemap = basemapdata;
-                drawer = createDrawer();
-                drawer.init(basemap);
-                interpolator = createInterpolator();
-                interpolator.init(drawer.view);
-                interpolator.interpolateField(moment.utc(min_date).format(UTC_DATE_FORMAT) + "+00", default_alt_band);
-                drawer.startAnimation();
-                play();
+                d3.json(radardatafile, function(radarData) {
+                    basemap = basemapdata;
+                    var radars = radarData;
+                    drawer = createDrawer();
+                    drawer.init(basemap, radarData);
+                    interpolator = createInterpolator();
+                    interpolator.init(drawer.view);
+                    interpolator.interpolateField(moment.utc(min_date).format(UTC_DATE_FORMAT) + "+00", default_alt_band);
+                    drawer.startAnimation();
+                    play();
+                });
             })
         });
     }
