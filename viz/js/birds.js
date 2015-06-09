@@ -492,15 +492,15 @@ function app() {
             var result = hashOnIntervalStart(indata);
             data = result.data;
             var timestamps = result.keys;
-            min_date = timestamps[0];
-            max_date = timestamps[timestamps.length - 1];
+            min_date = moment.utc(timestamps[0], UTC_DATE_FORMAT);
+            max_date = moment.utc(timestamps[timestamps.length - 1], UTC_DATE_FORMAT);
             d3.json(basemapfile, function(basemapdata) {
                 basemap = basemapdata;
                 drawer = createDrawer();
                 drawer.init(basemap);
                 interpolator = createInterpolator();
                 interpolator.init(drawer.view);
-                interpolator.interpolateField(min_date, default_alt_band);
+                interpolator.interpolateField(moment.utc(min_date).format(UTC_DATE_FORMAT) + "+00", default_alt_band);
                 drawer.startAnimation();
                 play();
             })
