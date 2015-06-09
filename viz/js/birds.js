@@ -20,6 +20,7 @@ function app() {
         field,
         g,
         particles,
+        radars,
         data,
         datafile = "../data/bird-migration-altitude-profiles/aggregated-data.csv",
         radardatafile = "../data/radars/radars.json",
@@ -83,13 +84,6 @@ function app() {
         var CANVAS_ID = "#canvas",
             MAP_SVG_ID = "#map-svg",
             ANIMATION_CANVAS_ID = "#animation-canvas";
-
-        /**
-         * Extract parameters sent to us by the server.
-         */
-        var displayData = {
-            topography: d3.select(CANVAS_ID).attr("data-topography"),
-        };
 
         /**
          * An object {width:, height:} that describes the extent of the container's view in pixels.
@@ -165,12 +159,9 @@ function app() {
         }
 
         function drawRadars(radarData) {
-            console.log("plotting radars");
-            console.log(radarData);
-
             var svg = d3.select(MAP_SVG_ID);
             svg.selectAll("circle")
-                .data(radarData.radars).enter()
+                .data(radarData).enter()
                 .append("circle")
                 .attr("cx", function(d) {return albers_projection(d.coordinates)[0];})
                 .attr("cy", function(d) {return albers_projection(d.coordinates)[1];})
@@ -300,7 +291,7 @@ function app() {
         function buildPointsFromRadars(indata) {
             var points = [];
             indata.forEach(function(row) {
-                var p = albers_projection([row.longitude, row.latitude]);
+                var p = albers_projection([radars[row.radar_id].coordinates[0], radars[row.radar_id].coordinates[1]]);
                 var point = [p[0], p[1], [row.avg_u_speed, -row.avg_v_speed]]; // negate v because pixel space grows downwards, not upwards
                 points.push(point);
             });
@@ -503,9 +494,12 @@ function app() {
             d3.json(basemapfile, function(basemapdata) {
                 d3.json(radardatafile, function(radarData) {
                     basemap = basemapdata;
-                    var radars = radarData;
+                    radars = {};
+                    for (var i=0; i<radarData.radars.length; i++) {
+                        radars[radarData.radars[i].id] = radarData.radars[i];
+                    };
                     drawer = createDrawer();
-                    drawer.init(basemap, radarData);
+                    drawer.init(basemap, radarData.radars);
                     interpolator = createInterpolator();
                     interpolator.init(drawer.view);
                     interpolator.interpolateField(moment.utc(min_date).format(UTC_DATE_FORMAT) + "+00", default_alt_band);
