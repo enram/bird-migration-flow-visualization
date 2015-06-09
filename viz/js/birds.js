@@ -259,25 +259,6 @@ function animateTimeFrame(data, projection) {
 function rand(min, max) {
     return min + Math.random() * (max - min);
 }
-/**
- * Returns the index of v in array a (adapted from Java and darkskyapp/binary-search).
- */
-function binarySearch(a, v) {
-    var low = 0, high = a.length - 1;
-    while (low <= high) {
-    var mid = low + ((high - low) >> 1), p = a[mid];
-    if (p < v) {
-        low = mid + 1;
-    }
-    else if (p === v) {
-        return mid;
-    }
-    else {
-        high = mid - 1;
-    } 
-    }
-    return -(low + 1);
-}
 
 // Build points based on the data retrieved from the data back end
 function buildPointsFromRadars(data) {
