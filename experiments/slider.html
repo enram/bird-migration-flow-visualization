@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="css/c3.min.css">
+        <style>
+            #slider {
+                width: 400px;
+            }
+        </style>
+    </head>
+    <body>
+        <input type="range" id="slider" step="1" min="0" max="100" value="0">
+        <script src="js/d3.min.js"></script>
+        <script type="text/javascript">
+            var x = 0;
+            var slider = document.getElementById("slider");
+            var max = slider.max;
+
+            setInterval(function() {
+                x++;
+                if (x <= max) {
+                    slider.stepUp();
+                    console.log(x);
+                }
+            }, 100);
+        </script>
+    </body>
+</html>
