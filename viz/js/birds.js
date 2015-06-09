@@ -106,7 +106,6 @@ function app() {
          */
         var settings = {
             frameRate: 60, // desired milliseconds per frame
-            framesPerTime: 40, // desired frames per time interval
             maxParticleAge: 60, // max number of frames a particle is drawn before regeneration
             particleCount: 300
         };
