@@ -18,7 +18,7 @@ We created this visualization during a 5 day hackathon on June 2 to 6, 2014, hos
 * [Radar locations](https://github.com/enram/case-study/blob/master/data/radars/radars.geojson)
 * [Basemap for Belgium and the Netherlands as topojson](data/basemap)
 
-[Read more about the case study data](https://github.com/enram/case-study/blob/master/documentation/story.md) we visualized.
+[Read more about the case study data](https://github.com/enram/case-study/blob/master/story.md) we visualized.
 
 ## How it works
 
