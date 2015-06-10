@@ -22,12 +22,14 @@ function app() {
         particles,
         radars,
         data,
-        datafile = "../data/bird-migration-altitude-profiles/aggregated-data.csv",
-        radardatafile = "../data/radars/radars.json",
-        basemapfile = "../data/basemap/basemap.topojson",
-        //bbox = [-126.76,24.79,-66.5,49.24],
-        bbox = [2.5218,49.495223, 7.198506, 53.558092],
-        BASELAYER_OBJECT = "ne_10m_admin_0_countries",
+        datafile = "../data/bird-migration-altitude-profiles/us-aggregated-data.csv",
+        radardatafile = "../data/radars/us-radars.json",
+        basemapfile = "../data/basemap/us.json",
+        //bbox = [-126.76,24.79,-66.5,49.24], // usa
+        bbox = [-79.74,36.0,-66.76,48.05], // NE USA
+        //bbox = [2.5218,49.495223, 7.198506, 53.558092], // Belgium - Netherlands
+        BASELAYER_OBJECT = "land", // usa
+        //BASELAYER_OBJECT = "ne_10m_admin_0_countries", // Belgium - Netherlands
         TIME_INTERVAL_ID = "#time-int",
         ALTITUDE_BAND_ID = "#alt-band",
         min_date,
@@ -504,6 +506,7 @@ function app() {
                     for (var i=0; i<radarData.radars.length; i++) {
                         radars[radarData.radars[i].id] = radarData.radars[i];
                     };
+                    console.log(radars);
                     drawer = createDrawer();
                     drawer.init(basemap, radarData.radars);
                     interpolator = createInterpolator();
