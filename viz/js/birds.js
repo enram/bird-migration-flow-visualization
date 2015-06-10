@@ -43,7 +43,8 @@ function app() {
     // special document elements
 
     var TIME_OFFSET = 20,
-        DATE_FORMAT = 'MMMM D YYYY, HH:mm',
+        //DATE_FORMAT = 'MMMM D YYYY, HH:mm',
+        DATE_FORMAT = "YY-MM-DD HH:mm:ss",
         UTC_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss",
         SECONDS_TO_PLAY = 1,
         intervalRunning = true,
