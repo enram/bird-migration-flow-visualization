@@ -115,8 +115,8 @@ ORDER BY
 
 ### Source data
 
-* Countries: [ne_10m_admin_0_countries](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/) from Natural Earth Data
-* Lakes: [ne_10m_lakes](http://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-lakes/) from [Natural Earth Data
+* Countries: [ne_10m_admin_0_countries](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/) from Natural Earth
+* Lakes: [ne_10m_lakes](http://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-lakes/) from Natural Earth
 
 ### Substract lakes from countries
 
@@ -129,14 +129,15 @@ ORDER BY
 
 Assumes [GDAL](http://www.kyngchaos.com/software/frameworks) is installed:
 
-```
+```shell
 mkdir shapefiles
 ogr2ogr -f "ESRI Shapefile" shapefiles/countries.shp ../shapefiles/countries_minus_lakes.shp -clipsrc -4.7 48.6 14.0 54.9
+```
 
 ### Convert to topojson
 
-Assumes [topojson](http://bost.ocks.org/mike/map/#installing-tools) is installed (see also [topojson documentation](https://github.com/mbostock/topojson/wiki/Command-Line-Reference):
+Assumes [topojson](http://bost.ocks.org/mike/map/#installing-tools) is installed (see also [topojson documentation](https://github.com/mbostock/topojson/wiki/Command-Line-Reference)):
 
-```
+```shell
 topojson -o basemap.topojson -- countries=shapefiles/countries.shp
 ```
