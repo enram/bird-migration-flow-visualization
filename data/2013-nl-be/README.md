@@ -127,7 +127,10 @@ mkdir shapefiles
 ogr2ogr -f "ESRI Shapefile" shapefiles/countries.shp ../shapefiles/ne_10m_admin_0_countries/ne_10m_admin_0_countries.shp -clipsrc -4.7 48.6 14.0 54.9
 ogr2ogr -f "ESRI Shapefile" shapefiles/lakes.shp ../shapefiles/ne_10m_lakes/ne_10m_lakes.shp -clipsrc -4.7 48.6 14.0 54.9
 
+### Combine in topojson
 
+Assumes [topojson](http://bost.ocks.org/mike/map/#installing-tools) is installed (see also [topojson documentation](https://github.com/mbostock/topojson/wiki/Command-Line-Reference):
 
 ```
+topojson -o basemap.topojson -- shapefiles/countries.shp shapefiles/lakes.shp
 ```
