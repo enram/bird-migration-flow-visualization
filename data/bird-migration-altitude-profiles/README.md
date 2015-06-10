@@ -48,16 +48,23 @@ SELECT
         WHEN altitude >= 1.6 THEN 2
     END AS altitude_band,
     CASE
-        WHEN avg(threshold_u_speed) IS NOT NULL THEN avg(threshold_u_speed)
-        WHEN avg(u_speed) IS NOT NULL THEN 0
-        ELSE null
+        WHEN avg(b.radial_velocity_std) >= 2 AND avg(b.bird_density) >= 1 THEN round(avg(b.u_speed)::numeric,5)
+        ELSE 0
     END AS avg_u_speed,
     CASE
-        WHEN avg(threshold_v_speed) IS NOT NULL THEN avg(threshold_v_speed)
-        WHEN avg(v_speed) IS NOT NULL THEN 0
-        ELSE null
-    END AS avg_v_speed
-FROM threshold_data
+        WHEN avg(b.radial_velocity_std) >= 2 AND avg(b.bird_density) >= 1 THEN round(avg(b.v_speed)::numeric,5)
+        ELSE 0
+    END AS avg_v_speed,
+    CASE
+        WHEN avg(b.radial_velocity_std) >= 2 AND avg(b.bird_density) >= 1 THEN round(avg(b.bird_density)::numeric,5)
+        ELSE 0
+    END AS avg_bird_density
+FROM
+    bird_migration_altitude_profiles b
+    LEFT JOIN radars r
+    ON b.radar_id = r.radar_id
+WHERE
+    b.altitude >= 0.2
 GROUP BY
     radar_id,
     interval_start_time,

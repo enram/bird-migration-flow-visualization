@@ -37,18 +37,18 @@ Result: [ne_10m_populated_places_simple.geojson](ne_10m_populated_places_simple.
 
 ### Radars
 
-Source: `radars` from https://github.com/enram/data-challenge/tree/master/data/radars
+Source: `radars` from https://github.com/enram/case-study/tree/master/data/radars
 
-Result: [radars.json](https://github.com/enram/data-challenge/blob/master/data/radars/radars.geojson)
+Result: [radars.json](https://github.com/enram/case-study/blob/master/data/radars/radars.geojson)
 
 ## Combine source data as a topojson
 
 From [this tutorial](http://bost.ocks.org/mike/map/#converting-data):
 
 ```
-topojson -o basemap.topojson --id-property geonameid --properties name=name --bbox -- ne_10m_populated_places_simple.geojson ne_10m_admin_0_countries.geojson ../../../data-challenge/data/radars/radars.geojson
+topojson -o basemap.topojson --id-property geonameid --properties name=name --bbox -- ne_10m_populated_places_simple.geojson ne_10m_admin_0_countries.geojson ../../../case-study/data/radars/radars.geojson
 ```
 
-Note: this assumes you have also cloned the [data-challenge repository](https://github.com/enram/data-challenge).
+Note: this assumes you have also cloned the [case-study repository](https://github.com/enram/case-study).
 
 Result: [basemap.topojson](basemap.topojson)
