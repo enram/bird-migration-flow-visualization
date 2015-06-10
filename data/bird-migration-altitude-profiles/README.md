@@ -4,67 +4,91 @@
 
 * [Bird migration altitude profiles](https://github.com/enram/case-study/tree/master/data/bird-migration-altitude-profiles)
 
-Data were uploaded in CartoDB (PostgreSQL) to easily aggregate using SQL.
+## Conditions
+
+* Only use measurements between 0.2 and 4.0km (both inclusive). This results in 19 altitudes, from 0.3 to 3.9km.
+* For u speed/v speed:
+    * Only consider speed if the radial velocity standard deviation is above 2 (to make sure we are only considering *birds*) and the bird density is above 1 birds/km<sup>3</sup> (for more precise *bird* speed).
+    * Set speed to `null` if those conditions are not met. Original `null` values will remain `null`.
+    * Since we check for the same conditions, either both u speed and v speed will meet the requirements or none.
+* For bird density:
+    * Only consider bird density if the radial velocity standard deviation is above 2 (to make sure we are only considering *birds*).
+    * Set bird density to 0 if those conditions are not met.
+    * Keep original `null` values as `null`.
 
 ## Aggregation
 
-```SQL
--- Set thresholds:
--- - Do not use data below 200m
--- - u_speed: radial_velocity_std and bird_density: below => set values to 0
--- - v_speed: radial_velocity_std and bird_density: : below => set values to 0
--- Aggregate:
--- - Aggregate on time frame (20 min)
--- - Aggregate on altitude band (200-1600m, 1600+ m) and name them 1 and 2
--- - Average u_speed
--- - Average v_speed
+* Aggregate in two altitude bands:
+    * 0.2 to 1.6km. This aggregates 7 altitudes, from 0.3 to 1.5.
+    * 1.6 to 4.0km. This aggregates 12 altitudes, from 1.7 to 3.9.
+* Aggregate per 20 minutes. This typically combines 4 different date/times.
+* For u speed/v speed:
+    * Average the speeds, if at least one of the altitudes within the altitude band has a speed which met the conditions.
+    * Set the speed to 0 if none of the altitudes within the altitude band has a speed which met the conditions, but there were originaly speeds detected.
+    * Keep `null` if no speeds were detected.
+* For bird density (birds/km<sup>3</sup>):
+    * Average the bird density (0 values will affect this, which is ok).
+* For vertical integrated density (birds/km<sup>2</sup>):
+    * For the lower altitude band, multiply the average bird density by the number of altitudes (7) and divide by 5 (to get to 1km instead of 200m).
+    * For the higher altitude band, multiply the average bird density by the number of altitudes (12) and divide by 5 (to get to 1km instead of 200m).
+    * Note: `null` values will affect this "sum", which is not good, but we haven't found such values in the data yet.
 
-WITH threshold_data AS (
+## SQL
+
+PostgreSQL on CartoDB:
+
+```SQL
+WITH conditional_data AS (
     SELECT
         radar_id,
         date_trunc('hour', start_time) + date_part('minute', start_time)::int / 20 * interval '20 min' AS interval_start_time,
-        altitude,
+        CASE
+            WHEN altitude >= 0.2 AND altitude < 1.6 THEN 1
+            WHEN altitude >= 1.6 THEN 2
+        END AS altitude_band,
         u_speed,
         CASE
             WHEN radial_velocity_std >= 2 AND bird_density >= 1 THEN u_speed
             ELSE null
-        END AS threshold_u_speed,
+        END AS conditional_u_speed,
         v_speed,
         CASE
             WHEN radial_velocity_std >= 2 AND bird_density >= 1 THEN v_speed
             ELSE null
-        END AS threshold_v_speed
+        END AS conditional_v_speed,
+        CASE
+            WHEN bird_density IS NULL THEN NULL
+            WHEN radial_velocity_std >= 2 THEN bird_density
+            ELSE 0
+        END AS bird_density
     FROM
-        bird_migration_altitude_profiles
+        lifewatch.bird_migration_altitude_profiles
     WHERE
         altitude >= 0.2
+        AND altitude <= 4.0
 )
 
 SELECT
     radar_id,
     interval_start_time,
+    altitude_band,
     CASE
-        WHEN altitude >= 0.2 AND altitude < 1.6 THEN 1
-        WHEN altitude >= 1.6 THEN 2
-    END AS altitude_band,
-    CASE
-        WHEN avg(b.radial_velocity_std) >= 2 AND avg(b.bird_density) >= 1 THEN round(avg(b.u_speed)::numeric,5)
-        ELSE 0
+        WHEN avg(conditional_u_speed) IS NOT NULL THEN round(avg(conditional_u_speed)::numeric,5)
+        WHEN avg(u_speed) IS NOT NULL THEN 0
+        ELSE null
     END AS avg_u_speed,
     CASE
-        WHEN avg(b.radial_velocity_std) >= 2 AND avg(b.bird_density) >= 1 THEN round(avg(b.v_speed)::numeric,5)
-        ELSE 0
+        WHEN avg(conditional_v_speed) IS NOT NULL THEN round(avg(conditional_v_speed)::numeric,5)
+        WHEN avg(v_speed) IS NOT NULL THEN 0
+        ELSE null
     END AS avg_v_speed,
+    round(avg(bird_density)::numeric,5) AS avg_bird_density,
     CASE
-        WHEN avg(b.radial_velocity_std) >= 2 AND avg(b.bird_density) >= 1 THEN round(avg(b.bird_density)::numeric,5)
-        ELSE 0
-    END AS avg_bird_density
-FROM
-    bird_migration_altitude_profiles b
-    LEFT JOIN radars r
-    ON b.radar_id = r.radar_id
-WHERE
-    b.altitude >= 0.2
+        WHEN altitude_band = 1 THEN round((avg(bird_density) * 7 /5)::numeric,5)
+        WHEN altitude_band = 2 THEN round((avg(bird_density) * 7 /5)::numeric,5)
+    END AS vertical_integrated_density,
+    count(*) AS number_of_measurements
+FROM conditional_data
 GROUP BY
     radar_id,
     interval_start_time,
