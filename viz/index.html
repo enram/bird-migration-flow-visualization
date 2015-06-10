@@ -34,6 +34,8 @@
                     </div>
 
                     <div class="form-group pull-right">
+                        <label>Bird density</label>
+                        <input type="checkbox" id="density-check" checked>
                         <label>Altitude band </label>
                         <select id="alt-band" class="form-control">
                             <option value="1">200-1600m</option>
@@ -46,7 +48,7 @@
 
         <div id="display">
             <div class="container">
-                <div id="canvas" data-topography="../data/basemap/basemap.topojson"> <!-- TODO: remove data-topography -->
+                <div id="canvas">
                     <div id="map">
                         <svg id="map-svg" xmlns="http://www.w3.org/2000/svg" version="1.1"/>
                     </div>

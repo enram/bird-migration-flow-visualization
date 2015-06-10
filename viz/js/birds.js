@@ -30,6 +30,8 @@ function app() {
         BASELAYER_OBJECT = settings.baselayer_object,
         TIME_INTERVAL_ID = "#time-int",
         ALTITUDE_BAND_ID = "#alt-band",
+        DENSITY_ID = "#density-check",
+        HEATMAP_ID= "#heatmap",
         maxBirdDensity,
         min_date,
         max_date,
@@ -265,7 +267,12 @@ function app() {
             d3.select(CANVAS_ID).attr("width", view.width).attr("height", view.height);
             d3.select(MAP_SVG_ID).attr("width", view.width).attr("height", view.height);
             d3.select(ANIMATION_CANVAS_ID).attr("width", view.width).attr("height", view.height);
-            heatmap = h337.create({container: document.querySelector("#heatmap"), radius:200, opacity: 0.2});
+            heatmap = h337.create({
+                container: document.querySelector(HEATMAP_ID),
+                blur: 0.96,
+                opacity: 0.1,
+                radius:200
+            });
             drawBasemap(basemapdata);
             drawRadars(radarData);
             var p0 = albers_projection([bbox[0], bbox[1]]);
@@ -308,7 +315,7 @@ function app() {
         function buildPointsFromRadars(indata) {
             var points = [];
             indata.forEach(function(row) {
-                var p = albers_projection([radars[row.radar_id].coordinates[0], radars[row.radar_id].coordinates[1]]); // TODO: add projected coordinates to the radar data once. Because in here, it happens every time the field is updated.
+                var p = radars[row.radar_id].pixel_point;
                 var point = [p[0], p[1], [row.avg_u_speed, -row.avg_v_speed]]; // negate v because pixel space grows downwards, not upwards
                 points.push(point);
             });
@@ -378,10 +385,9 @@ function app() {
             var pixelpoint;
             var indata = data[timestamp][altitudeBand];
             var outdata = indata.map(function (point) {
-                pixelpoint = albers_projection([radars[point.radar_id].coordinates[0], radars[point.radar_id].coordinates[1]]); // TODO: calculate projected coordinates only once.
                 return {
-                    x: pixelpoint[0],
-                    y: pixelpoint[1],
+                    x: radars[point.radar_id].pixel_point[0],
+                    y: radars[point.radar_id].pixel_point[1],
                     value: point.avg_bird_density
                 }
             });
@@ -502,6 +508,13 @@ function app() {
                 event.stopPropagation();
             }
         });
+        $(DENSITY_ID).on("change", function(event) {
+            var newval = "hidden";
+            if ($(this).is(':checked')) {
+                newval = "visible";
+            }
+            $(HEATMAP_ID).css("visibility", newval);
+        });
         $(TIME_INTERVAL_ID).on("focus", function(event) {
             pause();
         });
@@ -532,11 +545,12 @@ function app() {
                 d3.json(radardatafile, function(radarData) {
                     basemap = basemapdata;
                     radars = {};
-                    for (var i=0; i<radarData.radars.length; i++) {
-                        radars[radarData.radars[i].id] = radarData.radars[i];
-                    };
                     drawer = createDrawer();
                     drawer.init(basemap, radarData.radars);
+                    for (var i=0; i<radarData.radars.length; i++) {
+                        radarData.radars[i].pixel_point = albers_projection(radarData.radars[i].coordinates)
+                        radars[radarData.radars[i].id] = radarData.radars[i];
+                    };
                     interpolator = createInterpolator();
                     interpolator.init(drawer.view);
                     drawer.setUIDateTime(min_date);
