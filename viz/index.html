@@ -46,10 +46,11 @@
 
         <div id="display">
             <div class="container">
-                <div id="canvas" data-topography="../data/basemap/basemap.topojson">
+                <div id="canvas" data-topography="../data/basemap/basemap.topojson"> <!-- TODO: remove data-topography -->
                     <div id="map">
                         <svg id="map-svg" xmlns="http://www.w3.org/2000/svg" version="1.1"/>
                     </div>
+                    <div id="heatmap"></div>
                     <div id="animation">
                         <canvas id="animation-canvas"></canvas>
                     </div>
@@ -88,6 +89,7 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sprintf/0.0.7/sprintf.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
         <script type="text/javascript" src="js/mvi.js"></script>
+        <script type="text/javascript" src="js/heatmap.min.js"></script>
         <script type="text/javascript" src="../data/2013-nl-be/settings.js"></script>
         <script type="text/javascript" src="js/birds.js"></script>
         <script>

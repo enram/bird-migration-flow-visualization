@@ -17,6 +17,7 @@ function app() {
         drawer,
         interpolator,
         basemap,
+        heatmap,
         field,
         g,
         particles,
@@ -29,6 +30,7 @@ function app() {
         BASELAYER_OBJECT = settings.baselayer_object,
         TIME_INTERVAL_ID = "#time-int",
         ALTITUDE_BAND_ID = "#alt-band",
+        maxBirdDensity,
         min_date,
         max_date,
         default_alt_band = 1,
@@ -242,6 +244,10 @@ function app() {
             g.stroke();
         }
 
+        function drawHeatmap(heatmapData) {
+            heatmap.setData(heatmapData);
+        }
+
         function startAnimation() {
             g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
             g.lineWidth = 0.7;
@@ -259,6 +265,7 @@ function app() {
             d3.select(CANVAS_ID).attr("width", view.width).attr("height", view.height);
             d3.select(MAP_SVG_ID).attr("width", view.width).attr("height", view.height);
             d3.select(ANIMATION_CANVAS_ID).attr("width", view.width).attr("height", view.height);
+            heatmap = h337.create({container: document.querySelector("#heatmap"), radius:200, opacity: 0.2});
             drawBasemap(basemapdata);
             drawRadars(radarData);
             var p0 = albers_projection([bbox[0], bbox[1]]);
@@ -271,6 +278,7 @@ function app() {
 
 
         d.startAnimation = startAnimation;
+        d.drawHeatmap = drawHeatmap;
         d.setUIDateTime = setUIDateTime;
         d.getUIDateTime = getUIDateTime;
         d.getAltitudeBand = getAltitudeBand;
@@ -300,7 +308,7 @@ function app() {
         function buildPointsFromRadars(indata) {
             var points = [];
             indata.forEach(function(row) {
-                var p = albers_projection([radars[row.radar_id].coordinates[0], radars[row.radar_id].coordinates[1]]);
+                var p = albers_projection([radars[row.radar_id].coordinates[0], radars[row.radar_id].coordinates[1]]); // TODO: add projected coordinates to the radar data once. Because in here, it happens every time the field is updated.
                 var point = [p[0], p[1], [row.avg_u_speed, -row.avg_v_speed]]; // negate v because pixel space grows downwards, not upwards
                 points.push(point);
             });
@@ -366,8 +374,23 @@ function app() {
             return columns;
         }
 
+        function createDensityHeatmapData(timestamp, altitudeBand) {
+            var pixelpoint;
+            var indata = data[timestamp][altitudeBand];
+            var outdata = indata.map(function (point) {
+                pixelpoint = albers_projection([radars[point.radar_id].coordinates[0], radars[point.radar_id].coordinates[1]]); // TODO: calculate projected coordinates only once.
+                return {
+                    x: pixelpoint[0],
+                    y: pixelpoint[1],
+                    value: point.avg_bird_density
+                }
+            });
+            return {max: maxBirdDensity, data: outdata};
+        }
+
         interpolator.init = init;
         interpolator.interpolateField = interpolateField;
+        interpolator.createDensityHeatmapData = createDensityHeatmapData;
         interpolator.columns = columns;
         return interpolator;
     };
@@ -380,6 +403,8 @@ function app() {
         var alt_band = drawer.getAltitudeBand();
         drawer.setUIDate(date);
         interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
+        var hmData = interpolator.createDensityHeatmapData(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
+        drawer.drawHeatmap(hmData);
     }
 
     /**
@@ -391,6 +416,8 @@ function app() {
         date = moment(date).subtract('minutes', TIME_OFFSET);
         drawer.setUIDateTime(date);
         interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
+        var hmData = interpolator.createDensityHeatmapData(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
+        drawer.drawHeatmap(hmData);
     }
 
     /**
@@ -405,6 +432,8 @@ function app() {
         }
         drawer.setUIDateTime(date);
         interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
+        var hmData = interpolator.createDensityHeatmapData(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
+        drawer.drawHeatmap(hmData);
     }
 
     /**
@@ -466,6 +495,8 @@ function app() {
                 var alt_band = drawer.getAltitudeBand();
                 drawer.setUIDateTime(datetime);
                 interpolator.interpolateField(moment.utc(datetime).format(UTC_DATE_FORMAT) + "+00", alt_band);
+                var hmData = interpolator.createDensityHeatmapData(moment.utc(datetime).format(UTC_DATE_FORMAT) + "+00", alt_band);
+                drawer.drawHeatmap(hmData);
                 pause();
                 event.preventDefault();
                 event.stopPropagation();
@@ -496,6 +527,7 @@ function app() {
             var timestamps = result.keys;
             min_date = moment.utc(timestamps[0], UTC_DATE_FORMAT);
             max_date = moment.utc(timestamps[timestamps.length - 1], UTC_DATE_FORMAT);
+            maxBirdDensity = d3.extent(indata.map(function(x) {return parseFloat(x.avg_bird_density);}))[1];
             d3.json(basemapfile, function(basemapdata) {
                 d3.json(radardatafile, function(radarData) {
                     basemap = basemapdata;
@@ -509,6 +541,8 @@ function app() {
                     interpolator.init(drawer.view);
                     drawer.setUIDateTime(min_date);
                     interpolator.interpolateField(moment.utc(min_date).format(UTC_DATE_FORMAT) + "+00", default_alt_band);
+                    var hmData = interpolator.createDensityHeatmapData(moment.utc(min_date).format(UTC_DATE_FORMAT) + "+00", default_alt_band);
+                    drawer.drawHeatmap(hmData);
                     drawer.startAnimation();
                     play();
                 });

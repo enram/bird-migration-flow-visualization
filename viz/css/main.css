@@ -17,8 +17,19 @@
         position: relative;
         }
 
+        #heatmap {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
         /* Basemap */
         #map {
+            position: absolute;
+            left: 0;
+            top: 0;
             }
             #map-svg {
                 }
