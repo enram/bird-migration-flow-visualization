@@ -1,10 +1,22 @@
-# Bird migration altitude profiles
+# Data for the 2013 Netherlands/Belgium case study
 
-## Source
+## Introduction
+
+The case study is documented in [this repository](https://github.com/enram/case-study).
+
+## Data
+
+* Radar positions: [radars.json](radars.json)
+* Aggregated bird data: [birds.csv](birds.csv)
+* Basemap: [basemap.topojson](basemap.topojson)
+
+## Procedure for aggregating bird data
+
+### Source
 
 * [Bird migration altitude profiles](https://github.com/enram/case-study/tree/master/data/bird-migration-altitude-profiles)
 
-## Conditions
+### Conditions
 
 * Only use measurements between 0.2 and 4.0km (both inclusive). This results in 19 altitudes, from 0.3 to 3.9km.
 * For u speed/v speed:
@@ -16,7 +28,7 @@
     * Set bird density to 0 if those conditions are not met.
     * Keep original `null` values as `null`.
 
-## Aggregation
+### Aggregation
 
 * Aggregate in two altitude bands:
     * 0.2 to 1.6km. This aggregates 7 altitudes, from 0.3 to 1.5.
@@ -33,7 +45,7 @@
     * For the higher altitude band, multiply the average bird density by the number of altitudes (12) and divide by 5 (to get to 1km instead of 200m).
     * Note: `null` values will affect this "sum", which is not good, but we haven't found such values in the data yet.
 
-## SQL
+### SQL
 
 PostgreSQL on CartoDB:
 
@@ -99,6 +111,47 @@ ORDER BY
     altitude_band
 ```
 
-## Result
+## Procedure for creating basemap
 
-[aggregated-data.csv](aggregated-data.csv)
+### Countries data
+
+Source: `ne_10m_admin_0_countries` from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/
+
+Selection (in CartoDB):
+
+```SQL
+SELECT * 
+FROM ne_10m_admin_0_countries
+WHERE
+  iso_a2 = 'BE'
+  OR iso_a2 = 'NL'
+```
+
+Result: [ne_10m_admin_0_countries.geojson](ne_10m_admin_0_countries.geojson)
+
+### Populated places data (not displayed)
+
+Source: `ne_10m_populated_places_simple` from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/
+
+Selection (in CartoDB):
+
+```SQL
+SELECT * 
+FROM ne_10m_populated_places_simple
+WHERE
+    (iso_a2 = 'BE'
+    OR iso_a2 = 'NL')
+    AND scalerank < 8
+```
+
+Result: [ne_10m_populated_places_simple.geojson](ne_10m_populated_places_simple.geojson)
+
+### Combine source data as a topojson
+
+From [this tutorial](http://bost.ocks.org/mike/map/#converting-data):
+
+```
+topojson -o basemap.topojson --id-property geonameid --properties name=name --bbox -- ne_10m_populated_places_simple.geojson ne_10m_admin_0_countries.geojson ../../../case-study/data/radars/radars.geojson
+```
+
+Note: this assumes you have also cloned the [case-study repository](https://github.com/enram/case-study).
