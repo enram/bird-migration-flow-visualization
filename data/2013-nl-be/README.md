@@ -115,8 +115,15 @@ ORDER BY
 
 ### Source data
 
-* Countries: [ne_10m_admin_0_countries](shapefiles/ne_10m_admin_0_countries/), downloaded from [Natural Earth Data](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/)
-* Lakes: [ne_10m_lakes](shapefiles/ne_10m_lakes/), downloaded from [Natural Earth Data](http://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-lakes/)
+* Countries: [ne_10m_admin_0_countries](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/) from Natural Earth Data
+* Lakes: [ne_10m_lakes](http://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-lakes/) from [Natural Earth Data
+
+### Substract lakes from countries
+
+1. Open both files in QGIS
+2. Choose `Vector > Geoprocessing Tools > Difference`
+3. Set `ne_10m_lakes` as the difference layer
+4. Save as [countries_minus_lakes.shp](shapefiles/countries_minus_lakes.shp)
 
 ### Clip data to bounding box
 
@@ -124,13 +131,12 @@ Assumes [GDAL](http://www.kyngchaos.com/software/frameworks) is installed:
 
 ```
 mkdir shapefiles
-ogr2ogr -f "ESRI Shapefile" shapefiles/countries.shp ../shapefiles/ne_10m_admin_0_countries/ne_10m_admin_0_countries.shp -clipsrc -4.7 48.6 14.0 54.9
-ogr2ogr -f "ESRI Shapefile" shapefiles/lakes.shp ../shapefiles/ne_10m_lakes/ne_10m_lakes.shp -clipsrc -4.7 48.6 14.0 54.9
+ogr2ogr -f "ESRI Shapefile" shapefiles/countries.shp ../shapefiles/countries_minus_lakes.shp -clipsrc -4.7 48.6 14.0 54.9
 
-### Combine in topojson
+### Convert to topojson
 
 Assumes [topojson](http://bost.ocks.org/mike/map/#installing-tools) is installed (see also [topojson documentation](https://github.com/mbostock/topojson/wiki/Command-Line-Reference):
 
 ```
-topojson -o basemap.topojson -- shapefiles/countries.shp shapefiles/lakes.shp
+topojson -o basemap.topojson -- countries=shapefiles/countries.shp
 ```
