@@ -22,9 +22,11 @@ function app() {
         particles,
         radars,
         data,
-        datafile = "../data/bird-migration-altitude-profiles/aggregated-data.csv",
-        radardatafile = "../data/radars/radars.json",
-        basemapfile = "../data/basemap/basemap.topojson",
+        datafile = settings.datafile,
+        radardatafile = settings.radardatafile,
+        basemapfile = settings.basemapfile,
+        bbox = settings.bbox,
+        BASELAYER_OBJECT = settings.baselayer_object,
         TIME_INTERVAL_ID = "#time-int",
         ALTITUDE_BAND_ID = "#alt-band",
         min_date,
@@ -40,23 +42,13 @@ function app() {
     // special document elements
 
     var TIME_OFFSET = 20,
-        DATE_FORMAT = 'MMMM D YYYY, HH:mm',
+        //DATE_FORMAT = 'MMMM D YYYY, HH:mm',
+        DATE_FORMAT = settings.date_format,
         UTC_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss",
         SECONDS_TO_PLAY = 1,
         intervalRunning = true,
         interval;
 
-
-    /**
-     * An object to perform logging when the browser supports it.
-     */
-    var log = {
-        debug:   function(s) { if (console && console.log) console.log(s); },
-        info:    function(s) { if (console && console.info) console.info(s); },
-        error:   function(e) { if (console && console.error) console.error(e.stack ? e + "\n" + e.stack : e); },
-        time:    function(s) { if (console && console.time) console.time(s); },
-        timeEnd: function(s) { if (console && console.timeEnd) console.timeEnd(s); }
-    };
 
     function hashOnIntervalStart(rows) {
         var outdata = {};
@@ -92,7 +84,7 @@ function app() {
             var b = $(CANVAS_ID)[0]; // Similar to document.getElementById
             var x = b.clientWidth;
             var y = b.clientHeight;
-            // log.debug("Container size width:" + x + " height: "+ y);
+            // console.log("Container size width:" + x + " height: "+ y);
             return {width: x, height: y};
         }();
 
@@ -110,6 +102,26 @@ function app() {
             return min + Math.random() * (max - min);
         }
 
+        function getUIDateTime() {
+            var datetime,
+                date;
+            datetime = $(TIME_INTERVAL_ID).val();
+            date = moment.utc(datetime, DATE_FORMAT);
+            return date;
+        }
+
+        function setUIDateTime(dt) {
+            $(TIME_INTERVAL_ID).val(moment.utc(dt).format(DATE_FORMAT));
+        }
+
+        function getAltitudeBand() {
+            return $(ALTITUDE_BAND_ID).val();
+        }
+
+        function setAltitudeBand(alt) {
+            $(ALTITUDE_BAND_ID).val(alt);
+        }
+
         /**
          * Returns a d3 Albers conical projection (en.wikipedia.org/wiki/Albers_projection) that maps the bounding box
          * defined by the lower left geographic coordinates (lng0, lat0) and upper right coordinates (lng1, lat1) onto
@@ -118,7 +130,7 @@ function app() {
         function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
             // Construct a unit projection centered on the bounding box. NOTE: center calculation will not be correct
             // when the bounding box crosses the 180th meridian. Don't expect that to happen to Tokyo for a while...
-            // log.time("Creating projection");
+            // console.log("Creating projection");
             var projection = d3.geo.albers()
                 .rotate([-((lng0 + lng1) / 2), 0]) // rotate the globe from the prime meridian to the bounding box's center
                 .center([0, (lat0 + lat1) / 2])    // set the globe vertically on the bounding box's center
@@ -132,7 +144,7 @@ function app() {
             var s = 1 / Math.max((p1[0] - p0[0]) / view.width, (p0[1] - p1[1]) / view.height) * 0.95;
             // Move the center to (0, 0) in pixel space.
             var t = [view.width / 2, view.height / 2];
-            // log.timeEnd("Projection created");
+            // console.log("Projection created");
             return projection.scale(s).translate(t);
         }
 
@@ -141,9 +153,9 @@ function app() {
          * Load the basemap in the svg with the countries, country border and radars
          */
         function drawBasemap(bm) {
-            //log.debug("Creating basemap...");
-            var countries = topojson.feature(bm, bm.objects.ne_10m_admin_0_countries);
-            albers_projection = createAlbersProjection(bm.bbox[0], bm.bbox[1], bm.bbox[2], bm.bbox[3], view);
+            //console.log("Creating basemap...");
+            var countries = topojson.feature(bm, bm.objects[BASELAYER_OBJECT]);
+            albers_projection = createAlbersProjection(bbox[0], bbox[1], bbox[2], bbox[3], view);
             var path = d3.geo.path()
                 .projection(albers_projection);
 
@@ -155,7 +167,7 @@ function app() {
                 .attr("class", "countries");
 
             path.pointRadius(2);
-            // log.debug("Basemap created");
+            // console.log("Basemap created");
         }
 
         function drawRadars(radarData) {
@@ -243,21 +255,14 @@ function app() {
         }
 
 
-        // Return a random number between min (inclusive) and max (exclusive).
-        function rand(min, max) {
-            return min + Math.random() * (max - min);
-        }
-
-
-
         var init = function(basemapdata, radarData) {
             d3.select(CANVAS_ID).attr("width", view.width).attr("height", view.height);
             d3.select(MAP_SVG_ID).attr("width", view.width).attr("height", view.height);
             d3.select(ANIMATION_CANVAS_ID).attr("width", view.width).attr("height", view.height);
             drawBasemap(basemapdata);
             drawRadars(radarData);
-            var p0 = albers_projection([basemapdata.bbox[0], basemapdata.bbox[1]]);
-            var p1 = albers_projection([basemapdata.bbox[2], basemapdata.bbox[3]]);
+            var p0 = albers_projection([bbox[0], bbox[1]]);
+            var p1 = albers_projection([bbox[2], bbox[3]]);
             minX = Math.floor(p0[0]);
             maxX = Math.floor(p1[0]);
             minY = 0;
@@ -266,6 +271,10 @@ function app() {
 
 
         d.startAnimation = startAnimation;
+        d.setUIDateTime = setUIDateTime;
+        d.getUIDateTime = getUIDateTime;
+        d.getAltitudeBand = getAltitudeBand;
+        d.setAltitudeBand = setAltitudeBand;
         d.init = init;
         d.minX = minX;
         d.maxX = maxX;
@@ -299,7 +308,7 @@ function app() {
         }
 
         function createField() {
-            //log.debug("createField called");
+            //console.log("createField called");
             var nilVector = [NaN, NaN, NaN];
             field = function(x, y) {
                 var column = columns[Math.round(x)];
@@ -344,12 +353,12 @@ function app() {
                     tempColumns[x] = interpolateColumn(x);
                     x++;
                     if ((+new Date - start) > MAX_TASK_TIME) {
-                        // log.debug("Interpolating: " + x + "/" + maxX);
+                        // console.log("Interpolating: " + x + "/" + maxX);
                         setTimeout(batchInterpolate, MIN_SLEEP_TIME);
                         return;
                     }
                 }
-                //log.debug("columns interpolated");
+                //console.log("columns interpolated");
                 columns = tempColumns;
                 return createField();
             }
@@ -367,10 +376,9 @@ function app() {
      * Change the altitude and update radar data
      */
     function changeAltitude() {
-        var datetime = $(TIME_INTERVAL_ID).val();
-        var date = moment.utc(datetime, DATE_FORMAT);
-        $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
-        var alt_band = $(ALTITUDE_BAND_ID).val();
+        var date = drawer.getUIDateTime();
+        var alt_band = drawer.getAltitudeBand();
+        drawer.setUIDate(date);
         interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
     }
 
@@ -378,11 +386,10 @@ function app() {
      * Subtract TIME_OFFSET minutes from entered time and show results
      */
     function previous() {
-        var datetime = $(TIME_INTERVAL_ID).val();
-        var date = moment.utc(datetime, DATE_FORMAT);
+        var date = drawer.getUIDateTime();
+        var alt_band = drawer.getAltitudeBand();
         date = moment(date).subtract('minutes', TIME_OFFSET);
-        $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
-        var alt_band = $(ALTITUDE_BAND_ID).val();
+        drawer.setUIDateTime(date);
         interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
     }
 
@@ -390,14 +397,13 @@ function app() {
      * Add TIME_OFFSET minutes from entered time and show results
      */
     function next(){
-        var datetime = $(TIME_INTERVAL_ID).val();
-        var date = moment.utc(datetime, DATE_FORMAT);
+        var date = drawer.getUIDateTime();
+        var alt_band = drawer.getAltitudeBand();
         date = moment(date).add('minutes', TIME_OFFSET);
         if (date > max_date) {
             date = min_date;
         }
-        $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
-        var alt_band = $(ALTITUDE_BAND_ID).val();
+        drawer.setUIDateTime(date);
         interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
     }
 
@@ -421,7 +427,7 @@ function app() {
      * Pause interval for time running
      */
     function pause() {
-        // log.debug("Pause clicked");
+        // console.log("Pause clicked");
         clearInterval(interval);
         intervalRunning = false;
         $("#play-pause").addClass("active");
@@ -431,7 +437,7 @@ function app() {
      * Start interval for time running
      */
     function play() {
-        // log.debug("Paused unclicked");
+        // console.log("Paused unclicked");
         interval = setInterval(function() {
             next();
         }, SECONDS_TO_PLAY*1000);
@@ -456,11 +462,10 @@ function app() {
          */
         $(TIME_INTERVAL_ID).bind("keyup", function(event) {
             if (event.which == 13) {
-                var datetime = $(TIME_INTERVAL_ID).val();
-                var alt_band = $(ALTITUDE_BAND_ID).val();
-                var date = moment.utc(datetime, DATE_FORMAT);
-                $(TIME_INTERVAL_ID).val(moment.utc(date).format(DATE_FORMAT));
-                interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
+                var datetime = drawer.getUIDateTime();
+                var alt_band = drawer.getAltitudeBand();
+                drawer.setUIDateTime(datetime);
+                interpolator.interpolateField(moment.utc(datetime).format(UTC_DATE_FORMAT) + "+00", alt_band);
                 pause();
                 event.preventDefault();
                 event.stopPropagation();
@@ -498,10 +503,12 @@ function app() {
                     for (var i=0; i<radarData.radars.length; i++) {
                         radars[radarData.radars[i].id] = radarData.radars[i];
                     };
+                    console.log(radars);
                     drawer = createDrawer();
                     drawer.init(basemap, radarData.radars);
                     interpolator = createInterpolator();
                     interpolator.init(drawer.view);
+                    drawer.setUIDateTime(min_date);
                     interpolator.interpolateField(moment.utc(min_date).format(UTC_DATE_FORMAT) + "+00", default_alt_band);
                     drawer.startAnimation();
                     play();
