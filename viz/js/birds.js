@@ -172,6 +172,7 @@ function app() {
 
         function drawRadars(radarData) {
             var svg = d3.select(MAP_SVG_ID);
+
             svg.selectAll("circle")
                 .data(radarData).enter()
                 .append("circle")
@@ -218,12 +219,29 @@ function app() {
         // Draw a line between a particle's current and next position
         function draw() {
             // Fade existing trails
+            g.beginPath();
             var prev = g.globalCompositeOperation;
             g.globalCompositeOperation = "destination-in";
             g.fillRect(0, 0, view.width, view.height);
             g.globalCompositeOperation = prev;
+            g.stroke();
+
+            // Create clip around radars
+            var oldStroke = g.strokeStyle;
+            g.strokeStyle = "rgba(0,0,0,0)";
+            g.beginPath();
+            for (var radar in radars) {
+                if (radars.hasOwnProperty(radar)) {
+                    g.moveTo(albers_projection(radars[radar].coordinates)[0], albers_projection(radars[radar].coordinates)[1]);
+                    g.arc(albers_projection(radars[radar].coordinates)[0], albers_projection(radars[radar].coordinates)[1], 100, 0, Math.PI*2);
+                }
+            }
+            g.stroke();
+            g.clip();
+            g.strokeStyle = oldStroke;
 
             // Draw new particle trails
+            g.beginPath();
             particles.forEach(function(particle) {
                 if (particle.age < settings.maxParticleAge) {
                     g.moveTo(particle.x, particle.y);
@@ -232,14 +250,13 @@ function app() {
                     particle.y = particle.yt;
                 }
             });
+            g.stroke();
         }
 
         // This function will run the animation for 1 time frame
         function runTimeFrame() {
-            g.beginPath();
             evolve();
             draw();
-            g.stroke();
         }
 
         function startAnimation() {
