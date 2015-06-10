@@ -503,7 +503,6 @@ function app() {
                     for (var i=0; i<radarData.radars.length; i++) {
                         radars[radarData.radars[i].id] = radarData.radars[i];
                     };
-                    console.log(radars);
                     drawer = createDrawer();
                     drawer.init(basemap, radarData.radars);
                     interpolator = createInterpolator();
