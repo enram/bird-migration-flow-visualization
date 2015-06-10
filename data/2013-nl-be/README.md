@@ -118,41 +118,16 @@ ORDER BY
 * Countries: [ne_10m_admin_0_countries](shapefiles/ne_10m_admin_0_countries/), downloaded from [Natural Earth Data](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/)
 * Lakes: [ne_10m_lakes](shapefiles/ne_10m_lakes/), downloaded from [Natural Earth Data](http://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-lakes/)
 
-Selection (in CartoDB):
+### Clip data to bounding box
 
-```SQL
-SELECT * 
-FROM ne_10m_admin_0_countries
-WHERE
-  iso_a2 = 'BE'
-  OR iso_a2 = 'NL'
-```
-
-Result: [ne_10m_admin_0_countries.geojson](ne_10m_admin_0_countries.geojson)
-
-### Populated places data (not displayed)
-
-Source: `ne_10m_populated_places_simple` from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/
-
-Selection (in CartoDB):
-
-```SQL
-SELECT * 
-FROM ne_10m_populated_places_simple
-WHERE
-    (iso_a2 = 'BE'
-    OR iso_a2 = 'NL')
-    AND scalerank < 8
-```
-
-Result: [ne_10m_populated_places_simple.geojson](ne_10m_populated_places_simple.geojson)
-
-### Combine source data as a topojson
-
-From [this tutorial](http://bost.ocks.org/mike/map/#converting-data):
+Assumes [GDAL](http://www.kyngchaos.com/software/frameworks) is installed:
 
 ```
-topojson -o basemap.topojson --id-property geonameid --properties name=name --bbox -- ne_10m_populated_places_simple.geojson ne_10m_admin_0_countries.geojson ../../../case-study/data/radars/radars.geojson
-```
+mkdir shapefiles
+ogr2ogr -f "ESRI Shapefile" shapefiles/countries.shp ../shapefiles/ne_10m_admin_0_countries/ne_10m_admin_0_countries.shp -clipsrc -4.7 48.6 14.0 54.9
+ogr2ogr -f "ESRI Shapefile" shapefiles/lakes.shp ../shapefiles/ne_10m_lakes/ne_10m_lakes.shp -clipsrc -4.7 48.6 14.0 54.9
 
-Note: this assumes you have also cloned the [case-study repository](https://github.com/enram/case-study).
+
+
+```
+```
