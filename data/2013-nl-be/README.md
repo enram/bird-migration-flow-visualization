@@ -113,9 +113,10 @@ ORDER BY
 
 ## Procedure for creating basemap
 
-### Countries data
+### Source data
 
-Source: `ne_10m_admin_0_countries` from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/
+* Countries: [ne_10m_admin_0_countries](shapefiles/ne_10m_admin_0_countries/), downloaded from [Natural Earth Data](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/)
+* Lakes: [ne_10m_lakes](shapefiles/ne_10m_lakes/), downloaded from [Natural Earth Data](http://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-lakes/)
 
 Selection (in CartoDB):
 
