@@ -25,6 +25,7 @@ function app() {
         drawer,
         interpolator,
         basemap,
+        basemapTimeIndicator,
         field,
         g,
         particles,
@@ -95,7 +96,9 @@ function app() {
 
 
     var createDrawer = function () {
-        var d = {};
+        var d = {},
+            context_x,
+            context_y;
 
         var CANVAS_ID = "#canvas",
             MAP_SVG_ID = "#map-svg",
@@ -104,12 +107,13 @@ function app() {
         /**
          * An object {width:, height:} that describes the extent of the container's view in pixels.
          */
-        var view = function() {
+        var mapView = function() {
+            var contextHeight = 50;
             var b = $(CANVAS_ID)[0]; // Similar to document.getElementById
             var x = b.clientWidth;
-            var y = b.clientHeight;
+            var y = b.clientHeight - contextHeight;
             // console.log("Container size width:" + x + " height: "+ y);
-            return {width: x, height: y};
+            return {width: x, height: y, contextHeight: contextHeight};
         }();
 
         /**
@@ -179,7 +183,7 @@ function app() {
         function drawBasemap(bm) {
             //console.log("Creating basemap...");
             var countries = topojson.feature(bm, bm.objects[BASELAYER_OBJECT]);
-            albers_projection = createAlbersProjection(bbox[0], bbox[1], bbox[2], bbox[3], view);
+            albers_projection = createAlbersProjection(bbox[0], bbox[1], bbox[2], bbox[3], mapView);
             var path = d3.geo.path()
                 .projection(albers_projection);
 
@@ -203,6 +207,80 @@ function app() {
                 .attr("cy", function(d) {return albers_projection(d.coordinates)[1];})
                 .attr("r", 3)
                 .attr("class", "radars");
+        }
+
+        function drawContext(altBand) {
+            var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S+00").parse;
+
+            context_x = d3.time.scale()
+                .domain([min_date, max_date])
+                .range([0, mapView.width]);
+
+            var inv_context_x = d3.scale.linear()
+                .domain([0, mapView.width])
+                .range([min_date.valueOf(), max_date.valueOf()]);
+
+            context_y = d3.scale.linear()
+                .domain([0, maxBirdDensity[altBand]])
+                .range([mapView.contextHeight, 0]);
+
+            var line = d3.svg.line()
+                .defined(function(d) {return d.avg_bird_density != null && d.avg_bird_density != undefined;})
+                .x(function(d) {return context_x(parseDate(d.interval_start_time))})
+                .y(function(d) {return context_y(d.avg_bird_density)});
+
+            var context = d3.select(MAP_SVG_ID).append("g")
+                .attr("width", mapView.width)
+                .attr("height", mapView.contextHeight)
+                .attr("transform", "translate(0," + mapView.height + ")");
+
+            context.append("rect")
+                .attr("width", "100%")
+                .attr("height", mapView.contextHeight)
+                .attr("fill", "white")
+                .attr("opacity", ".4")
+                .on("click", function(d, i) {
+                    var pointClicked = d3.mouse(this);
+                    var clickedDate = moment.utc(inv_context_x(pointClicked[0]));
+                    // round to closest time interval:
+                    clickedDate.minutes(clickedDate.minutes() - clickedDate.minutes() % TIME_OFFSET);
+                    drawer.setUIDateTime(clickedDate);
+                    interpolator.calculateForTimeAndAlt(clickedDate, drawer.getAltitudeBand());
+                    drawer.updateTimeIndicator(clickedDate);
+                });
+
+            for (var radar in dataByRadarAndAlt) {
+                if (dataByRadarAndAlt.hasOwnProperty(radar)) {
+                    dataByRadarAndAlt[radar][altBand].forEach(function (record) {
+                        record.datetime = parseDate(record.interval_start_time);
+                    });
+
+                    context.selectAll("circle " + "r" + radar)
+                        .data(dataByRadarAndAlt[radar][altBand]).enter().append("circle")
+                        .attr("cx", line.x())
+                        .attr("cy", line.y())
+                        .attr("r", 1)
+                        .attr("stroke", "none")
+                        .attr("fill", "#555");
+                }
+            }
+
+            basemapTimeIndicator = context.append("rect")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", 2)
+                .attr("height", mapView.contextHeight)
+                .attr("fill", "rgba(14, 100, 143, 0.9)");
+        }
+
+        function updateTimeIndicator(datetime) {
+            basemapTimeIndicator.attr("x", context_x(datetime));
+        }
+
+        function replaceContext(densities, alt_band) {
+            var svg = d3.select(MAP_SVG_ID);
+            svg.select("g").remove();
+            drawContext(densities, alt_band);
         }
 
         // Create particle object
@@ -243,7 +321,7 @@ function app() {
             // Fade existing trails
             var prev = g.globalCompositeOperation;
             g.globalCompositeOperation = "destination-in";
-            g.fillRect(0, 0, view.width, view.height);
+            g.fillRect(0, 0, mapView.width, mapView.height);
             g.globalCompositeOperation = prev;
 
             // Draw new particle trails
@@ -279,9 +357,9 @@ function app() {
 
 
         var init = function(basemapdata, radarData) {
-            d3.select(CANVAS_ID).attr("width", view.width).attr("height", view.height);
-            d3.select(MAP_SVG_ID).attr("width", view.width).attr("height", view.height);
-            d3.select(ANIMATION_CANVAS_ID).attr("width", view.width).attr("height", view.height);
+            d3.select(CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height + mapView.contextHeight);
+            d3.select(MAP_SVG_ID).attr("width", mapView.width).attr("height", mapView.height + mapView.contextHeight);
+            d3.select(ANIMATION_CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height);
             drawBasemap(basemapdata);
             drawRadars(radarData);
             var p0 = albers_projection([bbox[0], bbox[1]]);
@@ -289,11 +367,14 @@ function app() {
             minX = Math.floor(p0[0]);
             maxX = Math.floor(p1[0]);
             minY = 0;
-            maxY = view.height;
+            maxY = mapView.height;
         };
 
 
         d.startAnimation = startAnimation;
+        d.drawContext = drawContext;
+        d.replaceContext = replaceContext;
+        d.updateTimeIndicator = updateTimeIndicator;
         d.setUIDateTime = setUIDateTime;
         d.getUIDateTime = getUIDateTime;
         d.getAltitudeBand = getAltitudeBand;
@@ -303,7 +384,7 @@ function app() {
         d.maxX = maxX;
         d.minY = minY;
         d.maxY = maxY;
-        d.view = view;
+        d.view = mapView;
         return d;
     };
 
@@ -412,6 +493,7 @@ function app() {
         var alt_band = drawer.getAltitudeBand();
         drawer.setUIDateTime(date);
         interpolator.calculateForTimeAndAlt(date, alt_band);
+        drawer.replaceContext(alt_band);
     }
 
     /**
@@ -437,6 +519,7 @@ function app() {
             date = min_date;
         }
         drawer.setUIDateTime(date);
+        drawer.updateTimeIndicator(date);
         interpolator.calculateForTimeAndAlt(date, alt_band);
     }
 
@@ -498,6 +581,7 @@ function app() {
                 var datetime = drawer.getUIDateTime();
                 var alt_band = drawer.getAltitudeBand();
                 drawer.setUIDateTime(datetime);
+                drawer.updateTimeIndicator(datetime);
                 interpolator.calculateForTimeAndAlt(datetime, alt_band);
                 pause();
                 event.preventDefault();
@@ -567,6 +651,7 @@ function app() {
                     kneadRadarData(radarData);
                     drawer.setUIDateTime(min_date);
                     interpolator.calculateForTimeAndAlt(min_date, default_alt_band);
+                    drawer.drawContext(default_alt_band);
                     drawer.startAnimation();
                     play();
                 });
