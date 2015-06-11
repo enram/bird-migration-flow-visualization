@@ -3,6 +3,6 @@ var settings = {
     "radardatafile": "radars.json",
     "basemapfile": "basemap.topojson",
     "baselayer_object": "ne_10m_admin_0_countries",
-    "bbox": [2.5218,49.495223, 7.198506, 53.558092],
+    "bbox": [2.52,49.50, 7.20, 53.56],
     "date_format": "YY-MM-DD HH:mm"
 };
