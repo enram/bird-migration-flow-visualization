@@ -214,10 +214,10 @@ function app() {
                 .attr("class", "radars");
         }
 
-        function drawDensity(radarData) {
+        function drawDensity() {
             var svg = d3.select(MAP_SVG_ID);
             svg.selectAll("circle .density")
-                .data(radarData).enter()
+                .data(sortedRadars).enter()
                 .append("circle")
                 .attr("cx", function (d) {
                     return albers_projection(d.coordinates)[0];
@@ -225,7 +225,7 @@ function app() {
                 .attr("cy", function (d) {
                     return albers_projection(d.coordinates)[1];
                 })
-                .attr("r", null)
+                .attr("r", 0)
                 .attr("class", "density")
                 .attr("id", function (d) {
                     return "radar-" + d.id;
@@ -237,16 +237,23 @@ function app() {
             var densities = {};
             for (var radarID in radars) {
                 if (radars.hasOwnProperty(radarID)) {
-                    densities[radarID] = null;
+                    densities[radarID] = 0;
                 }
             }
             for (var i = 0; i < indata.length; i++ ) {
                 densities[indata[i].radar_id] = indata[i].avg_bird_density;
             }
 
+            var densitiesArray = [];
+            for (var i = 0; i < sortedRadars.length; i++) {
+                densitiesArray.push(densities[sortedRadars[i].id]);
+            }
+
             var svg = d3.select(MAP_SVG_ID);
-            svg.selectAll("circle .density")
-                .data(densities).enter();
+            svg.selectAll("circle .density").data(densitiesArray)
+                .transition()
+                .duration(500)
+                .attr("r", function(d) { return d;});
         }
 
         function drawContext(altBand) {
@@ -393,7 +400,7 @@ function app() {
             d3.select(ANIMATION_CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height);
             drawBasemap(basemapdata);
             drawRadars(radarData);
-            drawDensity(radarData);
+            drawDensity();
             var p0 = albers_projection([bbox[0], bbox[1]]);
             var p1 = albers_projection([bbox[2], bbox[3]]);
             minX = Math.floor(p0[0]);
