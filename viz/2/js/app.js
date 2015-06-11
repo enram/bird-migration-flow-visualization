@@ -20,12 +20,6 @@ Array.prototype.unique = function() {
     return out;
 };
 
-Object.prototype.hello = "hi";
-var a = {"on": 1};
-for (var i in a) {
-    console.log(i);
-}
-
 function app() {
     var app = {},
         drawer,
@@ -207,13 +201,52 @@ function app() {
 
         function drawRadars(radarData) {
             var svg = d3.select(MAP_SVG_ID);
-            svg.selectAll("circle")
+            svg.selectAll("circle .radars")
                 .data(radarData).enter()
                 .append("circle")
-                .attr("cx", function(d) {return albers_projection(d.coordinates)[0];})
-                .attr("cy", function(d) {return albers_projection(d.coordinates)[1];})
+                .attr("cx", function (d) {
+                    return albers_projection(d.coordinates)[0];
+                })
+                .attr("cy", function (d) {
+                    return albers_projection(d.coordinates)[1];
+                })
                 .attr("r", 3)
                 .attr("class", "radars");
+        }
+
+        function drawDensity(radarData) {
+            var svg = d3.select(MAP_SVG_ID);
+            svg.selectAll("circle .density")
+                .data(radarData).enter()
+                .append("circle")
+                .attr("cx", function (d) {
+                    return albers_projection(d.coordinates)[0];
+                })
+                .attr("cy", function (d) {
+                    return albers_projection(d.coordinates)[1];
+                })
+                .attr("r", null)
+                .attr("class", "density")
+                .attr("id", function (d) {
+                    return "radar-" + d.id;
+                });
+        }
+
+        function updateDensity(timestamp, altitude) {
+            var indata = dataByTimeAndAlt[timestamp][altitude];
+            var densities = {};
+            for (var radarID in radars) {
+                if (radars.hasOwnProperty(radarID)) {
+                    densities[radarID] = null;
+                }
+            }
+            for (var i = 0; i < indata.length; i++ ) {
+                densities[indata[i].radar_id] = indata[i].avg_bird_density;
+            }
+
+            var svg = d3.select(MAP_SVG_ID);
+            svg.selectAll("circle .density")
+                .data(densities).enter();
         }
 
         function drawContext(altBand) {
@@ -360,6 +393,7 @@ function app() {
             d3.select(ANIMATION_CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height);
             drawBasemap(basemapdata);
             drawRadars(radarData);
+            drawDensity(radarData);
             var p0 = albers_projection([bbox[0], bbox[1]]);
             var p1 = albers_projection([bbox[2], bbox[3]]);
             minX = Math.floor(p0[0]);
@@ -377,6 +411,7 @@ function app() {
         d.getUIDateTime = getUIDateTime;
         d.getAltitudeBand = getAltitudeBand;
         d.setAltitudeBand = setAltitudeBand;
+        d.updateDensity = updateDensity;
         d.init = init;
         d.minX = minX;
         d.maxX = maxX;
@@ -476,6 +511,7 @@ function app() {
 
         function calculateForTimeAndAlt(date, altitude) {
             interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", altitude);
+            drawer.updateDensity(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", altitude);
         }
 
         interpolator.init = init;
