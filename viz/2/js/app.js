@@ -99,7 +99,8 @@ function app() {
     var createDrawer = function () {
         var d = {},
             context_x,
-            context_y;
+            context_y,
+            radiusScale;
 
         var CANVAS_ID = "#canvas",
             MAP_SVG_ID = "#map-svg",
@@ -214,7 +215,7 @@ function app() {
                 .attr("class", "radars");
         }
 
-        function drawDensity() {
+        function drawDensity(altitude) {
             var svg = d3.select(MAP_SVG_ID);
             svg.selectAll("circle .density")
                 .data(sortedRadars).enter()
@@ -233,8 +234,13 @@ function app() {
         }
 
         function updateDensity(timestamp, altitude) {
+            radiusScale = d3.scale.linear()
+                .domain([0, maxBirdDensity[altitude]])
+                .range([0, mapView.height / 10]);
+
             var indata = dataByTimeAndAlt[timestamp][altitude];
             var densities = {};
+
             for (var radarID in radars) {
                 if (radars.hasOwnProperty(radarID)) {
                     densities[radarID] = 0;
@@ -246,14 +252,17 @@ function app() {
 
             var densitiesArray = [];
             for (var i = 0; i < sortedRadars.length; i++) {
-                densitiesArray.push(densities[sortedRadars[i].id]);
+                densitiesArray.push(parseFloat(densities[sortedRadars[i].id]));
             }
 
             var svg = d3.select(MAP_SVG_ID);
-            svg.selectAll("circle .density").data(densitiesArray)
+            svg.selectAll(".density")
+                .data(densitiesArray)
                 .transition()
-                .duration(500)
-                .attr("r", function(d) { return d;});
+                .duration(50)
+                .attr("r", function(d) {
+                    return radiusScale(d);
+                });
         }
 
         function drawContext(altBand) {
