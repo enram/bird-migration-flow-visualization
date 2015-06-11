@@ -1,8 +1,8 @@
-/**
- * Bird migration flow visualization for Belgium & the Netherlands
+/*
+ * Bird migration flow visualization
  *
  * https://github.com/enram/bird-migration-flow-visualization
- * Copyright (c) 2014 LifeWatch INBO
+ * Copyright (c) 2015 LifeWatch INBO
  * The MIT License - http://opensource.org/licenses/MIT
  *
  * Based on air.js from air
@@ -12,6 +12,7 @@
 
 "use strict";
 
+// Prototype function for arrays to reduce it to unique elements only
 Array.prototype.unique = function() {
     var tmp = {}, out = [];
     for(var i = 0, n = this.length; i < n; ++i) {
@@ -20,10 +21,11 @@ Array.prototype.unique = function() {
     return out;
 };
 
+
 function app() {
-    var app = {},
-        drawer,
-        interpolator,
+    var app = {},               // Module
+        drawer,                 // All drawing functions
+        interpolator,           // All interpolating functions
         basemap,
         basemapTimeIndicator,
         field,
