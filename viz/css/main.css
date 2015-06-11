@@ -11,20 +11,21 @@
     margin-top: 20px;
     }
     #canvas {
-        background: #313131;
+        background: #ced2d4;
         height: 600px;
-        overflow: hidden; /* Cuts of #map-svg and #field-canvas */
+        overflow: hidden;
         position: relative;
         }
 
         /* Basemap */
         #map {
             }
-            #map-svg {
+            svg {
                 }
                 path.countries {
-                    fill: #101010;
-                    stroke: #666666;
+                    fill: #e6e7e8;
+                    stroke: #acb2b5;
+                    stroke-width: 0.5;
                 }
                 .radars {
                     fill: #0182c3;
