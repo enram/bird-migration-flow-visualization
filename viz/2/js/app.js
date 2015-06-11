@@ -210,10 +210,8 @@ function app() {
         }
 
         function drawContext(altBand) {
-            var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S+00").parse;
-
-            context_x = d3.time.scale()
-                .domain([min_date, max_date])
+            context_x = d3.scale.linear()
+                .domain([min_date.valueOf(), max_date.valueOf()])
                 .range([0, mapView.width]);
 
             var inv_context_x = d3.scale.linear()
@@ -223,11 +221,6 @@ function app() {
             context_y = d3.scale.linear()
                 .domain([0, maxBirdDensity[altBand]])
                 .range([mapView.contextHeight, 0]);
-
-            var line = d3.svg.line()
-                .defined(function(d) {return d.avg_bird_density != null && d.avg_bird_density != undefined;})
-                .x(function(d) {return context_x(parseDate(d.interval_start_time))})
-                .y(function(d) {return context_y(d.avg_bird_density)});
 
             var context = d3.select(MAP_SVG_ID).append("g")
                 .attr("width", mapView.width)
@@ -251,15 +244,12 @@ function app() {
 
             for (var radar in dataByRadarAndAlt) {
                 if (dataByRadarAndAlt.hasOwnProperty(radar)) {
-                    dataByRadarAndAlt[radar][altBand].forEach(function (record) {
-                        record.datetime = parseDate(record.interval_start_time);
-                    });
-
-                    context.selectAll("circle " + "r" + radar)
+                    context.selectAll("circle " + ".r" + radar)
                         .data(dataByRadarAndAlt[radar][altBand]).enter().append("circle")
-                        .attr("cx", line.x())
-                        .attr("cy", line.y())
-                        .attr("r", 1)
+                        .attr("class", ".r" + radar)
+                        .attr("cx", function(d) {return context_x(moment.utc(d.interval_start_time).valueOf());})
+                        .attr("cy", function(d) {return context_y(d.avg_bird_density)})
+                        .attr("r", 1.5)
                         .attr("stroke", "none")
                         .attr("fill", "#555");
                 }
@@ -271,10 +261,11 @@ function app() {
                 .attr("width", 2)
                 .attr("height", mapView.contextHeight)
                 .attr("fill", "rgba(14, 100, 143, 0.9)");
+
         }
 
         function updateTimeIndicator(datetime) {
-            basemapTimeIndicator.attr("x", context_x(datetime));
+            basemapTimeIndicator.attr("x", context_x(datetime.valueOf()));
         }
 
         function replaceContext(densities, alt_band) {
@@ -433,6 +424,7 @@ function app() {
                 return columns;
             }
             var indata = dataByTimeAndAlt[timestamp][altitude_band];
+            var densities = indata.map(function(x) {return parseFloat(x.avg_bird_density);}).sort(function (a, b) {return a-b});
             var points = buildPointsFromRadars(indata);
             var numberOfPoints = points.length;
             if (numberOfPoints > 5) {
