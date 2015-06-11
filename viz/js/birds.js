@@ -629,14 +629,11 @@ function app() {
             var allAltitudeBands = [];
             indata.forEach(function(x) {allAltitudeBands.push(x.altitude_band)});
             var altitudeBands = allAltitudeBands.unique();
-            console.log(altitudeBands);
             maxBirdDensity = {};
             for (var i = 0; i < altitudeBands.length; i++) {
                 var altBand = altitudeBands[i];
-                console.log(altBand);
                 maxBirdDensity[altBand] = d3.extent(indata.map(function(x) {if (x.altitude_band == altBand) {return parseFloat(x.avg_bird_density);}}))[1];
             }
-            console.log(maxBirdDensity);
             d3.json(basemapfile, function(basemapdata) {
                 d3.json(radardatafile, function(radarData) {
                     basemap = basemapdata;
