@@ -212,19 +212,19 @@ function app() {
                 .attr("class", "radars");
         }
 
-        function drawContext(densities, altBand) {
+        function drawContext(altBand) {
             var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S+00").parse;
 
             context_x = d3.time.scale()
                 .domain([min_date, max_date])
                 .range([0, mapView.width]);
 
-            console.log(maxBirdDensity[altBand]);
             context_y = d3.scale.linear()
                 .domain([0, maxBirdDensity[altBand]])
                 .range([mapView.contextHeight, 0]);
 
             var line = d3.svg.line()
+                .defined(function(d) {return d.avg_bird_density != null && d.avg_bird_density != undefined;})
                 .x(function(d) {return context_x(parseDate(d.interval_start_time))})
                 .y(function(d) {return context_y(d.avg_bird_density)});
 
@@ -239,18 +239,28 @@ function app() {
                 .attr("fill", "black")
                 .attr("opacity", ".5");
 
-            for (var radar in densities) {
-                if (densities.hasOwnProperty(radar)) {
-                    densities[radar][altBand].forEach(function (record) {
+            console.log(maxBirdDensity[altBand]);
+            for (var radar in dataByRadarAndAlt) {
+                if (dataByRadarAndAlt.hasOwnProperty(radar)) {
+                    dataByRadarAndAlt[radar][altBand].forEach(function (record) {
                         record.datetime = parseDate(record.interval_start_time);
                     });
 
-                    context.append("path")
+                    /*context.append("path")
                         .datum(densities[radar][altBand])
                         .attr("class", "line")
                         .attr("fill", "none")
-                        .attr("stroke", "#f9f9f9")
-                        .attr("d", line);
+                        .attr("stroke", "#888888")
+                        .attr("d", line)
+                        .attr("class", "line");*/
+
+                    context.selectAll("circle " + "r" + radar)
+                        .data(dataByRadarAndAlt[radar][altBand]).enter().append("circle")
+                        .attr("cx", line.x())
+                        .attr("cy", line.y())
+                        .attr("r", 1)
+                        .attr("stroke", "none")
+                        .attr("fill", "#888");
                 }
             }
 
@@ -264,6 +274,12 @@ function app() {
 
         function updateTimeIndicator(datetime) {
             basemapTimeIndicator.attr("x", context_x(datetime));
+        }
+
+        function replaceContext(densities, alt_band) {
+            var svg = d3.select(MAP_SVG_ID);
+            svg.select("g").remove();
+            drawContext(densities, alt_band);
         }
 
 
@@ -373,6 +389,7 @@ function app() {
         d.getUIDateTime = getUIDateTime;
         d.getAltitudeBand = getAltitudeBand;
         d.setAltitudeBand = setAltitudeBand;
+        d.replaceContext = replaceContext;
         d.init = init;
         d.minX = minX;
         d.maxX = maxX;
@@ -495,10 +512,10 @@ function app() {
     function changeAltitude() {
         var date = drawer.getUIDateTime();
         var alt_band = drawer.getAltitudeBand();
-        drawer.setUIDate(date);
-        interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
-        var hmData = interpolator.createDensityHeatmapData(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
-        drawer.drawHeatmap(hmData);
+        drawer.setUIDateTime(date);
+        interpolator.calculateForTimeAndAlt(date, alt_band);
+        drawer.drawHeatmap();
+        drawer.replaceContext(alt_band);
     }
 
     /**
@@ -510,9 +527,8 @@ function app() {
         date = moment(date).subtract('minutes', TIME_OFFSET);
         drawer.setUIDateTime(date);
         drawer.updateTimeIndicator(date);
-        interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
-        var hmData = interpolator.createDensityHeatmapData(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
-        drawer.drawHeatmap(hmData);
+        interpolator.calculateForTimeAndAlt(date, alt_band);
+        drawer.drawHeatmap();
     }
 
     /**
@@ -527,9 +543,8 @@ function app() {
         }
         drawer.setUIDateTime(date);
         drawer.updateTimeIndicator(date);
-        interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
-        var hmData = interpolator.createDensityHeatmapData(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
-        drawer.drawHeatmap(hmData);
+        interpolator.calculateForTimeAndAlt(date, alt_band);
+        drawer.drawHeatmap();
     }
 
     /**
@@ -591,9 +606,8 @@ function app() {
                 var alt_band = drawer.getAltitudeBand();
                 drawer.setUIDateTime(datetime);
                 drawer.updateTimeIndicator(datetime);
-                interpolator.interpolateField(moment.utc(datetime).format(UTC_DATE_FORMAT) + "+00", alt_band);
-                var hmData = interpolator.createDensityHeatmapData(moment.utc(datetime).format(UTC_DATE_FORMAT) + "+00", alt_band);
-                drawer.drawHeatmap(hmData);
+                interpolator.calculateForTimeAndAlt(datetime, alt_band);
+                drawer.drawHeatmap();
                 pause();
                 event.preventDefault();
                 event.stopPropagation();
@@ -618,7 +632,7 @@ function app() {
         $("#next").on("click", function(event) {
             nextWithPause();
         });
-        $("#altitude-band").on("change", function(event) {
+        $("#alt-band").on("change", function(event) {
             changeAltitude();
         })
     }
@@ -668,7 +682,7 @@ function app() {
                     drawer.setUIDateTime(min_date);
                     interpolator.calculateForTimeAndAlt(min_date, default_alt_band);
                     drawer.drawHeatmap();
-                    drawer.drawContext(dataByRadarAndAlt, default_alt_band);
+                    drawer.drawContext(default_alt_band);
                     drawer.startAnimation();
                     play();
                 });
