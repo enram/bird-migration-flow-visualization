@@ -617,7 +617,7 @@ function app() {
         })
     }
 
-    function init(inbasemap, indata) {
+    function init() {
         bindControls();
         d3.csv(datafile, function(indata) {
             var result = hashData(indata);
