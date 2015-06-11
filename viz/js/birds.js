@@ -94,7 +94,7 @@ function app() {
         var settings = {
             frameRate: 60, // desired milliseconds per frame
             maxParticleAge: 60, // max number of frames a particle is drawn before regeneration
-            particleCount: 300
+            particleCount: 450
         };
 
         // Return a random number between min (inclusive) and max (exclusive).
