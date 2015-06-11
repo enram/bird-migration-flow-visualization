@@ -323,6 +323,11 @@ function app() {
         }
 
         function interpolateField(timestamp, altitude_band) {
+            if (!data.hasOwnProperty(timestamp)) {
+                columns = [];
+                createField();
+                return columns;
+            }
             var indata = data[timestamp][altitude_band];
             var points = buildPointsFromRadars(indata);
             var numberOfPoints = points.length;
