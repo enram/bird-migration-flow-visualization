@@ -27,6 +27,7 @@ function app() {
         basemap,
         basemapTimeIndicator,
         heatmap,
+        heatmapData,
         field,
         g,
         particles,
@@ -326,7 +327,7 @@ function app() {
             g.stroke();
         }
 
-        function drawHeatmap(heatmapData) {
+        function drawHeatmap() {
             heatmap.setData(heatmapData);
         }
 
@@ -476,10 +477,15 @@ function app() {
             return {max: maxBirdDensity[altitudeBand], data: outdata};
         }
 
+        function calculateForTimeAndAlt(date, altitude) {
+            interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", altitude);
+            heatmapData = createDensityHeatmapData(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", altitude);
+        }
+
         interpolator.init = init;
         interpolator.interpolateField = interpolateField;
         interpolator.createDensityHeatmapData = createDensityHeatmapData;
-        interpolator.columns = columns;
+        interpolator.calculateForTimeAndAlt = calculateForTimeAndAlt;
         return interpolator;
     };
 
@@ -617,39 +623,51 @@ function app() {
         })
     }
 
+    function kneadBirdData(indata) {
+        var result,
+            timestamps,
+            allAltitudeBands,
+            altitudeBands,
+            altBand;
+        result = hashData(indata);
+        dataByTimeAndAlt = result.dataByTime;
+        dataByRadarAndAlt = result.dataByRadar;
+        timestamps = result.keys;
+        min_date = moment.utc(timestamps[0], UTC_DATE_FORMAT);
+        max_date = moment.utc(timestamps[timestamps.length - 1], UTC_DATE_FORMAT);
+        allAltitudeBands = [];
+        indata.forEach(function(x) {allAltitudeBands.push(x.altitude_band)});
+        altitudeBands = allAltitudeBands.unique();
+        maxBirdDensity = {};
+        for (var i = 0; i < altitudeBands.length; i++) {
+            altBand = altitudeBands[i];
+            maxBirdDensity[altBand] = d3.extent(indata.map(function(x) {if (x.altitude_band == altBand) {return parseFloat(x.avg_bird_density);}}))[1];
+        }
+    }
+
+    function kneadRadarData(indata) {
+        radars = {};
+        for (var i=0; i<indata.radars.length; i++) {
+            indata.radars[i].pixel_point = albers_projection(indata.radars[i].coordinates);
+            radars[indata.radars[i].id] = indata.radars[i];
+        };
+    }
+
     function init() {
         bindControls();
         d3.csv(datafile, function(indata) {
-            var result = hashData(indata);
-            dataByTimeAndAlt = result.dataByTime;
-            dataByRadarAndAlt = result.dataByRadar;
-            var timestamps = result.keys;
-            min_date = moment.utc(timestamps[0], UTC_DATE_FORMAT);
-            max_date = moment.utc(timestamps[timestamps.length - 1], UTC_DATE_FORMAT);
-            var allAltitudeBands = [];
-            indata.forEach(function(x) {allAltitudeBands.push(x.altitude_band)});
-            var altitudeBands = allAltitudeBands.unique();
-            maxBirdDensity = {};
-            for (var i = 0; i < altitudeBands.length; i++) {
-                var altBand = altitudeBands[i];
-                maxBirdDensity[altBand] = d3.extent(indata.map(function(x) {if (x.altitude_band == altBand) {return parseFloat(x.avg_bird_density);}}))[1];
-            }
+            kneadBirdData(indata);
             d3.json(basemapfile, function(basemapdata) {
                 d3.json(radardatafile, function(radarData) {
                     basemap = basemapdata;
-                    radars = {};
                     drawer = createDrawer();
-                    drawer.init(basemap, radarData.radars);
-                    for (var i=0; i<radarData.radars.length; i++) {
-                        radarData.radars[i].pixel_point = albers_projection(radarData.radars[i].coordinates);
-                        radars[radarData.radars[i].id] = radarData.radars[i];
-                    };
                     interpolator = createInterpolator();
+                    drawer.init(basemap, radarData.radars);
                     interpolator.init(drawer.view);
+                    kneadRadarData(radarData);
                     drawer.setUIDateTime(min_date);
-                    interpolator.interpolateField(moment.utc(min_date).format(UTC_DATE_FORMAT) + "+00", default_alt_band);
-                    var hmData = interpolator.createDensityHeatmapData(moment.utc(min_date).format(UTC_DATE_FORMAT) + "+00", default_alt_band);
-                    drawer.drawHeatmap(hmData);
+                    interpolator.calculateForTimeAndAlt(min_date, default_alt_band);
+                    drawer.drawHeatmap();
                     drawer.drawContext(dataByRadarAndAlt, default_alt_band);
                     drawer.startAnimation();
                     play();
