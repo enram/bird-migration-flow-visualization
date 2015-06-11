@@ -113,45 +113,31 @@ ORDER BY
 
 ## Procedure for creating basemap
 
-### Countries data
+### Source data
 
-Source: `ne_10m_admin_0_countries` from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/
+* Countries: [ne_10m_admin_0_countries](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/) from Natural Earth
+* Lakes: [ne_10m_lakes](http://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-lakes/) from Natural Earth
 
-Selection (in CartoDB):
+### Substract lakes from countries
 
-```SQL
-SELECT * 
-FROM ne_10m_admin_0_countries
-WHERE
-  iso_a2 = 'BE'
-  OR iso_a2 = 'NL'
+1. Open both files in QGIS
+2. Choose `Vector > Geoprocessing Tools > Difference`
+3. Set `ne_10m_lakes` as the difference layer
+4. Save as [countries_minus_lakes.shp](shapefiles/countries_minus_lakes.shp)
+
+### Clip data to bounding box
+
+Assumes [GDAL](http://www.kyngchaos.com/software/frameworks) is installed:
+
+```shell
+mkdir shapefiles
+ogr2ogr -f "ESRI Shapefile" shapefiles/countries.shp ../shapefiles/countries_minus_lakes.shp -clipsrc -4.7 48.6 14.0 54.9
 ```
 
-Result: [ne_10m_admin_0_countries.geojson](ne_10m_admin_0_countries.geojson)
+### Convert to topojson
 
-### Populated places data (not displayed)
+Assumes [topojson](http://bost.ocks.org/mike/map/#installing-tools) is installed (see also [topojson documentation](https://github.com/mbostock/topojson/wiki/Command-Line-Reference)):
 
-Source: `ne_10m_populated_places_simple` from http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/
-
-Selection (in CartoDB):
-
-```SQL
-SELECT * 
-FROM ne_10m_populated_places_simple
-WHERE
-    (iso_a2 = 'BE'
-    OR iso_a2 = 'NL')
-    AND scalerank < 8
+```shell
+topojson -o basemap.topojson -- countries=shapefiles/countries.shp
 ```
-
-Result: [ne_10m_populated_places_simple.geojson](ne_10m_populated_places_simple.geojson)
-
-### Combine source data as a topojson
-
-From [this tutorial](http://bost.ocks.org/mike/map/#converting-data):
-
-```
-topojson -o basemap.topojson --id-property geonameid --properties name=name --bbox -- ne_10m_populated_places_simple.geojson ne_10m_admin_0_countries.geojson ../../../case-study/data/radars/radars.geojson
-```
-
-Note: this assumes you have also cloned the [case-study repository](https://github.com/enram/case-study).

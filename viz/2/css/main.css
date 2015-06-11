@@ -1,0 +1,47 @@
+#controls {
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #e7e7e7;
+    border-top: 1px solid #e7e7e7;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+#display {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    }
+    #canvas {
+        background: #ced2d4;
+        height: 600px;
+        overflow: hidden;
+        position: relative;
+        }
+
+        /* Basemap */
+        #map {
+            }
+            svg {
+                }
+                path.countries {
+                    fill: #e6e7e8;
+                    stroke: #acb2b5;
+                    stroke-width: 0.5;
+                }
+                .radars {
+                    fill: #3d4347;
+                }
+
+        /* Animation */
+        #animation {
+            left: 0;
+            position: absolute;
+            top: 0;
+        }
+
+#footer {
+    background-color: #f8f8f8;
+    border-top: 1px solid #e7e7e7;
+    margin-top: 20px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
