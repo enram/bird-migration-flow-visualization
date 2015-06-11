@@ -102,7 +102,7 @@ function app() {
             context_y;
 
         var CANVAS_ID = "#canvas",
-            MAP_SVG_ID = "#map-svg",
+            BASEMAP_SVG = d3.select("#basemap svg"),
             ANIMATION_CANVAS_ID = "#animation-canvas";
 
         /**
@@ -188,9 +188,7 @@ function app() {
             var path = d3.geo.path()
                 .projection(albers_projection);
 
-            var svg = d3.select(MAP_SVG_ID);
-
-            svg.append("path")
+            BASEMAP_SVG.append("path")
                 .datum(countries)
                 .attr("d", path)
                 .attr("class", "countries");
@@ -200,8 +198,7 @@ function app() {
         }
 
         function drawRadars(radarData) {
-            var svg = d3.select(MAP_SVG_ID);
-            svg.selectAll("circle .radars")
+            BASEMAP_SVG.selectAll("circle .radars")
                 .data(radarData).enter()
                 .append("circle")
                 .attr("cx", function (d) {
@@ -215,8 +212,7 @@ function app() {
         }
 
         function drawDensity() {
-            var svg = d3.select(MAP_SVG_ID);
-            svg.selectAll("circle .density")
+            BASEMAP_SVG.selectAll("circle .density")
                 .data(sortedRadars).enter()
                 .append("circle")
                 .attr("cx", function (d) {
@@ -249,8 +245,7 @@ function app() {
                 densitiesArray.push(densities[sortedRadars[i].id]);
             }
 
-            var svg = d3.select(MAP_SVG_ID);
-            svg.selectAll("circle .density").data(densitiesArray)
+            BASEMAP_SVG.selectAll("circle .density").data(densitiesArray)
                 .transition()
                 .duration(500)
                 .attr("r", function(d) { return d;});
@@ -269,7 +264,7 @@ function app() {
                 .domain([0, maxBirdDensity[altBand]])
                 .range([mapView.contextHeight, 0]);
 
-            var context = d3.select(MAP_SVG_ID).append("g")
+            var context = BASEMAP_SVG.append("g")
                 .attr("width", mapView.width)
                 .attr("height", mapView.contextHeight)
                 .attr("transform", "translate(0," + mapView.height + ")");
@@ -316,8 +311,7 @@ function app() {
         }
 
         function replaceContext(densities, alt_band) {
-            var svg = d3.select(MAP_SVG_ID);
-            svg.select("g").remove();
+            BASEMAP_SVG.select("g").remove();
             drawContext(densities, alt_band);
         }
 
@@ -396,7 +390,7 @@ function app() {
 
         var init = function(basemapdata, radarData) {
             d3.select(CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height + mapView.contextHeight);
-            d3.select(MAP_SVG_ID).attr("width", mapView.width).attr("height", mapView.height + mapView.contextHeight);
+            BASEMAP_SVG.attr("width", mapView.width).attr("height", mapView.height + mapView.contextHeight);
             d3.select(ANIMATION_CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height);
             drawBasemap(basemapdata);
             drawRadars(radarData);
