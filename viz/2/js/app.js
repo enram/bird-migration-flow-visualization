@@ -12,6 +12,14 @@
 
 "use strict";
 
+Array.prototype.unique = function() {
+    var tmp = {}, out = [];
+    for(var i = 0, n = this.length; i < n; ++i) {
+        if(!tmp[this[i]]) { tmp[this[i]] = true; out.push(this[i]); }
+    }
+    return out;
+};
+
 function app() {
     var app = {},
         drawer,
@@ -21,7 +29,8 @@ function app() {
         g,
         particles,
         radars,
-        data,
+        dataByTimeAndAlt,
+        dataByRadarAndAlt,
         datafile = settings.datafile,
         radardatafile = settings.radardatafile,
         basemapfile = settings.basemapfile,
@@ -31,6 +40,7 @@ function app() {
         ALTITUDE_BAND_ID = "#alt-band",
         min_date,
         max_date,
+        maxBirdDensity,
         default_alt_band = 1,
         minX,
         maxX,
@@ -50,25 +60,39 @@ function app() {
         interval;
 
 
-    function hashOnIntervalStart(rows) {
-        var outdata = {};
-        var keys = [];
+    function hashData(rows) {
+        var outdataByTime = {};
+        var outdataByRadar = {};
+        var timeKeys = [];
         for (var i=0; i<rows.length; i++) {
-            if (outdata.hasOwnProperty(rows[i].interval_start_time)) {
-                if (outdata[rows[i].interval_start_time].hasOwnProperty(rows[i].altitude_band)) {
-                    outdata[rows[i].interval_start_time][rows[i].altitude_band].push(rows[i]);
+            if (outdataByTime.hasOwnProperty(rows[i].interval_start_time)) {
+                if (outdataByTime[rows[i].interval_start_time].hasOwnProperty(rows[i].altitude_band)) {
+                    outdataByTime[rows[i].interval_start_time][rows[i].altitude_band].push(rows[i]);
                 } else {
-                    outdata[rows[i].interval_start_time][rows[i].altitude_band] = [rows[i]];
+                    outdataByTime[rows[i].interval_start_time][rows[i].altitude_band] = [rows[i]];
                 }
             } else {
-                keys.push(rows[i].interval_start_time);
+                timeKeys.push(rows[i].interval_start_time);
                 var band = rows[i].altitude_band;
-                outdata[rows[i].interval_start_time] = {};
-                outdata[rows[i].interval_start_time][band] = [rows[i]];
+                outdataByTime[rows[i].interval_start_time] = {};
+                outdataByTime[rows[i].interval_start_time][band] = [rows[i]];
+            }
+            if (outdataByRadar.hasOwnProperty(rows[i].radar_id)) {
+                if (outdataByRadar[rows[i].radar_id].hasOwnProperty(rows[i].altitude_band)) {
+                    outdataByRadar[rows[i].radar_id][rows[i].altitude_band].push(rows[i]);
+                } else {
+                    outdataByRadar[rows[i].radar_id][rows[i].altitude_band] = [rows[i]];
+
+                }
+            } else {
+                var band = rows[i].altitude_band;
+                outdataByRadar[rows[i].radar_id] = {};
+                outdataByRadar[rows[i].radar_id][band] = [rows[i]];
             }
         }
-        return {data: outdata, keys: keys};
+        return {dataByTime: outdataByTime, dataByRadar: outdataByRadar, keys: timeKeys};
     }
+
 
     var createDrawer = function () {
         var d = {};
@@ -322,12 +346,12 @@ function app() {
         }
 
         function interpolateField(timestamp, altitude_band) {
-            if (!data.hasOwnProperty(timestamp)) {
+            if (!dataByTimeAndAlt.hasOwnProperty(timestamp)) {
                 columns = [];
                 createField();
                 return columns;
             }
-            var indata = data[timestamp][altitude_band];
+            var indata = dataByTimeAndAlt[timestamp][altitude_band];
             var points = buildPointsFromRadars(indata);
             var numberOfPoints = points.length;
             if (numberOfPoints > 5) {
@@ -370,9 +394,13 @@ function app() {
             return columns;
         }
 
+        function calculateForTimeAndAlt(date, altitude) {
+            interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", altitude);
+        }
+
         interpolator.init = init;
-        interpolator.interpolateField = interpolateField;
-        interpolator.columns = columns;
+        //interpolator.interpolateField = interpolateField;
+        interpolator.calculateForTimeAndAlt = calculateForTimeAndAlt;
         return interpolator;
     };
 
@@ -382,8 +410,8 @@ function app() {
     function changeAltitude() {
         var date = drawer.getUIDateTime();
         var alt_band = drawer.getAltitudeBand();
-        drawer.setUIDate(date);
-        interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
+        drawer.setUIDateTime(date);
+        interpolator.calculateForTimeAndAlt(date, alt_band);
     }
 
     /**
@@ -394,7 +422,8 @@ function app() {
         var alt_band = drawer.getAltitudeBand();
         date = moment(date).subtract('minutes', TIME_OFFSET);
         drawer.setUIDateTime(date);
-        interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
+        drawer.updateTimeIndicator(date);
+        interpolator.calculateForTimeAndAlt(date, alt_band);
     }
 
     /**
@@ -408,7 +437,7 @@ function app() {
             date = min_date;
         }
         drawer.setUIDateTime(date);
-        interpolator.interpolateField(moment.utc(date).format(UTC_DATE_FORMAT) + "+00", alt_band);
+        interpolator.calculateForTimeAndAlt(date, alt_band);
     }
 
     /**
@@ -469,12 +498,13 @@ function app() {
                 var datetime = drawer.getUIDateTime();
                 var alt_band = drawer.getAltitudeBand();
                 drawer.setUIDateTime(datetime);
-                interpolator.interpolateField(moment.utc(datetime).format(UTC_DATE_FORMAT) + "+00", alt_band);
+                interpolator.calculateForTimeAndAlt(datetime, alt_band);
                 pause();
                 event.preventDefault();
                 event.stopPropagation();
             }
         });
+
         $(TIME_INTERVAL_ID).on("focus", function(event) {
             pause();
         });
@@ -487,33 +517,56 @@ function app() {
         $("#next").on("click", function(event) {
             nextWithPause();
         });
-        $("#altitude-band").on("change", function(event) {
+        $("#alt-band").on("change", function(event) {
             changeAltitude();
         })
     }
 
-    function init(inbasemap, indata) {
+    function kneadBirdData(indata) {
+        var result,
+            timestamps,
+            allAltitudeBands,
+            altitudeBands,
+            altBand;
+        result = hashData(indata);
+        dataByTimeAndAlt = result.dataByTime;
+        dataByRadarAndAlt = result.dataByRadar;
+        timestamps = result.keys;
+        min_date = moment.utc(timestamps[0], UTC_DATE_FORMAT);
+        max_date = moment.utc(timestamps[timestamps.length - 1], UTC_DATE_FORMAT);
+        allAltitudeBands = [];
+        indata.forEach(function(x) {allAltitudeBands.push(x.altitude_band)});
+        altitudeBands = allAltitudeBands.unique();
+        maxBirdDensity = {};
+        for (var i = 0; i < altitudeBands.length; i++) {
+            altBand = altitudeBands[i];
+            maxBirdDensity[altBand] = d3.extent(indata.map(function(x) {if (x.altitude_band == altBand) {return parseFloat(x.avg_bird_density);}}))[1];
+        }
+    }
+
+    function kneadRadarData(indata) {
+        radars = {};
+        for (var i = 0; i < indata.radars.length; i++) {
+            indata.radars[i].pixel_point = albers_projection(indata.radars[i].coordinates);
+            radars[indata.radars[i].id] = indata.radars[i];
+        }
+        ;
+    }
+
+    function init() {
         bindControls();
         d3.csv(datafile, function(indata) {
-            var result = hashOnIntervalStart(indata);
-            data = result.data;
-            var timestamps = result.keys;
-            min_date = moment.utc(timestamps[0], UTC_DATE_FORMAT);
-            max_date = moment.utc(timestamps[timestamps.length - 1], UTC_DATE_FORMAT);
+            kneadBirdData(indata);
             d3.json(basemapfile, function(basemapdata) {
                 d3.json(radardatafile, function(radarData) {
                     basemap = basemapdata;
-                    radars = {};
-                    for (var i=0; i<radarData.radars.length; i++) {
-                        radars[radarData.radars[i].id] = radarData.radars[i];
-                    };
-                    console.log(radars);
                     drawer = createDrawer();
-                    drawer.init(basemap, radarData.radars);
                     interpolator = createInterpolator();
+                    drawer.init(basemap, radarData.radars);
                     interpolator.init(drawer.view);
+                    kneadRadarData(radarData);
                     drawer.setUIDateTime(min_date);
-                    interpolator.interpolateField(moment.utc(min_date).format(UTC_DATE_FORMAT) + "+00", default_alt_band);
+                    interpolator.calculateForTimeAndAlt(min_date, default_alt_band);
                     drawer.startAnimation();
                     play();
                 });
