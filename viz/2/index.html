@@ -89,7 +89,16 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
 
         <!-- Own scripts -->
-        <script type="text/javascript" src="settings/2013-nl-be.settings.js"></script>
+        <script type="text/javascript">
+            var settings = {
+                "datafile": "../../data/2013-nl-be/birds.csv",
+                "radardatafile": "../../data/2013-nl-be/radars.json",
+                "basemapfile": "../../data/2013-nl-be/basemap.topojson",
+                "baselayer_object": "countries",
+                "bbox": [2.5218,49.495223, 7.198506, 53.558092],
+                "date_format": "YY-MM-DD HH:mm"
+            };
+        </script>
         <script type="text/javascript" src="js/mvi.js"></script>
         <script type="text/javascript" src="js/birds.js"></script>
         
