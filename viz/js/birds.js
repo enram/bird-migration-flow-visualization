@@ -177,7 +177,7 @@ function app() {
                 .append("circle")
                 .attr("cx", function(d) {return albers_projection(d.coordinates)[0];})
                 .attr("cy", function(d) {return albers_projection(d.coordinates)[1];})
-                .attr("r", "2")
+                .attr("r", 2.5)
                 .attr("class", "radars");
         }
 
@@ -244,8 +244,8 @@ function app() {
 
         function startAnimation() {
             g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
-            g.lineWidth = 0.7;
-            g.strokeStyle = "rgba(255, 255, 255, 1)";
+            g.lineWidth = 1.5;
+            g.strokeStyle = "rgba(14, 100, 143, 0.9)";
             g.fillStyle = "rgba(255, 255, 255, 0.7)"; /*  White layer to be drawn over existing trails */
             particles = [];
             for (var i=0; i< settings.particleCount; i++) {
