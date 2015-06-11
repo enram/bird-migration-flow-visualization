@@ -12,6 +12,14 @@
 
 "use strict";
 
+Array.prototype.unique = function() {
+    var tmp = {}, out = [];
+    for(var i = 0, n = this.length; i < n; ++i) {
+        if(!tmp[this[i]]) { tmp[this[i]] = true; out.push(this[i]); }
+    }
+    return out;
+};
+
 function app() {
     var app = {},
         drawer,
@@ -102,10 +110,10 @@ function app() {
          * An object {width:, height:} that describes the extent of the container's view in pixels.
          */
         var mapView = function() {
+            var contextHeight = 50;
             var b = $(CANVAS_ID)[0]; // Similar to document.getElementById
             var x = b.clientWidth;
-            var y = b.clientHeight;
-            var contextHeight = 50;
+            var y = b.clientHeight - contextHeight;
             // console.log("Container size width:" + x + " height: "+ y);
             return {width: x, height: y, contextHeight: contextHeight};
         }();
@@ -163,9 +171,9 @@ function app() {
             var p1 = projection([lng1, lat1]);
             // The actual scale is the ratio between the size of the bounding box in pixels and the size of the view port.
             // Reduce by 5% for a nice border.
-            var s = 1 / Math.max((p1[0] - p0[0]) / view.width, (p0[1] - p1[1]) / (view.height - view.contextHeight)) * 0.95;
+            var s = 1 / Math.max((p1[0] - p0[0]) / view.width, (p0[1] - p1[1]) / view.height) * 0.95;
             // Move the center to (0, 0) in pixel space.
-            var t = [view.width / 2, (view.height - view.contextHeight) / 2];
+            var t = [view.width / 2, view.height / 2];
             // console.log("Projection created");
             return projection.scale(s).translate(t);
         }
@@ -210,8 +218,9 @@ function app() {
                 .domain([min_date, max_date])
                 .range([0, mapView.width]);
 
+            console.log(maxBirdDensity[altBand]);
             context_y = d3.scale.linear()
-                .domain([0, maxBirdDensity])
+                .domain([0, maxBirdDensity[altBand]])
                 .range([mapView.contextHeight, 0]);
 
             var line = d3.svg.line()
@@ -221,7 +230,13 @@ function app() {
             var context = d3.select(MAP_SVG_ID).append("g")
                 .attr("width", mapView.width)
                 .attr("height", mapView.contextHeight)
-                .attr("transform", "translate(0," + (mapView.height - mapView.contextHeight) + ")");
+                .attr("transform", "translate(0," + mapView.height + ")");
+
+            context.append("rect")
+                .attr("width", "100%")
+                .attr("height", mapView.contextHeight)
+                .attr("fill", "black")
+                .attr("opacity", ".5");
 
             for (var radar in densities) {
                 if (densities.hasOwnProperty(radar)) {
@@ -233,7 +248,7 @@ function app() {
                         .datum(densities[radar][altBand])
                         .attr("class", "line")
                         .attr("fill", "none")
-                        .attr("stroke", "black")
+                        .attr("stroke", "#f9f9f9")
                         .attr("d", line);
                 }
             }
@@ -243,7 +258,7 @@ function app() {
                 .attr("y", 0)
                 .attr("width", 2)
                 .attr("height", mapView.contextHeight)
-                .attr("fill", "green");
+                .attr("fill", "#0182c3");
         }
 
         function updateTimeIndicator(datetime) {
@@ -329,8 +344,8 @@ function app() {
 
 
         var init = function(basemapdata, radarData) {
-            d3.select(CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height);
-            d3.select(MAP_SVG_ID).attr("width", mapView.width).attr("height", mapView.height);
+            d3.select(CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height + mapView.contextHeight);
+            d3.select(MAP_SVG_ID).attr("width", mapView.width).attr("height", mapView.height + mapView.contextHeight);
             d3.select(ANIMATION_CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height);
             heatmap = h337.create({
                 container: document.querySelector(HEATMAP_ID),
@@ -458,7 +473,7 @@ function app() {
                     value: point.avg_bird_density
                 }
             });
-            return {max: maxBirdDensity, data: outdata};
+            return {max: maxBirdDensity[altitudeBand], data: outdata};
         }
 
         interpolator.init = init;
@@ -611,7 +626,17 @@ function app() {
             var timestamps = result.keys;
             min_date = moment.utc(timestamps[0], UTC_DATE_FORMAT);
             max_date = moment.utc(timestamps[timestamps.length - 1], UTC_DATE_FORMAT);
-            maxBirdDensity = d3.extent(indata.map(function(x) {return parseFloat(x.avg_bird_density);}))[1];
+            var allAltitudeBands = [];
+            indata.forEach(function(x) {allAltitudeBands.push(x.altitude_band)});
+            var altitudeBands = allAltitudeBands.unique();
+            console.log(altitudeBands);
+            maxBirdDensity = {};
+            for (var i = 0; i < altitudeBands.length; i++) {
+                var altBand = altitudeBands[i];
+                console.log(altBand);
+                maxBirdDensity[altBand] = d3.extent(indata.map(function(x) {if (x.altitude_band == altBand) {return parseFloat(x.avg_bird_density);}}))[1];
+            }
+            console.log(maxBirdDensity);
             d3.json(basemapfile, function(basemapdata) {
                 d3.json(radardatafile, function(radarData) {
                     basemap = basemapdata;
