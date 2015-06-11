@@ -20,6 +20,12 @@ Array.prototype.unique = function() {
     return out;
 };
 
+Object.prototype.hello = "hi";
+var a = {"on": 1};
+for (var i in a) {
+    console.log(i);
+}
+
 function app() {
     var app = {},
         drawer,
@@ -30,6 +36,7 @@ function app() {
         g,
         particles,
         radars,
+        sortedRadars,
         dataByTimeAndAlt,
         dataByRadarAndAlt,
         datafile = settings.datafile,
@@ -626,7 +633,6 @@ function app() {
             indata.radars[i].pixel_point = albers_projection(indata.radars[i].coordinates);
             radars[indata.radars[i].id] = indata.radars[i];
         }
-        ;
     }
 
     function init() {
@@ -638,7 +644,9 @@ function app() {
                     basemap = basemapdata;
                     drawer = createDrawer();
                     interpolator = createInterpolator();
-                    drawer.init(basemap, radarData.radars);
+                    var compfunc = function (a, b) {if (a.id < b.id) {return -1} if (a.id > b.id) {return 1} return 0};
+                    sortedRadars = radarData.radars.sort(compfunc);
+                    drawer.init(basemap, sortedRadars);
                     interpolator.init(drawer.view);
                     kneadRadarData(radarData);
                     drawer.setUIDateTime(min_date);
