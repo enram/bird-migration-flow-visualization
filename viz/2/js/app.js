@@ -23,45 +23,36 @@ Array.prototype.unique = function() {
 
 
 function app() {
-    var app = {},               // Module
-        drawer,                 // All drawing functions
-        interpolator,           // All interpolating functions
-        basemap,
-        basemapTimeIndicator,
-        field,
-        g,
-        particles,
-        radars,
-        sortedRadars,
-        dataByTimeAndAlt,
-        dataByRadarAndAlt,
-        datafile = settings.datafile,
-        radardatafile = settings.radardatafile,
-        basemapfile = settings.basemapfile,
-        bbox = settings.bbox,
-        BASELAYER_OBJECT = settings.baselayer_object,
-        TIME_INTERVAL_ID = "#time-int",
-        ALTITUDE_BAND_ID = "#alt-band",
-        min_date,
-        max_date,
-        maxBirdDensity,
-        default_alt_band = 1,
-        minX,
-        maxX,
-        minY,
-        maxY,
-        albers_projection;
+    var app = {},                   // Module
+        drawer,                     // All drawing functions
+        interpolator,               // All interpolating functions
+        grid,                       // Grid function
+        albersProjection,           // Projection function
 
+        bbox = settings.bbox,       // Bounding box coordinates
+        minX,                       // Top left pixel position from bounding box
+        minY,                       // Top left pixel position from bounding box
+        maxX,                       // Right buttom pixel position from bounding box
+        maxY,                       // Right buttom pixel position from bounding box
+        animationRunning = true,    // Switch between pausing and playing animation
+        gridTimeOut,                // Timeout for grid function
 
-    // special document elements
+        radars = {},                // Radar metadata
+        radarsSorted = [],          // Radar metadata sorted by id
+        migrationByTimeAndAlt = {}, // Migration data nested by timestamp, then altitude band
+        migrationByRadarAndAlt = {},// Migration data nested by radar, then altitude band
+        minDate,                    // Minimum date in migration data
+        maxDate,                    // Maximum data in migration data
+        maxBirdDensity;             // Maximum bird density in migration data
 
-    var TIME_OFFSET = 20,
-        //DATE_FORMAT = 'MMMM D YYYY, HH:mm',
-        DATE_FORMAT = settings.date_format,
-        UTC_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss",
-        SECONDS_TO_PLAY = 1,
-        intervalRunning = true,
-        interval;
+    var BASELAYER_OBJECT = settings.baselayer_object, // Name of baselayer object in topojson
+        TIME_INPUT = "#time-int",   // Time input element
+        ALTITUDE_BAND_INPUT = "#alt-band", // Altitude band input element
+        DEFAULT_ALTITUDE_BAND = 1,  // Default altitude band to be shown
+        TIME_OFFSET = 20,           // Time jumps
+        DATE_FORMAT = settings.date_format, // Date format to be shown in UI
+        UTC_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss", // Date format for hashing
+        UPDATE_SPEED = 1000;        // Milliseconds between grid refreshes
 
 
     function hashData(rows) {
@@ -102,11 +93,15 @@ function app() {
         var d = {},
             context_x,
             context_y,
-            radiusScale;
+            radiusScale,
+            timeNeedle,
+            basemapSvg = d3.select("#basemap svg"),
+            g,
+            particles;              // Array
 
         var CANVAS_ID = "#canvas",
-            BASEMAP_SVG = d3.select("#basemap svg"),
             ANIMATION_CANVAS_ID = "#animation-canvas";
+
 
         /**
          * An object {width:, height:} that describes the extent of the container's view in pixels.
@@ -137,21 +132,21 @@ function app() {
         function getUIDateTime() {
             var datetime,
                 date;
-            datetime = $(TIME_INTERVAL_ID).val();
+            datetime = $(TIME_INPUT).val();
             date = moment.utc(datetime, DATE_FORMAT);
             return date;
         }
 
         function setUIDateTime(dt) {
-            $(TIME_INTERVAL_ID).val(moment.utc(dt).format(DATE_FORMAT));
+            $(TIME_INPUT).val(moment.utc(dt).format(DATE_FORMAT));
         }
 
         function getAltitudeBand() {
-            return $(ALTITUDE_BAND_ID).val();
+            return $(ALTITUDE_BAND_INPUT).val();
         }
 
         function setAltitudeBand(alt) {
-            $(ALTITUDE_BAND_ID).val(alt);
+            $(ALTITUDE_BAND_INPUT).val(alt);
         }
 
         /**
@@ -187,11 +182,11 @@ function app() {
         function drawBasemap(bm) {
             //console.log("Creating basemap...");
             var countries = topojson.feature(bm, bm.objects[BASELAYER_OBJECT]);
-            albers_projection = createAlbersProjection(bbox[0], bbox[1], bbox[2], bbox[3], mapView);
+            albersProjection = createAlbersProjection(bbox[0], bbox[1], bbox[2], bbox[3], mapView);
             var path = d3.geo.path()
-                .projection(albers_projection);
+                .projection(albersProjection);
 
-            BASEMAP_SVG.append("path")
+            basemapSvg.append("path")
                 .datum(countries)
                 .attr("d", path)
                 .attr("class", "countries");
@@ -201,28 +196,28 @@ function app() {
         }
 
         function drawRadars(radarData) {
-            BASEMAP_SVG.selectAll("circle .radars")
+            basemapSvg.selectAll("circle .radars")
                 .data(radarData).enter()
                 .append("circle")
                 .attr("cx", function (d) {
-                    return albers_projection(d.coordinates)[0];
+                    return albersProjection(d.coordinates)[0];
                 })
                 .attr("cy", function (d) {
-                    return albers_projection(d.coordinates)[1];
+                    return albersProjection(d.coordinates)[1];
                 })
                 .attr("r", 3)
                 .attr("class", "radars");
         }
 
         function drawDensity() {
-            BASEMAP_SVG.selectAll("circle .density")
-                .data(sortedRadars).enter()
+            basemapSvg.selectAll("circle .density")
+                .data(radarsSorted).enter()
                 .append("circle")
                 .attr("cx", function (d) {
-                    return albers_projection(d.coordinates)[0];
+                    return albersProjection(d.coordinates)[0];
                 })
                 .attr("cy", function (d) {
-                    return albers_projection(d.coordinates)[1];
+                    return albersProjection(d.coordinates)[1];
                 })
                 .attr("r", 0)
                 .attr("class", "density")
@@ -236,7 +231,7 @@ function app() {
                 .domain([0, maxBirdDensity[altitude]])
                 .range([0, mapView.height / 10]);
 
-            var indata = dataByTimeAndAlt[timestamp][altitude];
+            var indata = migrationByTimeAndAlt[timestamp][altitude];
             var densities = {};
 
             for (var radarID in radars) {
@@ -249,14 +244,14 @@ function app() {
             }
 
             var densitiesArray = [];
-            for (var i = 0; i < sortedRadars.length; i++) {
-                densitiesArray.push(parseFloat(densities[sortedRadars[i].id]));
+            for (var i = 0; i < radarsSorted.length; i++) {
+                densitiesArray.push(parseFloat(densities[radarsSorted[i].id]));
             }
 
-            BASEMAP_SVG.selectAll(".density")
+            basemapSvg.selectAll(".density")
                 .data(densitiesArray)
                 .transition()
-                .duration(50)
+                .duration(200)
                 .attr("r", function(d) {
                     return radiusScale(d);
                 });
@@ -264,18 +259,18 @@ function app() {
 
         function drawContext(altBand) {
             context_x = d3.scale.linear()
-                .domain([min_date.valueOf(), max_date.valueOf()])
+                .domain([minDate.valueOf(), maxDate.valueOf()])
                 .range([0, mapView.width]);
 
             var inv_context_x = d3.scale.linear()
                 .domain([0, mapView.width])
-                .range([min_date.valueOf(), max_date.valueOf()]);
+                .range([minDate.valueOf(), maxDate.valueOf()]);
 
             context_y = d3.scale.linear()
                 .domain([0, maxBirdDensity[altBand]])
                 .range([mapView.contextHeight, 0]);
 
-            var context = BASEMAP_SVG.append("g")
+            var context = basemapSvg.append("g")
                 .attr("width", mapView.width)
                 .attr("height", mapView.contextHeight)
                 .attr("transform", "translate(0," + mapView.height + ")");
@@ -295,10 +290,10 @@ function app() {
                     drawer.updateTimeIndicator(clickedDate);
                 });
 
-            for (var radar in dataByRadarAndAlt) {
-                if (dataByRadarAndAlt.hasOwnProperty(radar)) {
+            for (var radar in migrationByRadarAndAlt) {
+                if (migrationByRadarAndAlt.hasOwnProperty(radar)) {
                     context.selectAll("circle " + ".r" + radar)
-                        .data(dataByRadarAndAlt[radar][altBand]).enter().append("circle")
+                        .data(migrationByRadarAndAlt[radar][altBand]).enter().append("circle")
                         .attr("class", ".r" + radar)
                         .attr("cx", function(d) {return context_x(moment.utc(d.interval_start_time).valueOf());})
                         .attr("cy", function(d) {return context_y(d.avg_bird_density)})
@@ -308,7 +303,7 @@ function app() {
                 }
             }
 
-            basemapTimeIndicator = context.append("rect")
+            timeNeedle = context.append("rect")
                 .attr("x", 0)
                 .attr("y", 0)
                 .attr("width", 2)
@@ -318,11 +313,11 @@ function app() {
         }
 
         function updateTimeIndicator(datetime) {
-            basemapTimeIndicator.attr("x", context_x(datetime.valueOf()));
+            timeNeedle.attr("x", context_x(datetime.valueOf()));
         }
 
         function replaceContext(densities, alt_band) {
-            BASEMAP_SVG.select("g").remove();
+            basemapSvg.select("g").remove();
             drawContext(densities, alt_band);
         }
 
@@ -348,7 +343,7 @@ function app() {
                 }
                 var x = particle.x;
                 var y = particle.y;
-                var uv = field(x, y);
+                var uv = grid(x, y);
                 var u = uv[0];
                 var v = uv[1];
                 var xt = x + u;
@@ -395,19 +390,19 @@ function app() {
             for (var i=0; i< settings.particleCount; i++) {
                 particles.push(createParticle(Math.floor(rand(0, settings.maxParticleAge))));
             }
-            interval = setInterval(runTimeFrame, settings.frameRate);
+            var animationTimeOut = setInterval(runTimeFrame, settings.frameRate);
         }
 
 
         var init = function(basemapdata, radarData) {
             d3.select(CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height + mapView.contextHeight);
-            BASEMAP_SVG.attr("width", mapView.width).attr("height", mapView.height + mapView.contextHeight);
+            basemapSvg.attr("width", mapView.width).attr("height", mapView.height + mapView.contextHeight);
             d3.select(ANIMATION_CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height);
             drawBasemap(basemapdata);
             drawRadars(radarData);
             drawDensity();
-            var p0 = albers_projection([bbox[0], bbox[1]]);
-            var p1 = albers_projection([bbox[2], bbox[3]]);
+            var p0 = albersProjection([bbox[0], bbox[1]]);
+            var p1 = albersProjection([bbox[2], bbox[3]]);
             minX = Math.floor(p0[0]);
             maxX = Math.floor(p1[0]);
             minY = 0;
@@ -425,10 +420,6 @@ function app() {
         d.setAltitudeBand = setAltitudeBand;
         d.updateDensity = updateDensity;
         d.init = init;
-        d.minX = minX;
-        d.maxX = maxX;
-        d.minY = minY;
-        d.maxY = maxY;
         d.view = mapView;
         return d;
     };
@@ -449,7 +440,7 @@ function app() {
         function buildPointsFromRadars(indata) {
             var points = [];
             indata.forEach(function(row) {
-                var p = albers_projection([radars[row.radar_id].coordinates[0], radars[row.radar_id].coordinates[1]]);
+                var p = albersProjection([radars[row.radar_id].coordinates[0], radars[row.radar_id].coordinates[1]]);
                 var point = [p[0], p[1], [row.avg_u_speed, -row.avg_v_speed]]; // negate v because pixel space grows downwards, not upwards
                 points.push(point);
             });
@@ -459,7 +450,7 @@ function app() {
         function createField() {
             //console.log("createField called");
             var nilVector = [NaN, NaN, NaN];
-            field = function(x, y) {
+            grid = function(x, y) {
                 var column = columns[Math.round(x)];
                 if (column) {
                     var v = column[Math.round(y)];
@@ -472,12 +463,12 @@ function app() {
         }
 
         function interpolateField(timestamp, altitude_band) {
-            if (!dataByTimeAndAlt.hasOwnProperty(timestamp)) {
+            if (!migrationByTimeAndAlt.hasOwnProperty(timestamp)) {
                 columns = [];
                 createField();
                 return columns;
             }
-            var indata = dataByTimeAndAlt[timestamp][altitude_band];
+            var indata = migrationByTimeAndAlt[timestamp][altitude_band];
             var densities = indata.map(function(x) {return parseFloat(x.avg_bird_density);}).sort(function (a, b) {return a-b});
             var points = buildPointsFromRadars(indata);
             var numberOfPoints = points.length;
@@ -562,8 +553,8 @@ function app() {
         var date = drawer.getUIDateTime();
         var alt_band = drawer.getAltitudeBand();
         date = moment(date).add('minutes', TIME_OFFSET);
-        if (date > max_date) {
-            date = min_date;
+        if (date > maxDate) {
+            date = minDate;
         }
         drawer.setUIDateTime(date);
         drawer.updateTimeIndicator(date);
@@ -591,8 +582,8 @@ function app() {
      */
     function pause() {
         // console.log("Pause clicked");
-        clearInterval(interval);
-        intervalRunning = false;
+        clearInterval(gridTimeOut);
+        animationRunning = false;
         $("#play-pause").addClass("active");
     }
 
@@ -601,10 +592,10 @@ function app() {
      */
     function play() {
         // console.log("Paused unclicked");
-        interval = setInterval(function() {
+        gridTimeOut = setInterval(function() {
             next();
-        }, SECONDS_TO_PLAY*1000);
-        intervalRunning = true;
+        }, UPDATE_SPEED);
+        animationRunning = true;
         $("#play-pause").removeClass("active");
     }
 
@@ -612,7 +603,7 @@ function app() {
      * Play/Pause functionality. When paused, continue animation but do not update radar data
      */
     function playPause() {
-        if (intervalRunning == true) {
+        if (animationRunning == true) {
             pause();
         } else {
             play();
@@ -623,7 +614,7 @@ function app() {
         /**
          * Bind to input field to make enter work when user changes date manually
          */
-        $(TIME_INTERVAL_ID).bind("keyup", function(event) {
+        $(TIME_INPUT).bind("keyup", function(event) {
             if (event.which == 13) {
                 var datetime = drawer.getUIDateTime();
                 var alt_band = drawer.getAltitudeBand();
@@ -636,7 +627,7 @@ function app() {
             }
         });
 
-        $(TIME_INTERVAL_ID).on("focus", function(event) {
+        $(TIME_INPUT).on("focus", function(event) {
             pause();
         });
         $("#play-pause").on("click", function(event) {
@@ -660,11 +651,11 @@ function app() {
             altitudeBands,
             altBand;
         result = hashData(indata);
-        dataByTimeAndAlt = result.dataByTime;
-        dataByRadarAndAlt = result.dataByRadar;
+        migrationByTimeAndAlt = result.dataByTime;
+        migrationByRadarAndAlt = result.dataByRadar;
         timestamps = result.keys;
-        min_date = moment.utc(timestamps[0], UTC_DATE_FORMAT);
-        max_date = moment.utc(timestamps[timestamps.length - 1], UTC_DATE_FORMAT);
+        minDate = moment.utc(timestamps[0], UTC_DATE_FORMAT);
+        maxDate = moment.utc(timestamps[timestamps.length - 1], UTC_DATE_FORMAT);
         allAltitudeBands = [];
         indata.forEach(function(x) {allAltitudeBands.push(x.altitude_band)});
         altitudeBands = allAltitudeBands.unique();
@@ -678,28 +669,27 @@ function app() {
     function kneadRadarData(indata) {
         radars = {};
         for (var i = 0; i < indata.radars.length; i++) {
-            indata.radars[i].pixel_point = albers_projection(indata.radars[i].coordinates);
+            indata.radars[i].pixel_point = albersProjection(indata.radars[i].coordinates);
             radars[indata.radars[i].id] = indata.radars[i];
         }
     }
 
     function init() {
         bindControls();
-        d3.csv(datafile, function(indata) {
+        d3.csv(settings.datafile, function(indata) {
             kneadBirdData(indata);
-            d3.json(basemapfile, function(basemapdata) {
-                d3.json(radardatafile, function(radarData) {
-                    basemap = basemapdata;
+            d3.json(settings.basemapfile, function(basemapdata) {
+                d3.json(settings.radardatafile, function(radarData) {
                     drawer = createDrawer();
                     interpolator = createInterpolator();
                     var compfunc = function (a, b) {if (a.id < b.id) {return -1} if (a.id > b.id) {return 1} return 0};
-                    sortedRadars = radarData.radars.sort(compfunc);
-                    drawer.init(basemap, sortedRadars);
+                    radarsSorted = radarData.radars.sort(compfunc);
+                    drawer.init(basemapdata, radarsSorted);
                     interpolator.init(drawer.view);
                     kneadRadarData(radarData);
-                    drawer.setUIDateTime(min_date);
-                    interpolator.calculateForTimeAndAlt(min_date, default_alt_band);
-                    drawer.drawContext(default_alt_band);
+                    drawer.setUIDateTime(minDate);
+                    interpolator.calculateForTimeAndAlt(minDate, DEFAULT_ALTITUDE_BAND);
+                    drawer.drawContext(DEFAULT_ALTITUDE_BAND);
                     drawer.startAnimation();
                     play();
                 });
