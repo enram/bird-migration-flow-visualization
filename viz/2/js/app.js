@@ -90,39 +90,32 @@ function app() {
 
 
     var createDrawer = function () {
-        var d = {},
-            context_x,
-            context_y,
-            radiusScale,
-            timeNeedle,
-            basemapSvg = d3.select("#basemap svg"),
-            g,
-            particles;              // Array
+        var d = {},                 //
+            timechartX ,              //
+            timechartY,               //
+            radiusScale,            //
+            g,                      //
+            particles,              //
+            timeNeedle,             // Needle rectangle on time slider
+            basemapSvg = d3.select("#basemap svg"), // Basemap svg element
+            animationCanvas = d3.select("#animation canvas"); // Animation canvas element
 
-        var CANVAS_ID = "#canvas",
-            ANIMATION_CANVAS_ID = "#animation-canvas";
+        var CANVAS_ID = "#canvas";  // Containing canvas element ID
 
+        var settings = {
+            frameRate: 60,          // Desired milliseconds per frame
+            maxParticleAge: 60,     // Maximum number of frames a particle is drawn before regeneration
+            particleCount: 450      // Number of particles
+        };
 
-        /**
-         * An object {width:, height:} that describes the extent of the container's view in pixels.
-         */
+        // An object {width:, height:} that describes the extent of the container's view in pixels.
         var mapView = function() {
             var contextHeight = 50;
-            var b = $(CANVAS_ID)[0]; // Similar to document.getElementById
+            var b = $(CANVAS_ID)[0];
             var x = b.clientWidth;
             var y = b.clientHeight - contextHeight;
-            // console.log("Container size width:" + x + " height: "+ y);
             return {width: x, height: y, contextHeight: contextHeight};
         }();
-
-        /**
-         * Create settings
-         */
-        var settings = {
-            frameRate: 60, // desired milliseconds per frame
-            maxParticleAge: 60, // max number of frames a particle is drawn before regeneration
-            particleCount: 450
-        };
 
         // Return a random number between min (inclusive) and max (exclusive).
         function rand(min, max) {
@@ -149,7 +142,7 @@ function app() {
             $(ALTITUDE_BAND_INPUT).val(alt);
         }
 
-        /**
+        /*
          * Returns a d3 Albers conical projection (en.wikipedia.org/wiki/Albers_projection) that maps the bounding box
          * defined by the lower left geographic coordinates (lng0, lat0) and upper right coordinates (lng1, lat1) onto
          * the view port having (0, 0) as the upper left point and (width, height) as the lower right point.
@@ -157,7 +150,6 @@ function app() {
         function createAlbersProjection(lng0, lat0, lng1, lat1, view) {
             // Construct a unit projection centered on the bounding box. NOTE: center calculation will not be correct
             // when the bounding box crosses the 180th meridian. Don't expect that to happen to Tokyo for a while...
-            // console.log("Creating projection");
             var projection = d3.geo.albers()
                 .rotate([-((lng0 + lng1) / 2), 0]) // rotate the globe from the prime meridian to the bounding box's center
                 .center([0, (lat0 + lat1) / 2])    // set the globe vertically on the bounding box's center
@@ -171,16 +163,12 @@ function app() {
             var s = 1 / Math.max((p1[0] - p0[0]) / view.width, (p0[1] - p1[1]) / view.height) * 0.95;
             // Move the center to (0, 0) in pixel space.
             var t = [view.width / 2, view.height / 2];
-            // console.log("Projection created");
             return projection.scale(s).translate(t);
         }
 
 
-        /**
-         * Load the basemap in the svg with the countries, country border and radars
-         */
+        // Load the basemap in the svg with the countries
         function drawBasemap(bm) {
-            //console.log("Creating basemap...");
             var countries = topojson.feature(bm, bm.objects[BASELAYER_OBJECT]);
             albersProjection = createAlbersProjection(bbox[0], bbox[1], bbox[2], bbox[3], mapView);
             var path = d3.geo.path()
@@ -192,7 +180,6 @@ function app() {
                 .attr("class", "countries");
 
             path.pointRadius(2);
-            // console.log("Basemap created");
         }
 
         function drawRadars(radarData) {
@@ -257,53 +244,53 @@ function app() {
                 });
         }
 
-        function drawContext(altBand) {
-            context_x = d3.scale.linear()
+        function drawTimechart(altBand) {
+            timechartX = d3.scale.linear()
                 .domain([minDate.valueOf(), maxDate.valueOf()])
                 .range([0, mapView.width]);
 
-            var inv_context_x = d3.scale.linear()
+            var inverseTimechartX = d3.scale.linear()
                 .domain([0, mapView.width])
                 .range([minDate.valueOf(), maxDate.valueOf()]);
 
-            context_y = d3.scale.linear()
+            timechartY = d3.scale.linear()
                 .domain([0, maxBirdDensity[altBand]])
                 .range([mapView.contextHeight, 0]);
 
-            var context = basemapSvg.append("g")
+            var timechart = basemapSvg.append("g")
                 .attr("width", mapView.width)
                 .attr("height", mapView.contextHeight)
                 .attr("transform", "translate(0," + mapView.height + ")");
 
-            context.append("rect")
+            timechart.append("rect")
                 .attr("width", "100%")
                 .attr("height", mapView.contextHeight)
                 .attr("fill", "white")
                 .attr("opacity", ".4")
                 .on("click", function(d, i) {
                     var pointClicked = d3.mouse(this);
-                    var clickedDate = moment.utc(inv_context_x(pointClicked[0]));
+                    var clickedDate = moment.utc(inverseTimechartX(pointClicked[0]));
                     // round to closest time interval:
                     clickedDate.minutes(clickedDate.minutes() - clickedDate.minutes() % TIME_OFFSET);
                     drawer.setUIDateTime(clickedDate);
                     interpolator.calculateForTimeAndAlt(clickedDate, drawer.getAltitudeBand());
-                    drawer.updateTimeIndicator(clickedDate);
+                    drawer.updateTimeNeedle(clickedDate);
                 });
 
             for (var radar in migrationByRadarAndAlt) {
                 if (migrationByRadarAndAlt.hasOwnProperty(radar)) {
-                    context.selectAll("circle " + ".r" + radar)
+                    timechart.selectAll("circle " + ".r" + radar)
                         .data(migrationByRadarAndAlt[radar][altBand]).enter().append("circle")
                         .attr("class", ".r" + radar)
-                        .attr("cx", function(d) {return context_x(moment.utc(d.interval_start_time).valueOf());})
-                        .attr("cy", function(d) {return context_y(d.avg_bird_density)})
+                        .attr("cx", function(d) {return timechartX(moment.utc(d.interval_start_time).valueOf());})
+                        .attr("cy", function(d) {return timechartY(d.avg_bird_density)})
                         .attr("r", 1.5)
                         .attr("stroke", "none")
                         .attr("fill", "#555");
                 }
             }
 
-            timeNeedle = context.append("rect")
+            timeNeedle = timechart.append("rect")
                 .attr("x", 0)
                 .attr("y", 0)
                 .attr("width", 2)
@@ -312,13 +299,13 @@ function app() {
 
         }
 
-        function updateTimeIndicator(datetime) {
-            timeNeedle.attr("x", context_x(datetime.valueOf()));
+        function updateTimeNeedle(datetime) {
+            timeNeedle.attr("x", timechartX(datetime.valueOf()));
         }
 
-        function replaceContext(densities, alt_band) {
+        function replaceTimechart(densities, alt_band) {
             basemapSvg.select("g").remove();
-            drawContext(densities, alt_band);
+            drawTimechart(densities, alt_band);
         }
 
         // Create particle object
@@ -382,7 +369,7 @@ function app() {
         }
 
         function startAnimation() {
-            g = d3.select(ANIMATION_CANVAS_ID).node().getContext("2d");
+            g = animationCanvas.node().getContext("2d");
             g.lineWidth = 2;
             g.strokeStyle = "rgba(14, 100, 143, 0.9)";
             g.fillStyle = "rgba(255, 255, 255, 0.7)"; /*  White layer to be drawn over existing trails */
@@ -397,7 +384,7 @@ function app() {
         var init = function(basemapdata, radarData) {
             d3.select(CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height + mapView.contextHeight);
             basemapSvg.attr("width", mapView.width).attr("height", mapView.height + mapView.contextHeight);
-            d3.select(ANIMATION_CANVAS_ID).attr("width", mapView.width).attr("height", mapView.height);
+            animationCanvas.attr("width", mapView.width).attr("height", mapView.height);
             drawBasemap(basemapdata);
             drawRadars(radarData);
             drawDensity();
@@ -409,11 +396,10 @@ function app() {
             maxY = mapView.height;
         };
 
-
         d.startAnimation = startAnimation;
-        d.drawContext = drawContext;
-        d.replaceContext = replaceContext;
-        d.updateTimeIndicator = updateTimeIndicator;
+        d.drawContext = drawTimechart;
+        d.replaceContext = replaceTimechart;
+        d.updateTimeIndicator = updateTimeNeedle;
         d.setUIDateTime = setUIDateTime;
         d.getUIDateTime = getUIDateTime;
         d.getAltitudeBand = getAltitudeBand;
@@ -448,7 +434,6 @@ function app() {
         }
 
         function createField() {
-            //console.log("createField called");
             var nilVector = [NaN, NaN, NaN];
             grid = function(x, y) {
                 var column = columns[Math.round(x)];
@@ -473,13 +458,13 @@ function app() {
             var points = buildPointsFromRadars(indata);
             var numberOfPoints = points.length;
             if (numberOfPoints > 5) {
-                numberOfPoints = 5; // maximum number of points to interpolate from.
+                numberOfPoints = 5; // Maximum number of points to interpolate from.
             }
             var interpolate = mvi.inverseDistanceWeighting(points, numberOfPoints);
             var tempColumns = [];
 
             var x = minX;
-            var MAX_TASK_TIME = 50;  // amount of time before a task yields control (milliseconds)
+            var MAX_TASK_TIME = 50;  // Amount of time before a task yields control (milliseconds)
             var MIN_SLEEP_TIME = 25;
 
             function interpolateColumn(x) {
@@ -499,12 +484,10 @@ function app() {
                     tempColumns[x] = interpolateColumn(x);
                     x++;
                     if ((+new Date - start) > MAX_TASK_TIME) {
-                        // console.log("Interpolating: " + x + "/" + maxX);
                         setTimeout(batchInterpolate, MIN_SLEEP_TIME);
                         return;
                     }
                 }
-                //console.log("columns interpolated");
                 columns = tempColumns;
                 return createField();
             }
@@ -518,15 +501,12 @@ function app() {
         }
 
         interpolator.init = init;
-        //interpolator.interpolateField = interpolateField;
         interpolator.calculateForTimeAndAlt = calculateForTimeAndAlt;
         return interpolator;
     };
 
-    /**
-     * Change the altitude and update radar data
-     */
-    function changeAltitude() {
+    // Update the altitude
+    function updateAltitude() {
         var date = drawer.getUIDateTime();
         var alt_band = drawer.getAltitudeBand();
         drawer.setUIDateTime(date);
@@ -534,9 +514,7 @@ function app() {
         drawer.replaceContext(alt_band);
     }
 
-    /**
-     * Subtract TIME_OFFSET minutes from entered time and show results
-     */
+    // Subtract TIME_OFFSET minutes from entered time and show results
     function previous() {
         var date = drawer.getUIDateTime();
         var alt_band = drawer.getAltitudeBand();
@@ -546,9 +524,7 @@ function app() {
         interpolator.calculateForTimeAndAlt(date, alt_band);
     }
 
-    /**
-     * Add TIME_OFFSET minutes from entered time and show results
-     */
+    // Add TIME_OFFSET minutes from entered time and show results
     function next(){
         var date = drawer.getUIDateTime();
         var alt_band = drawer.getAltitudeBand();
@@ -561,37 +537,23 @@ function app() {
         interpolator.calculateForTimeAndAlt(date, alt_band);
     }
 
-    /**
-     * Function used from next button on html, needs to pause the time running as wel as go to next timeframe
-     */
     function nextWithPause() {
         next();
         pause();
     }
 
-    /**
-     * Function used from previous button on html, needs to pause the time running as wel as go to previous timeframe
-     */
     function previousWithPause() {
         previous();
         pause();
     }
 
-    /**
-     * Pause interval for time running
-     */
     function pause() {
-        // console.log("Pause clicked");
         clearInterval(gridTimeOut);
         animationRunning = false;
         $("#play-pause").addClass("active");
     }
 
-    /**
-     * Start interval for time running
-     */
     function play() {
-        // console.log("Paused unclicked");
         gridTimeOut = setInterval(function() {
             next();
         }, UPDATE_SPEED);
@@ -599,9 +561,6 @@ function app() {
         $("#play-pause").removeClass("active");
     }
 
-    /**
-     * Play/Pause functionality. When paused, continue animation but do not update radar data
-     */
     function playPause() {
         if (animationRunning == true) {
             pause();
@@ -611,9 +570,6 @@ function app() {
     }
 
     function bindControls() {
-        /**
-         * Bind to input field to make enter work when user changes date manually
-         */
         $(TIME_INPUT).bind("keyup", function(event) {
             if (event.which == 13) {
                 var datetime = drawer.getUIDateTime();
@@ -640,7 +596,7 @@ function app() {
             nextWithPause();
         });
         $("#alt-band").on("change", function(event) {
-            changeAltitude();
+            updateAltitude();
         })
     }
 
@@ -705,7 +661,7 @@ function app() {
     app.previousWithPause = previousWithPause;
     app.nexWithPause = nextWithPause;
     app.playPause = playPause;
-    app.changeAltitude = changeAltitude;
+    app.changeAltitude = updateAltitude;
     return app;
 };
 
