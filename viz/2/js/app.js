@@ -95,7 +95,7 @@ function app() {
             g,                        // canvas context object
             particles,                // array of all living particles
             timeNeedle,               // Needle rectangle on time slider
-            basemapSvg = d3.select("#basemap svg"), // Basemap svg element
+            basemapSvg = d3.select("#map-svg"), // Basemap svg element
             animationCanvas = d3.select("#animation canvas"); // Animation canvas element
 
         var CANVAS_ID = "#canvas";  // Containing canvas element ID

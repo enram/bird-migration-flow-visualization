@@ -16,7 +16,7 @@
                 <div class="page-header">
                     <h1>Bird migration flow visualization</h1>
                 </div>
-                <p class="lead">This visualization shows <a href="https://github.com/enram/case-study/blob/master/story.md">one week of intense bird migration in April 2013</a> recorded by 5 weather radars (shown in blue) and interpolated over the entire area. This proof of concept is the result of a 5 day hackathon by the <a href="https://twitter.com/LifeWatchINBO">LifeWatch INBO</a> team, hosted at the <a href="http://ibed.uva.nl/research/research-groups/research-groups/research-groups/content/folder/computational-geo-ecology/computational-geo-ecology.html">University of Amsterdam</a> and in collaboration with the <a href="http://www.knmi.nl">KNMI</a>. The long-term goal of the <a href="http://enram.eu">European Network for the Radar Surveillance of Animal Movement (ENRAM)</a> is to retrieve this kind of data at a European scale. Documentation and source code are available on <a href="https://github.com/enram/bird-migration-flow-visualization/releases/tag/stsm">GitHub</a>.</p>
+                <p class="lead">This visualization shows <a href="https://github.com/enram/case-study/blob/master/story.md">one week of intense bird migration in April 2013</a> recorded by 5 weather radars (shown in blue) and interpolated over the entire area. This proof of concept is the result of a 5 day hackathon by the <a href="https://twitter.com/LifeWatchINBO">LifeWatch INBO</a> team, hosted at the <a href="http://ibed.uva.nl/research/research-groups/research-groups/research-groups/content/folder/computational-geo-ecology/computational-geo-ecology.html">University of Amsterdam</a> and in collaboration with the <a href="http://www.knmi.nl">KNMI</a>. The long-term goal of the <a href="http://enram.eu">European Network for the Radar Surveillance of Animal Movement (ENRAM)</a> is to retrieve this kind of data at a European scale. Documentation and source code are available on <a href="https://github.com/enram/bird-migration-flow-visualization">GitHub</a>.</p>
             </div>
         </div>
 
@@ -91,16 +91,16 @@
         <!-- Own scripts -->
         <script type="text/javascript">
             var settings = {
-                "datafile": "data/birds.csv",
-                "radardatafile": "data/radars.json",
-                "basemapfile": "data/basemap.topojson",
-                "baselayer_object": "ne_10m_admin_0_countries",
-                "bbox": [2.52,49.50, 7.20, 53.56],
-                "date_format": "YYYY-MM-DD HH:mm"
+                "datafile": "data/ne-us/birds.csv",
+                "radardatafile": "data/ne-us/radars.json",
+                "basemapfile": "data/ne-us/basemap.topojson",
+                "baselayer_object": "countries",
+                "bbox": [-79.74,36.0,-66.76,48.05],
+                "date_format": "YY-MM-DD HH:mm"
             };
         </script>
         <script type="text/javascript" src="js/mvi.js"></script>
-        <script type="text/javascript" src="js/birds.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
         
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
