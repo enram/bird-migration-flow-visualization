@@ -458,7 +458,7 @@ function app() {
         var alt_band = drawer.getAltitudeBand();
         drawer.setUIDateTime(date);
         interpolator.calculateForTimeAndAlt(date, alt_band);
-        //drawer.replaceContext(alt_band);
+        //drawer.replaceTimechart(alt_band);
     }
 
     // Subtract TIME_OFFSET minutes from entered time and show results
@@ -590,7 +590,7 @@ function app() {
                     kneadRadarData(radarData);
                     drawer.setUIDateTime(minDate);
                     interpolator.calculateForTimeAndAlt(minDate, DEFAULT_ALTITUDE_BAND);
-                    //drawer.drawContext(DEFAULT_ALTITUDE_BAND);
+                    //drawer.drawTimechart(DEFAULT_ALTITUDE_BAND);
                     drawer.startAnimation();
                     play();
                 });
