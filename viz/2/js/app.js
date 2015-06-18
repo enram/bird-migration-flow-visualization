@@ -30,6 +30,7 @@ function app() {
         albersProjection,           // Projection function
 
         bbox = settings.bbox,       // Bounding box coordinates
+        TIME_OFFSET = settings.time_step_minutes, // the amount of minutes between two time frames
         minX,                       // Top left pixel position from bounding box
         minY,                       // Top left pixel position from bounding box
         maxX,                       // Right buttom pixel position from bounding box
@@ -48,7 +49,6 @@ function app() {
         TIME_INPUT = "#time-int",   // Time input element
         ALTITUDE_BAND_INPUT = "#alt-band", // Altitude band input element
         DEFAULT_ALTITUDE_BAND = 1,  // Default altitude band to be shown
-        TIME_OFFSET = 20,           // Time jumps
         DATE_FORMAT = settings.date_format, // Date format to be shown in UI
         UTC_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss", // Date format for hashing
         UPDATE_SPEED = 1000;        // Milliseconds between grid refreshes
