@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <title>Bird migration flow visualization</title>
@@ -28,7 +28,7 @@
                         <label class="sr-only" for="time-int">Date/time</label>
                         <input type="datetime" id="time-int" class="form-control">
 
-                        <button type="button" id="play-pause" class="btn btn-default"><span class="glyphicon glyphicon-pause"></button>
+                        <button type="button" id="play-pause" class="btn btn-default"><span class="glyphicon glyphicon-pause"></span></button>
 
                         <button type="button" id="previous" class="btn btn-default"><span class="glyphicon glyphicon-step-backward"></span></button>
                         <button type="button" id="next" class="btn btn-default"><span class="glyphicon glyphicon-step-forward"></span></button>
@@ -62,16 +62,15 @@
             <div class="container">
                 <h2>Comments</h2>
                 <div id="disqus_thread"></div>
-                    <script type="text/javascript">
-                        var disqus_shortname = 'lifewatchinbo';
+                <script type="text/javascript">
+                    var disqus_shortname = 'lifewatchinbo';
 
-                        (function() {
-                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-                        })();
-                    </script>
-                </div>
+                    (function() {
+                        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                    })();
+                </script>
             </div>
         </div>
 
