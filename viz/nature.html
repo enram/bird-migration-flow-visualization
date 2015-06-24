@@ -5,9 +5,9 @@
         <title>Bird migration flow visualization</title>
         <meta name="author" content="LifeWatch INBO">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" href="img/favicon.ico">
+        <link rel="shortcut icon" href="1/styles/favicon.ico">
         <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="css/main.css">
+        <link rel="stylesheet" type="text/css" href="1/styles/main.css">
         <style>
             .container {
                 width: 440px;
@@ -55,9 +55,9 @@
 
         <div id="display">
             <div class="container">
-                <div id="canvas" data-topography="../data/basemap/basemap.topojson">
+                <div id="canvas">
                     <div id="map">
-                        <svg id="map-svg" xmlns="http://www.w3.org/2000/svg" version="1.1"/>
+                        <svg id="map-svg"></svg>
                     </div>
                     <div id="animation">
                         <canvas id="animation-canvas"></canvas>
@@ -66,16 +66,27 @@
             </div>
         </div>
 
-        <!-- Scripts -->
-        <script type="text/javascript" src="js/when.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <!-- JS libraries -->
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sprintf/0.0.7/sprintf.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
-        <script type="text/javascript" src="js/cartodb-connect.js"></script>
-        <script type="text/javascript" src="js/mvi.js"></script>
-        <script type="text/javascript" src="js/birds.js"></script>
+
+        <!-- Own scripts -->
+        <script type="text/javascript">
+            var settings = {
+                "datafile": "1/data/birds.csv",
+                "radardatafile": "1/data/radars.json",
+                "basemapfile": "1/data/basemap.topojson",
+                "baselayer_object": "ne_10m_admin_0_countries",
+                "bbox": [2.52,49.50, 7.20, 53.56],
+                "date_format": "YYYY-MM-DD HH:mm"
+            };
+        </script>
+        <script type="text/javascript" src="1/js/mvi.js"></script>
+        <script type="text/javascript" src="1/js/birds.js"></script>
+
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
           (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
