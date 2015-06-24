@@ -5,9 +5,9 @@
         <title>Bird migration flow visualization</title>
         <meta name="author" content="LifeWatch INBO">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" href="1/img/favicon.ico">
+        <link rel="shortcut icon" href="1/styles/favicon.ico">
         <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="1/css/main.css">
+        <link rel="stylesheet" type="text/css" href="1/styles/main.css">
         <style>
             .container {
                 width: 440px;
@@ -55,9 +55,9 @@
 
         <div id="display">
             <div class="container">
-                <div id="canvas" data-topography="../data/basemap/basemap.topojson">
+                <div id="canvas">
                     <div id="map">
-                        <svg id="map-svg" xmlns="http://www.w3.org/2000/svg" version="1.1"/>
+                        <svg id="map-svg"></svg>
                     </div>
                     <div id="animation">
                         <canvas id="animation-canvas"></canvas>
@@ -76,9 +76,9 @@
         <!-- Own scripts -->
         <script type="text/javascript">
             var settings = {
-                "datafile": "../data/2013-nl-be/birds.csv",
-                "radardatafile": "../data/2013-nl-be/radars.json",
-                "basemapfile": "1/basemap/basemap.topojson",
+                "datafile": "1/data/birds.csv",
+                "radardatafile": "1/data/radars.json",
+                "basemapfile": "1/data/basemap.topojson",
                 "baselayer_object": "ne_10m_admin_0_countries",
                 "bbox": [2.52,49.50, 7.20, 53.56],
                 "date_format": "YYYY-MM-DD HH:mm"
