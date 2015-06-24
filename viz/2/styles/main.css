@@ -44,6 +44,16 @@
             top: 0;
         }
 
+#overview {
+    }
+    a.thumbnail:hover,
+    a.thumbnail:focus,
+    a.thumbnail:visited,
+    a.thumbnail.active
+     {
+        text-decoration: none;
+    }
+
 #footer {
     background-color: #f8f8f8;
     border-top: 1px solid #e7e7e7;
