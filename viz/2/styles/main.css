@@ -38,12 +38,6 @@ body {
                 .radars {
                     fill: #3d4347;
                 }
-                .density {
-                    fill: transparent;
-                    stroke: #3d4347;
-                    stroke-width: 1;
-                    stroke-opacity: 0.5;
-                }
 
         /* Animation */
         #animation {
