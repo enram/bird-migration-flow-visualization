@@ -97,7 +97,7 @@ SELECT
     round(avg(bird_density)::numeric,5) AS avg_bird_density,
     CASE
         WHEN altitude_band = 1 THEN round((avg(bird_density) * 7 /5)::numeric,5)
-        WHEN altitude_band = 2 THEN round((avg(bird_density) * 7 /5)::numeric,5)
+        WHEN altitude_band = 2 THEN round((avg(bird_density) * 12 /5)::numeric,5)
     END AS vertical_integrated_density,
     count(*) AS number_of_measurements
 FROM conditional_data
