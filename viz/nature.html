@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <title>Bird migration flow visualization</title>
@@ -29,17 +29,17 @@
     </head>
     
     <body>
-        <div id="controls">
+        <nav id="controls">
             <div class="container">
                 <div class="form-inline clearfix">
                     <div class="form-group pull-left">
                         <label class="sr-only" for="time-int">Date/time</label>
-                        <input type="datetime" id="time-int" class="form-control" onfocus="pause()" value="April 6 2013, 12:00">
+                        <input type="datetime" id="time-int" class="form-control">
 
-                        <button type="button" id="play-pause" class="btn btn-default" onclick="playPause()"><span class="glyphicon glyphicon-pause"></button>
+                        <button type="button" id="play-pause" class="btn btn-default"><span class="glyphicon glyphicon-pause"></span></button>
 
-                        <button type="button" id="previous" class="btn btn-default" onclick="previousWithPause()"><span class="glyphicon glyphicon-step-backward"></span></button>
-                        <button type="button" id="next" class="btn btn-default" onclick="nextWithPause()"><span class="glyphicon glyphicon-step-forward"></span></button>
+                        <button type="button" id="previous" class="btn btn-default"><span class="glyphicon glyphicon-step-backward"></span></button>
+                        <button type="button" id="next" class="btn btn-default"><span class="glyphicon glyphicon-step-forward"></span></button>
                     </div>
 
                     <div class="form-group pull-right">
@@ -51,7 +51,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </nav>
 
         <div id="display">
             <div class="container">
@@ -93,7 +93,7 @@
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
           })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-          ga('create', 'UA-42312007-2', 'enram.github.io');
+          ga('create', 'UA-42312007-2', 'auto');
           ga('send', 'pageview');
         </script>
     </body>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bird migration flow visualization</title>
+        <meta name="author" content="LifeWatch INBO">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="../styles/favicon.ico">
+        <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../styles/main.css">
+    </head>
+    
+    <body>
+        <div id="intro">
+            <div class="container">
+                <div class="page-header">
+                    <p><a href="../../index.html"><span class="glyphicon glyphicon-chevron-left"></span> Other versions and case studies</a></p>
+                    <h1>Bird migration flow visualization <small>version 2</small></h1>
+                </div>
+                <p class="lead">This visualization shows one week of bird migration over the Northeastern United States.</p>
+
+                <p>The data are recorded in xxx 2010 by 13 weather radars (indicated as gray circles). We aggregate the data over time and altitude, and interpolate those over a larger area. We then release particles (indicated in blue) in the interpolated grid, which represent the speed and direction of the bird migration at that moment. The grid is updated every second with data from the next 60 minute interval, which updates the speed and direction of the particles.</p>
+
+                <p>The visualization was developed by <a href="https://twitter.com/LifeWatchINBO">LifeWatch INBO</a> for <a href="http://enram.eu">ENRAM</a>, the European Network for the Radar Surveillance of Animal Movement. The long-term goal of ENRAM is to retrieve and visualize this kind of data at a European scale. Documentation and source code are available on <a href="https://github.com/enram/bird-migration-flow-visualization">GitHub</a>.</p>
+            </div>
+        </div>
+
+        <nav id="controls">
+            <div class="container">
+                <div class="form-inline clearfix">
+                    <div class="form-group pull-left">
+                        <label class="sr-only" for="time-int">Date/time</label>
+                        <input type="datetime" id="time-int" class="form-control">
+
+                        <button type="button" id="play-pause" class="btn btn-default"><span class="glyphicon glyphicon-pause"></span></button>
+
+                        <button type="button" id="previous" class="btn btn-default"><span class="glyphicon glyphicon-step-backward"></span></button>
+                        <button type="button" id="next" class="btn btn-default"><span class="glyphicon glyphicon-step-forward"></span></button>
+                    </div>
+
+                    <div class="form-group pull-right">
+                        <label>Altitude band </label>
+                        <select id="alt-band" class="form-control">
+                            <option value="1">200-1600m</option>
+                            <option value="2">above 1600m</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div id="display">
+            <div class="container">
+                <div id="canvas">
+                    <div id="map">
+                        <svg id="map-svg"></svg>
+                    </div>
+                    <div id="animation">
+                        <canvas id="animation-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="comments">
+            <div class="container">
+                <h2>Comments</h2>
+                <div id="disqus_thread"></div>
+                <script type="text/javascript">
+                    var disqus_shortname = 'lifewatchinbo';
+
+                    (function() {
+                        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                    })();
+                </script>
+            </div>
+        </div>
+
+        <footer id="footer">
+            <div class="container clearfix">
+                <p class="pull-left">Created by <a href="http://lifewatch.inbo.be">LifeWatch INBO</a> for <a href="http://enram.eu">ENRAM</a> | Funded by <a href="http://cost.eu">COST</a></p>
+                <p class="pull-right"><a href="https://github.com/enram/bird-migration-flow-visualization">Source code</a></p>
+            </div>
+        </footer>
+
+        <!-- JS libraries -->
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sprintf/0.0.7/sprintf.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
+
+        <!-- Own scripts -->
+        <script type="text/javascript">
+            var settings = {
+                "datafile": "birds.csv",
+                "radardatafile": "radars.json",
+                "basemapfile": "basemap.topojson",
+                "baselayer_object": "countries",
+                "bbox": [-79.74,36.0,-66.76,48.05],
+                "date_format": "YY-MM-DD HH:mm",
+                "time_step_minutes": 60
+            };
+        </script>
+        <script type="text/javascript" src="../js/mvi.js"></script>
+        <script type="text/javascript" src="../js/app.js"></script>
+        
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-42312007-2', 'auto');
+          ga('send', 'pageview');
+        </script>
+    </body>
+</html>

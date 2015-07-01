@@ -1,3 +1,11 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    margin-bottom: 70px; /* 50 for footer + 20 margin */
+}
+
 #controls {
     background-color: #f8f8f8;
     border-bottom: 1px solid #e7e7e7;
@@ -30,12 +38,6 @@
                 .radars {
                     fill: #3d4347;
                 }
-                .density {
-                    fill: transparent;
-                    stroke: #3d4347;
-                    stroke-width: 1;
-                    stroke-opacity: 0.5;
-                }
 
         /* Animation */
         #animation {
@@ -44,10 +46,24 @@
             top: 0;
         }
 
+#overview {
+    }
+    a.thumbnail:hover,
+    a.thumbnail:focus,
+    a.thumbnail:visited,
+    a.thumbnail.active
+     {
+        text-decoration: none;
+    }
+
 #footer {
     background-color: #f8f8f8;
     border-top: 1px solid #e7e7e7;
-    margin-top: 20px;
-    padding-bottom: 20px;
-    padding-top: 20px;
-}
+    bottom: 0;
+    height: 50px;
+    position: absolute;
+    width: 100%;
+    }
+    #footer .container {
+        padding-top: 15px;
+    }
