@@ -1,6 +1,7 @@
 var flowViz = function() {
     // initialize app variables
     var animationView,
+        animationCanvas,
         columns,
         flowData,
         frameRate = 60,          // Desired milliseconds per frame
@@ -207,7 +208,7 @@ var flowViz = function() {
         animationView = view;
         interpolateField(time);
         animationCanvas = d3.select(elementID); // Animation canvas element
-        animationCanvas.attr("width", animationView.maxX).attr("height", animationView.maxY);
+        animationCanvas.attr("width", animationView.width).attr("height", animationView.height);
         setTimeout(function() {startAnimation(animationCanvas)}, 600);
     };
 
