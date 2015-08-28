@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>FlowViz test page</title>
+    <meta name="author" content="LifeWatch INBO">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="../styles/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../styles/main.css">
+</head>
+<body>
+    <!--<nav id="controls">-->
+        <!--<div class="container">-->
+            <!--<div class="form-inline clearfix">-->
+                <!--<div class="form-group pull-left">-->
+                    <!--<label class="sr-only" for="time-int">Date/time</label>-->
+                    <!--<input type="datetime" id="time-int" class="form-control">-->
+
+                    <!--<button type="button" id="play-pause" class="btn btn-default"><span class="glyphicon glyphicon-pause"></span></button>-->
+
+                    <!--<button type="button" id="previous" class="btn btn-default"><span class="glyphicon glyphicon-step-backward"></span></button>-->
+                    <!--<button type="button" id="next" class="btn btn-default"><span class="glyphicon glyphicon-step-forward"></span></button>-->
+                <!--</div>-->
+
+                <!--<div class="form-group pull-right">-->
+                    <!--<label>Altitude band </label>-->
+                    <!--<select id="alt-band" class="form-control">-->
+                        <!--<option value="1">200-1600m</option>-->
+                        <!--<option value="2">above 1600m</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</nav>-->
+
+    <div id="display">
+        <div class="container">
+            <div id="canvas">
+                <div id="map">
+                    <svg id="map-svg"></svg>
+                </div>
+                <div id="animation">
+                    <canvas id="animation-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS libraries -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+    <!--<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
+    <!--<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>-->
+    <!--<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sprintf/0.0.7/sprintf.min.js"></script>-->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
+
+    <!-- Own scripts -->
+    <script type="text/javascript" src="../js/mvi.js"></script>
+    <script type="text/javascript" src="../js/flow-viz.js"></script>
+
+
+    <!--Code to run the flowViz app-->
+    <script>
+        var f = flowViz();
+        d3.json("testdata.json", function(indata) {
+            d3.json("radars.json", function(radarData) {
+                var view = {
+                    minX: 344,
+                    maxX: 780,
+                    minY: 0,
+                    maxY: 597
+                };
+                f.init("#animation canvas", view, "2013-04-05 01:00:00+00", indata, radarData);
+            });
+        });
+
+    </script>
+</body>
+</html>
