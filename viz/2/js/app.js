@@ -58,6 +58,7 @@ function app() {
         var outdataByTime = {};
         var outdataByRadar = {};
         var timeKeys = [];
+        var timeExtent;
         for (var i=0; i<rows.length; i++) {
             if (outdataByTime.hasOwnProperty(rows[i].interval_start_time)) {
                 if (outdataByTime[rows[i].interval_start_time].hasOwnProperty(rows[i].altitude_band)) {
@@ -84,6 +85,8 @@ function app() {
                 outdataByRadar[rows[i].radar_id][band] = [rows[i]];
             }
         }
+        timeExtent = d3.extent(timeKeys);
+        for (var i=timeExtent[0]; i<=timeExtent[1]; i=i+TIME_OFFSET)
         return {dataByTime: outdataByTime, dataByRadar: outdataByRadar, keys: timeKeys};
     }
 
@@ -94,7 +97,7 @@ function app() {
             timechartY,               // y scale of the time chart
             g,                        // canvas context object
             particles,                // array of all living particles
-            timeNeedle,               // Needle rectangle on time slider
+            timeIndicator,               // Needle rectangle on time slider
             basemapSvg = d3.select("#map-svg"), // Basemap svg element
             animationCanvas = d3.select("#animation canvas"); // Animation canvas element
 
@@ -108,9 +111,9 @@ function app() {
 
         // An object {width:, height:, timechartHeight} that describes the extent of the container's view in pixels.
         var mapView = function() {
-            var timechartHeight = 0;
             var b = $(CANVAS_ID)[0];
             var x = b.clientWidth;
+            var timechartHeight = Math.floor(b.clientHeight / 10);
             var y = b.clientHeight - timechartHeight;
             return {width: x, height: y, timechartHeight: timechartHeight};
         }();
@@ -224,7 +227,7 @@ function app() {
                     clickedDate.minutes(clickedDate.minutes() - clickedDate.minutes() % TIME_OFFSET);
                     drawer.setUIDateTime(clickedDate);
                     interpolator.calculateForTimeAndAlt(clickedDate, drawer.getAltitudeBand());
-                    drawer.updateTimeNeedle(clickedDate);
+                    drawer.updateTimeIndicator(clickedDate);
                 });
 
             for (var radar in migrationByRadarAndAlt) {
@@ -240,7 +243,7 @@ function app() {
                 }
             }
 
-            timeNeedle = timechart.append("rect")
+            timeIndicator = timechart.append("rect")
                 .attr("x", 0)
                 .attr("y", 0)
                 .attr("width", 2)
@@ -249,8 +252,8 @@ function app() {
 
         }
 
-        function updateTimeNeedle(datetime) {
-            timeNeedle.attr("x", timechartX(datetime.valueOf()));
+        function updateTimeIndicator(datetime) {
+            timeIndicator.attr("x", timechartX(datetime.valueOf()));
         }
 
         function replaceTimechart(densities, alt_band) {
@@ -348,7 +351,7 @@ function app() {
         d.startAnimation = startAnimation;
         d.drawTimechart= drawTimechart;
         d.replaceTimechart = replaceTimechart;
-        d.updateTimeNeedle = updateTimeNeedle;
+        d.updateTimeIndicator = updateTimeIndicator;
         d.setUIDateTime = setUIDateTime;
         d.getUIDateTime = getUIDateTime;
         d.getAltitudeBand = getAltitudeBand;
@@ -458,7 +461,7 @@ function app() {
         var alt_band = drawer.getAltitudeBand();
         drawer.setUIDateTime(date);
         interpolator.calculateForTimeAndAlt(date, alt_band);
-        //drawer.replaceTimechart(alt_band);
+        drawer.replaceTimechart(alt_band);
     }
 
     // Subtract TIME_OFFSET minutes from entered time and show results
@@ -467,7 +470,7 @@ function app() {
         var alt_band = drawer.getAltitudeBand();
         date = moment(date).subtract('minutes', TIME_OFFSET);
         drawer.setUIDateTime(date);
-        //drawer.updateTimeIndicator(date);
+        drawer.updateTimeIndicator(date);
         interpolator.calculateForTimeAndAlt(date, alt_band);
     }
 
@@ -480,7 +483,7 @@ function app() {
             date = minDate;
         }
         drawer.setUIDateTime(date);
-        //drawer.updateTimeIndicator(date);
+        drawer.updateTimeIndicator(date);
         interpolator.calculateForTimeAndAlt(date, alt_band);
     }
 
@@ -522,7 +525,7 @@ function app() {
                 var datetime = drawer.getUIDateTime();
                 var alt_band = drawer.getAltitudeBand();
                 drawer.setUIDateTime(datetime);
-                //drawer.updateTimeIndicator(datetime);
+                drawer.updateTimeIndicator(datetime);
                 interpolator.calculateForTimeAndAlt(datetime, alt_band);
                 pause();
                 event.preventDefault();
@@ -590,7 +593,7 @@ function app() {
                     kneadRadarData(radarData);
                     drawer.setUIDateTime(minDate);
                     interpolator.calculateForTimeAndAlt(minDate, DEFAULT_ALTITUDE_BAND);
-                    //drawer.drawTimechart(DEFAULT_ALTITUDE_BAND);
+                    drawer.drawTimechart(DEFAULT_ALTITUDE_BAND);
                     drawer.startAnimation();
                     play();
                 });
