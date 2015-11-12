@@ -19,7 +19,7 @@
                 </div>
                 <p class="lead">This visualization shows four nights of bird migration over the Northeastern United States.</p>
 
-                <p>13 weather surveillance radars (indicated as gray circles) recorded hourly data from local EDT sunset on 8 September through local EDT sunrise on 11 September 2010. We aggregate the data over time and altitude, and interpolate those over a larger area (i.e. radars do not sample all airspace of the entire map region). We then release particles (indicated in blue) in the interpolated grid, which represent the speed and direction of the bird migration at that moment. The grid is updated every second with data from the next 60 minute interval, which updates the speed and direction of the particles.</p>
+                <p>13 weather surveillance radars (indicated as gray circles) recorded hourly data from local EDT sunset on 8 September through local EDT sunrise on 11 September 2010. We aggregate the data over time and altitude, and interpolate those over a larger area (i.e. radars do not sample all airspace of the entire map region). We then release particles (indicated in blue) in the interpolated grid, which represent the speed and direction of the bird migration at that moment. The grid is updated every second with data from the next 5 minute interval, which updates the speed and direction of the particles.</p>
 
                 <p>The visualization was developed by <a href="https://twitter.com/LifeWatchINBO">LifeWatch INBO</a> for <a href="http://enram.eu">ENRAM</a>, the European Network for the Radar Surveillance of Animal Movement. The long-term goal of ENRAM is to retrieve and visualize this kind of data at a European scale. Documentation and source code are available on <a href="https://github.com/enram/bird-migration-flow-visualization">GitHub</a>.</p>
             </div>
@@ -101,7 +101,7 @@
                 "baselayer_object": "countries",
                 "bbox": [-79.74,36.0,-66.76,48.05],
                 "date_format": "YYYY-MM-DD HH:mm",
-                "time_step_minutes": 60
+                "time_step_minutes": 5
             };
         </script>
         <script type="text/javascript" src="../js/mvi.js"></script>
