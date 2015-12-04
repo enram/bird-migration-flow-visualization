@@ -1,0 +1,32 @@
+{
+  "2013-04-05 00:00:00+00":[
+    {"radar_id":"6234","altitude_band":"1","avg_u_speed":"-1.09273","avg_v_speed":"-0.80584","avg_bird_density":"0.26336","vertical_integrated_density":"0.36870","number_of_measurements":"28"},
+    {"radar_id":"6260","altitude_band":"1","avg_u_speed":"-0.47063","avg_v_speed":"2.82898","avg_bird_density":"0.29873","vertical_integrated_density":"0.41822","number_of_measurements":"28"},
+    {"radar_id":"6410","altitude_band":"1","avg_u_speed":"0","avg_v_speed":"0","avg_bird_density":"0.00000","vertical_integrated_density":"0.00000","number_of_measurements":"28"},
+    {"radar_id":"6477","altitude_band":"1","avg_u_speed":"1.40141","avg_v_speed":"3.77155","avg_bird_density":"3.31665","vertical_integrated_density":"4.64331","number_of_measurements":"14"}
+  ],
+  "2013-04-05 00:20:00+00":[
+    {"radar_id":"6234","altitude_band":"1","avg_u_speed":"-0.87018","avg_v_speed":"-0.77432","avg_bird_density":"0.25600","vertical_integrated_density":"0.35840","number_of_measurements":"28"},
+    {"radar_id":"6260","altitude_band":"1","avg_u_speed":"-0.46634","avg_v_speed":"3.05823","avg_bird_density":"0.30072","vertical_integrated_density":"0.42101","number_of_measurements":"28"},
+    {"radar_id":"6410","altitude_band":"1","avg_u_speed":"0","avg_v_speed":"0","avg_bird_density":"0.06191","vertical_integrated_density":"0.08667","number_of_measurements":"28"},
+    {"radar_id":"6477","altitude_band":"1","avg_u_speed":"1.50003","avg_v_speed":"3.82894","avg_bird_density":"3.08608","vertical_integrated_density":"4.32051","number_of_measurements":"7"}
+  ],
+  "2013-04-05 00:40:00+00":[
+    {"radar_id":"6234","altitude_band":"1","avg_u_speed":"-0.90515","avg_v_speed":"-0.83881","avg_bird_density":"0.45472","vertical_integrated_density":"0.63660","number_of_measurements":"28"},
+    {"radar_id":"6260","altitude_band":"1","avg_u_speed":"-0.80028","avg_v_speed":"2.85792","avg_bird_density":"0.26349","vertical_integrated_density":"0.36888","number_of_measurements":"28"},
+    {"radar_id":"6410","altitude_band":"1","avg_u_speed":"0.02978","avg_v_speed":"-0.01471","avg_bird_density":"0.06731","vertical_integrated_density":"0.09423","number_of_measurements":"28"},
+    {"radar_id":"6451","altitude_band":"1","avg_u_speed":"0","avg_v_speed":"0","avg_bird_density":"0.11104","vertical_integrated_density":"0.15546","number_of_measurements":"1"},
+    {"radar_id":"6477","altitude_band":"1","avg_u_speed":"1.67673","avg_v_speed":"3.43141","avg_bird_density":"3.46350","vertical_integrated_density":"4.84890","number_of_measurements":"7"}],
+  "2013-04-05 01:00:00+00":[
+    {"radar_id":"6234","altitude_band":"1","avg_u_speed":"-0.87099","avg_v_speed":"-1.07386","avg_bird_density":"0.06479","vertical_integrated_density":"0.09070","number_of_measurements":"28"},
+    {"radar_id":"6260","altitude_band":"1","avg_u_speed":"-0.90459","avg_v_speed":"2.77663","avg_bird_density":"0.25481","vertical_integrated_density":"0.35673","number_of_measurements":"28"},
+    {"radar_id":"6410","altitude_band":"1","avg_u_speed":"-1.72757","avg_v_speed":"-1.29238","avg_bird_density":"0.31868","vertical_integrated_density":"0.44615","number_of_measurements":"28"},
+    {"radar_id":"6451","altitude_band":"1","avg_u_speed":"0","avg_v_speed":"0","avg_bird_density":"0.15475","vertical_integrated_density":"0.21665","number_of_measurements":"3"},
+    {"radar_id":"6477","altitude_band":"1","avg_u_speed":"1.33162","avg_v_speed":"3.19070","avg_bird_density":"2.87053","vertical_integrated_density":"4.01874","number_of_measurements":"14"}],
+  "2013-04-05 02:00:00+00": [
+    {"radar_id":"6234","altitude_band":"1","avg_u_speed":"-5.87099","avg_v_speed":"-15.07386","avg_bird_density":"0.06479","vertical_integrated_density":"0.09070","number_of_measurements":"28"},
+    {"radar_id":"6260","altitude_band":"1","avg_u_speed":"17","avg_v_speed":"2.77663","avg_bird_density":"0.25481","vertical_integrated_density":"0.35673","number_of_measurements":"28"},
+    {"radar_id":"6410","altitude_band":"1","avg_u_speed":"20","avg_v_speed":"-1.29238","avg_bird_density":"0.31868","vertical_integrated_density":"0.44615","number_of_measurements":"28"},
+    {"radar_id":"6451","altitude_band":"1","avg_u_speed":"-11","avg_v_speed":"4","avg_bird_density":"0.15475","vertical_integrated_density":"0.21665","number_of_measurements":"3"},
+    {"radar_id":"6477","altitude_band":"1","avg_u_speed":"1.33162","avg_v_speed":"3.19070","avg_bird_density":"2.87053","vertical_integrated_density":"4.01874","number_of_measurements":"14"}]
+}
