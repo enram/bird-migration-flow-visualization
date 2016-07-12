@@ -17,9 +17,9 @@ This visualization is a web application written in HTML, CSS and JS, showing bir
 1. Clone this repo
 2. Start a HTTP server (e.g. using `Python -m http.server 8000`)
 3. Go to `viz/2` and duplicate the directory `nl-be` as `my-study`
-4. Provide a [basemap as a topojson file](viz/2/nl-be/basemap.topojson)
-5. Provide [radar locations as a geojson file](viz/2/nl-be/radars.json)
-6. Provide [aggregated bird migration altitude profiles as a csv file](viz/2/nl-be/birds.csv)
+4. Provide a basemap as a topojson file ([example](viz/2/nl-be/basemap.topojson))
+5. Provide radar locations as a geojson file ([example](viz/2/nl-be/radars.json))
+6. Provide aggregated bird migration altitude profiles as a csv file ([example](viz/2/nl-be/birds.csv))
 7. Reference these files and set some settings in the variable `settings` at the bottom of `index.html`
 8. Go to `http://localhost:8000/viz/2/my-study` to see your case study visualized.
 
