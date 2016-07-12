@@ -1,5 +1,7 @@
 # Bird migration flow visualization
 
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.57472.svg)](http://doi.org/10.5281/zenodo.57472)
+
 ## Rationale
 
 Weather radars can detect bird migration, but visualizing these data in an intuitive way is challenging. Inspired by and based upon "[air](http://air.nullschool.net)" - an open source flow visualization of wind and air pollutants in Tokyo by [Cameron Beccario](https://twitter.com/cambecc) - we created an interactive, online flow visualization of bird migration.
@@ -31,12 +33,7 @@ Developed by [LifeWatch INBO](http://lifewatch.inbo.be):
 * [Bart Aelterman](https://twitter.com/bartaelterman)
 * [Kevin Azijn](https://twitter.com/kazijn)
 
-Guidance provided by:
-
-* Judy Shamoun-Baranes (UvA)
-* [Hans van Gasteren](https://twitter.com/hvangasteren) (UvA)
-* Hidde Leijnse (KNMI)
-* Willem Bouten (UvA)
+Guidance provided by Judy Shamoun-Baranes (UvA), [Hans van Gasteren](https://twitter.com/hvangasteren) (UvA), Hidde Leijnse (KNMI) and Willem Bouten (UvA).
 
 ## Thanks
 
