@@ -8,7 +8,7 @@ Weather radars can detect bird migration, but visualizing these data in an intui
 
 <http://enram.github.io/bird-migration-flow-visualization/viz/>
 
-This visualization is a web application written in HTML, CSS and JS, showing bird migration as an animated flow, superimposed on a map and progressing through time. Controls at the top of the visualization allow the user to start and stop this progression, manually navigate through time intervals, select a specific date and time, as well as toggle between two altitude bands. The main difference with "[air](https://github.com/cambecc/air)" is the functionality to progress or navigate through time. The visualization has been applied on two case studies: [Netherlands and Belgium](http://enram.github.io/bird-migration-flow-visualization/viz/2/nl-be/index.html) and [Northeastern United States](http://enram.github.io/bird-migration-flow-visualization/viz/2/ne-us/index.html), but it can support other case studies as well (see "Installation"). For more information, see Shamoun-Baranes et al. 2015 (in press).
+This visualization is a web application written in HTML, CSS and JS, showing bird migration as an animated flow, superimposed on a map and progressing through time. Controls at the top of the visualization allow the user to start and stop this progression, manually navigate through time intervals, select a specific date and time, as well as toggle between two altitude bands. The main difference with "[air](https://github.com/cambecc/air)" is the functionality to progress and navigate through time. The visualization has been applied on two case studies: [Netherlands and Belgium](http://enram.github.io/bird-migration-flow-visualization/viz/2/nl-be/index.html) and [Northeastern United States](http://enram.github.io/bird-migration-flow-visualization/viz/2/ne-us/index.html), but it can support other case studies as well (see "Installation"). For more information, see Shamoun-Baranes et al. 2016 (in press).
 
 [![screenshot](screenshot.png)](http://enram.github.io/bird-migration-flow-visualization/viz/)
 
@@ -31,7 +31,7 @@ Developed by [LifeWatch INBO](http://lifewatch.inbo.be):
 * [Bart Aelterman](https://twitter.com/bartaelterman)
 * [Kevin Azijn](https://twitter.com/kazijn)
 
-Data and guidance provided by:
+Guidance provided by:
 
 * Judy Shamoun-Baranes (UvA)
 * [Hans van Gasteren](https://twitter.com/hvangasteren) (UvA)
