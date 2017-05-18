@@ -269,9 +269,9 @@ function app() {
             maxY = mapView.height;
         };
 
-        d.drawTimechart= drawTimechart;
-        d.replaceTimechart = replaceTimechart;
-        d.updateTimeNeedle = updateTimeNeedle;
+        // d.drawTimechart= drawTimechart;
+        // d.replaceTimechart = replaceTimechart;
+        // d.updateTimeNeedle = updateTimeNeedle;
         d.setUIDateTime = setUIDateTime;
         d.getUIDateTime = getUIDateTime;
         d.getAltitudeBand = getAltitudeBand;
