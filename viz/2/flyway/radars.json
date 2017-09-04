@@ -11,9 +11,79 @@
             "coordinates": [16.7885, 49.5011]
         },
         {
-            "id": "dkbor",
-            "name": "Bornholm",
-            "coordinates": [14.8875, 55.1128]
+            "id": "deboo",
+            "name": "Boostedt",
+            "coordinates": [10.0468, 54.0044]
+        },
+        {
+            "id": "dedrs",
+            "name": "Dresden",
+            "coordinates": [13.7686, 51.1246]
+        },
+        {
+            "id": "deeis",
+            "name": "Eisberg",
+            "coordinates": [12.4028, 49.5407]
+        },
+        {
+            "id": "deess",
+            "name": "Essen",
+            "coordinates": [6.9669, 51.4056]
+        },
+        {
+            "id": "defbg",
+            "name": "Feldberg",
+            "coordinates": [8.0039, 47.8736]
+        },
+        {
+            "id": "defld",
+            "name": "Flechtdorf",
+            "coordinates": [8.8021, 51.3112]
+        },
+        {
+            "id": "dehnr",
+            "name": "Hannover",
+            "coordinates": [9.6945, 52.4601]
+        },
+        {
+            "id": "deisn",
+            "name": "Isen/Munchen",
+            "coordinates": [12.1018, 48.1747]
+        },
+        {
+            "id": "demem",
+            "name": "Memminggen",
+            "coordinates": [10.2204, 48.0431]
+        },
+        {
+            "id": "deneu",
+            "name": "Neuhaus",
+            "coordinates": [11.1350, 50.5001]
+        },
+        {
+            "id": "denhb",
+            "name": "Neuheilenbach",
+            "coordinates": [6.5485, 50.1097]
+        },
+        {
+            "id": "deoft",
+            "name": "Offethal",
+            "coordinates": [8.7140, 49.9859]
+        },
+        {
+            "id": "depro",
+            "name": "Pritzel/Berlin",
+            "coordinates": [13.8578, 52.64857]
+        },
+        {
+            "id": "detur",
+            "name": "Tuerkheim",
+            "coordinates": [9.7828, 48.5853]
+        },
+        {
+            "id": "deumd",
+            "name": "Ummendorf",
+            "coordinates": [11.1761, 52.1601]
         },
         {
             "id": "fianj",
@@ -46,11 +116,6 @@
             "coordinates": [26.8969, 67.1391]
         },
         {
-            "id": "fipet",
-            "name": "Petäjävesi",
-            "coordinates": [25.4401, 62.3045]
-        },
-        {
             "id": "fiuta",
             "name": "Utajärvi",
             "coordinates": [26.3189, 64.7749]
@@ -71,11 +136,6 @@
             "coordinates": [1.8347, 50.1358]
         },
         {
-            "id": "frale",
-            "name": "Aléria",
-            "coordinates": [9.4964, 42.1297]
-        },
-        {
             "id": "frave",
             "name": "Avesnes",
             "coordinates": [3.8119, 50.1283]
@@ -86,19 +146,9 @@
             "coordinates": [4.7758, 47.3553]
         },
         {
-            "id": "frbol",
-            "name": "Bollène",
-            "coordinates": [4.7622, 44.3231]
-        },
-        {
             "id": "frbor",
             "name": "Bordeaux",
             "coordinates": [-0.6917, 44.8314]
-        },
-        {
-            "id": "frbou",
-            "name": "Bourges",
-            "coordinates": [2.3594, 47.0586]
         },
         {
             "id": "frcae",
@@ -111,24 +161,9 @@
             "coordinates": [0.0656, 46.6986]
         },
         {
-            "id": "frcol",
-            "name": "Collobrières",
-            "coordinates": [6.3728, 43.2167]
-        },
-        {
-            "id": "frgre",
-            "name": "Grezes",
-            "coordinates": [1.3694, 45.1044]
-        },
-        {
             "id": "frlep",
             "name": "Sembadel",
             "coordinates": [3.7094, 45.2900]
-        },
-        {
-            "id": "frmcl",
-            "name": "Montclar",
-            "coordinates": [2.6097, 43.9906]
         },
         {
             "id": "frmom",
@@ -141,24 +176,9 @@
             "coordinates": [7.0192, 47.3686]
         },
         {
-            "id": "frnan",
-            "name": "Nancy",
-            "coordinates": [6.5817, 48.7158]
-        },
-        {
-            "id": "frnim",
-            "name": "Nîmes",
-            "coordinates": [4.5028, 43.8061]
-        },
-        {
             "id": "frniz",
             "name": "Saint Nizier",
             "coordinates": [4.4453, 46.0678]
-        },
-        {
-            "id": "fropo",
-            "name": "Opoul",
-            "coordinates": [2.865, 42.9183]
         },
         {
             "id": "frpla",
@@ -176,11 +196,6 @@
             "coordinates": [2.0075, 48.7739]
         },
         {
-            "id": "frtre",
-            "name": "Treilleres",
-            "coordinates": [-1.6564, 47.3375]
-        },
-        {
             "id": "frtro",
             "name": "Arcis-sur-aube",
             "coordinates": [4.3094, 48.4622]
@@ -194,6 +209,36 @@
             "id": "nldhl",
             "name": "Den helder",
             "coordinates": [4.7900, 52.9533]
+        },
+        {
+            "id": "plbrz",
+            "name": "Brzuchania",
+            "coordinates": [20.0797, 50.3942]
+        },
+        {
+            "id": "plgda",
+            "name": "Gdansk",
+            "coordinates": [18.4563, 54.3843]
+        },
+        {
+            "id": "plleg",
+            "name": "Legionowo",
+            "coordinates": [20.9609, 52.4052]
+        },
+        {
+            "id": "plpoz",
+            "name": "Poznan",
+            "coordinates": [16.7971, 52.4133]
+        },
+        {
+            "id": "plram",
+            "name": "Ramza",
+            "coordinates": [18.7267, 50.1517]
+        },
+        {
+            "id": "plswi",
+            "name": "Swidwin",
+            "coordinates": [15.8311, 53.7903]
         },
         {
             "id": "seang",
@@ -236,11 +281,6 @@
             "coordinates": [21.8650, 65.4309]
         },
         {
-            "id": "seosu",
-            "name": "Östersund",
-            "coordinates": [14.7591, 63.2950]
-        },
-        {
             "id": "seovi",
             "name": "Örnsköldsvik",
             "coordinates": [18.4019, 63.6395]
@@ -249,11 +289,6 @@
             "id": "sevar",
             "name": "Vara",
             "coordinates": [12.826, 58.2556]
-        },
-        {
-            "id": "sevil",
-            "name": "Vilebo",
-            "coordinates": [15.9363, 58.1059]
         }
     ]
 }
