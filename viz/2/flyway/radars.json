@@ -1,0 +1,259 @@
+{
+    "radars": [
+        {
+            "id": "czbrd",
+            "name": "Brdy-Praha",
+            "coordinates": [13.8178, 49.6583]
+        },
+        {
+            "id": "czska",
+            "name": "Skalky",
+            "coordinates": [16.7885, 49.5011]
+        },
+        {
+            "id": "dkbor",
+            "name": "Bornholm",
+            "coordinates": [14.8875, 55.1128]
+        },
+        {
+            "id": "fianj",
+            "name": "Anjalankoski",
+            "coordinates": [27.1081, 60.9039]
+        },
+        {
+            "id": "fiika",
+            "name": "Ikaalinen",
+            "coordinates": [23.0764, 61.7673]
+        },
+        {
+            "id": "fikes",
+            "name": "Kesälahti",
+            "coordinates": [29.7977, 61.9070]
+        },
+        {
+            "id": "fikor",
+            "name": "Korpo",
+            "coordinates": [21.6434, 60.1285]
+        },
+        {
+            "id": "fikuo",
+            "name": "Kuopio",
+            "coordinates": [27.3815, 62.8626]
+        },
+        {
+            "id": "filuo",
+            "name": "Lousto",
+            "coordinates": [26.8969, 67.1391]
+        },
+        {
+            "id": "fipet",
+            "name": "Petäjävesi",
+            "coordinates": [25.4401, 62.3045]
+        },
+        {
+            "id": "fiuta",
+            "name": "Utajärvi",
+            "coordinates": [26.3189, 64.7749]
+        },
+        {
+            "id": "fivan",
+            "name": "Vantaa",
+            "coordinates": [24.8690, 60.2706]
+        },
+        {
+            "id": "fivim",
+            "name": "Vimpeli",
+            "coordinates": [23.8209, 63.1048]
+        },
+        {
+            "id": "frabb",
+            "name": "Abbeville",
+            "coordinates": [1.8347, 50.1358]
+        },
+        {
+            "id": "frale",
+            "name": "Aléria",
+            "coordinates": [9.4964, 42.1297]
+        },
+        {
+            "id": "frave",
+            "name": "Avesnes",
+            "coordinates": [3.8119, 50.1283]
+        },
+        {
+            "id": "frbla",
+            "name": "Blaisy-haut",
+            "coordinates": [4.7758, 47.3553]
+        },
+        {
+            "id": "frbol",
+            "name": "Bollène",
+            "coordinates": [4.7622, 44.3231]
+        },
+        {
+            "id": "frbor",
+            "name": "Bordeaux",
+            "coordinates": [-0.6917, 44.8314]
+        },
+        {
+            "id": "frbou",
+            "name": "Bourges",
+            "coordinates": [2.3594, 47.0586]
+        },
+        {
+            "id": "frcae",
+            "name": "Falaise",
+            "coordinates": [-0.1494, 48.9272]
+        },
+        {
+            "id": "frche",
+            "name": "Cherves",
+            "coordinates": [0.0656, 46.6986]
+        },
+        {
+            "id": "frcol",
+            "name": "Collobrières",
+            "coordinates": [6.3728, 43.2167]
+        },
+        {
+            "id": "frgre",
+            "name": "Grezes",
+            "coordinates": [1.3694, 45.1044]
+        },
+        {
+            "id": "frlep",
+            "name": "Sembadel",
+            "coordinates": [3.7094, 45.2900]
+        },
+        {
+            "id": "frmcl",
+            "name": "Montclar",
+            "coordinates": [2.6097, 43.9906]
+        },
+        {
+            "id": "frmom",
+            "name": "Momuy",
+            "coordinates": [-0.6092, 43.6247]
+        },
+        {
+            "id": "frmtc",
+            "name": "Montancy",
+            "coordinates": [7.0192, 47.3686]
+        },
+        {
+            "id": "frnan",
+            "name": "Nancy",
+            "coordinates": [6.5817, 48.7158]
+        },
+        {
+            "id": "frnim",
+            "name": "Nîmes",
+            "coordinates": [4.5028, 43.8061]
+        },
+        {
+            "id": "frniz",
+            "name": "Saint Nizier",
+            "coordinates": [4.4453, 46.0678]
+        },
+        {
+            "id": "fropo",
+            "name": "Opoul",
+            "coordinates": [2.865, 42.9183]
+        },
+        {
+            "id": "frpla",
+            "name": "Plabennec",
+            "coordinates": [-4.4300, 48.4608]
+        },
+        {
+            "id": "frtou",
+            "name": "Toulouse",
+            "coordinates": [1.3761, 43.5744]
+        },
+        {
+            "id": "frtra",
+            "name": "Trappes",
+            "coordinates": [2.0075, 48.7739]
+        },
+        {
+            "id": "frtre",
+            "name": "Treilleres",
+            "coordinates": [-1.6564, 47.3375]
+        },
+        {
+            "id": "frtro",
+            "name": "Arcis-sur-aube",
+            "coordinates": [4.3094, 48.4622]
+        },
+        {
+            "id": "nldbl",
+            "name": "De bilt",
+            "coordinates": [5.1783, 52.1017]
+        },
+        {
+            "id": "nldhl",
+            "name": "Den helder",
+            "coordinates": [4.7900, 52.9533]
+        },
+        {
+            "id": "seang",
+            "name": "Ängelholm",
+            "coordinates": [12.8517, 56.3675]
+        },
+        {
+            "id": "searl",
+            "name": "Arlanda",
+            "coordinates": [17.9463, 59.6544]
+        },
+        {
+            "id": "sease",
+            "name": "Ase",
+            "coordinates": [18.4001, 57.3035]
+        },
+        {
+            "id": "sehud",
+            "name": "Hudriksvall",
+            "coordinates": [16.7144, 61.5771]
+        },
+        {
+            "id": "sekir",
+            "name": "Kiru",
+            "coordinates": [20.6178, 67.7088]
+        },
+        {
+            "id": "sekkr",
+            "name": "Karlskro",
+            "coordinates": [15.6103, 56.2955]
+        },
+        {
+            "id": "selek",
+            "name": "Leksand",
+            "coordinates": [14.8776, 60.7230]
+        },
+        {
+            "id": "selul",
+            "name": "Luleå",
+            "coordinates": [21.8650, 65.4309]
+        },
+        {
+            "id": "seosu",
+            "name": "Östersund",
+            "coordinates": [14.7591, 63.2950]
+        },
+        {
+            "id": "seovi",
+            "name": "Örnsköldsvik",
+            "coordinates": [18.4019, 63.6395]
+        },
+        {
+            "id": "sevar",
+            "name": "Vara",
+            "coordinates": [12.826, 58.2556]
+        },
+        {
+            "id": "sevil",
+            "name": "Vilebo",
+            "coordinates": [15.9363, 58.1059]
+        }
+    ]
+}
