@@ -60,11 +60,13 @@ function app() {
         var outdataByRadar = {};
         var timeKeys = [];
         for (var i=0; i<rows.length; i++) {
+            if (!timeKeys.includes(rows[i].interval_start_time)) {
+                timeKeys.push(rows[i].interval_start_time);
+            }
             if (outdataByAltandTime.hasOwnProperty(rows[i].altitude_band)) {
                 if (outdataByAltandTime[rows[i].altitude_band].hasOwnProperty(rows[i].interval_start_time)) {
                     outdataByAltandTime[rows[i].altitude_band][rows[i].interval_start_time].push(rows[i]);
                 } else {
-                    timeKeys.push(rows[i].interval_start_time);
                     outdataByAltandTime[rows[i].altitude_band][rows[i].interval_start_time] = [rows[i]];
                 }
             } else {
@@ -76,7 +78,6 @@ function app() {
                     outdataByRadar[rows[i].radar_id][rows[i].altitude_band].push(rows[i]);
                 } else {
                     outdataByRadar[rows[i].radar_id][rows[i].altitude_band] = [rows[i]];
-
                 }
             } else {
                 var band = rows[i].altitude_band;
@@ -84,6 +85,7 @@ function app() {
                 outdataByRadar[rows[i].radar_id][band] = [rows[i]];
             }
         }
+        timeKeys.sort(); // Not guaranteed that timestamps are added in order
         return {dataByTime: outdataByAltandTime, dataByRadar: outdataByRadar, keys: timeKeys};
     }
 
@@ -269,9 +271,9 @@ function app() {
             maxY = mapView.height;
         };
 
-        d.drawTimechart= drawTimechart;
-        d.replaceTimechart = replaceTimechart;
-        d.updateTimeNeedle = updateTimeNeedle;
+        // d.drawTimechart= drawTimechart;
+        // d.replaceTimechart = replaceTimechart;
+        // d.updateTimeNeedle = updateTimeNeedle;
         d.setUIDateTime = setUIDateTime;
         d.getUIDateTime = getUIDateTime;
         d.getAltitudeBand = getAltitudeBand;
