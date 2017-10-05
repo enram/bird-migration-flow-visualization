@@ -1,6 +1,6 @@
 # Bird migration flow visualization
 
-[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.57472.svg)](http://doi.org/10.5281/zenodo.57472)
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.592820.svg)](http://doi.org/10.5281/zenodo.592820)
 
 ## Rationale
 
