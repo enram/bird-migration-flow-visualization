@@ -1,6 +1,36 @@
 {
     "radars": [
         {
+            "id": "bejab",
+            "name": "Jabbeke",
+            "coordinates": [3.0642, 51.1917]
+        },
+        {
+            "id": "bewid",
+            "name": "Wideumont",
+            "coordinates": [5.5056, 49.9143]
+        },
+        {
+            "id": "bezav",
+            "name": "Zaventem",
+            "coordinates": [4.4550, 50.9055]
+        },
+        {
+            "id": "bgvar",
+            "name": "Varna",
+            "coordinates": [27.7975, 43.2769]
+        },
+        {
+            "id": "ctcdv",
+            "name": "CDV",
+            "coordinates": [1.4028, 41.6019]
+        },
+        {
+            "id": "ctpda",
+            "name": "PDA",
+            "coordinates": [2.9972, 41.8888]
+        },
+        {
             "id": "czbrd",
             "name": "Brdy-Praha",
             "coordinates": [13.8178, 49.6583]
@@ -73,7 +103,7 @@
         {
             "id": "depro",
             "name": "Pritzel/Berlin",
-            "coordinates": [13.8578, 52.64857]
+            "coordinates": [13.8578, 52.6486]
         },
         {
             "id": "detur",
@@ -116,6 +146,11 @@
             "coordinates": [26.8969, 67.1391]
         },
         {
+            "id": "fipet",
+            "name": "Petäjävesi",
+            "coordinates": [25.4401, 62.3045]
+        },
+        {
             "id": "fiuta",
             "name": "Utajärvi",
             "coordinates": [26.3189, 64.7749]
@@ -149,6 +184,11 @@
             "id": "frbor",
             "name": "Bordeaux",
             "coordinates": [-0.6917, 44.8314]
+        },
+        {
+            "id": "frbou",
+            "name": "Bourges",
+            "coordinates": [2.3594, 47.0586]
         },
         {
             "id": "frcae",
@@ -202,12 +242,12 @@
         },
         {
             "id": "nldbl",
-            "name": "De bilt",
+            "name": "De Bilt",
             "coordinates": [5.1783, 52.1017]
         },
         {
             "id": "nldhl",
-            "name": "Den helder",
+            "name": "Den Helder",
             "coordinates": [4.7900, 52.9533]
         },
         {
@@ -236,9 +276,24 @@
             "coordinates": [18.7267, 50.1517]
         },
         {
+            "id": "plrze",
+            "name": "Rzeszów",
+            "coordinates": [22.0370, 50.1141]
+        },
+        {
             "id": "plswi",
             "name": "Swidwin",
             "coordinates": [15.8311, 53.7903]
+        },
+        {
+            "id": "ptliz",
+            "name": "Coruche/Cruz do Leao",
+            "coordinates": [-8.3989, 39.0714]
+        },
+        {
+            "id": "ptprt",
+            "name": "Arouca/Pico do Gralheiro",
+            "coordinates": [-8.2797, 40.8450]
         },
         {
             "id": "seang",
@@ -251,23 +306,13 @@
             "coordinates": [17.9463, 59.6544]
         },
         {
-            "id": "sease",
-            "name": "Ase",
-            "coordinates": [18.4001, 57.3035]
-        },
-        {
             "id": "sehud",
             "name": "Hudriksvall",
             "coordinates": [16.7144, 61.5771]
         },
         {
-            "id": "sekir",
-            "name": "Kiru",
-            "coordinates": [20.6178, 67.7088]
-        },
-        {
             "id": "sekkr",
-            "name": "Karlskro",
+            "name": "Karlskrona",
             "coordinates": [15.6103, 56.2955]
         },
         {
@@ -288,7 +333,7 @@
         {
             "id": "sevar",
             "name": "Vara",
-            "coordinates": [12.826, 58.2556]
+            "coordinates": [12.8260, 58.2556]
         }
     ]
 }
